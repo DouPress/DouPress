@@ -15,7 +15,7 @@
   <language>zh_CN</language>
   <sy:updatePeriod>hourly</sy:updatePeriod>
   <sy:updateFrequency>1</sy:updateFrequency>
-  <generator>http://1234n.com/?projects/minicms/</generator>
+  <generator>https://github.com/doufox/doufox-mini</generator>
 <?php while (mc_next_post()) { ?>
     <item>
       <title><?php mc_the_title(); ?></title>
