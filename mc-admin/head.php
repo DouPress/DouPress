@@ -57,7 +57,7 @@ function post_sort($a, $b) {
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>MiniCMS</title>
+  <title>Doufox Mini</title>
   <link style="text/css" rel="stylesheet" href="style.css" />
 </head>
 <body>
