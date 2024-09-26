@@ -32,7 +32,7 @@ if (preg_match('|^post/([a-z0-5]{6})$|', rtrim($qs, '/'), $matches)) {
   $mc_get_type = 'page';
   $mc_get_name = rtrim($matches[1], '/');
   // $mc_get_name = substr($matches[1], 0, -1);
-  echo $mc_get_name;
+  // echo $mc_get_name;
   // } else if ('admin' == $qs || preg_match('|^admin/([^/]+)$|', $qs, $matches)) {
   //   $mc_get_type = 'admin';
   //   $mc_get_name = isset($matches[1]) ? $matches[1] : 'index';
