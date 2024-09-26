@@ -31,9 +31,11 @@ data               内容数据
 
 # URL 格式
 
-文章: http://doupress.com/?post/[a-z0-5]{6}  
-标签: http://doupress.com/?tag/[^/]+/
-页面: http://doupress.com/?([-a-zA-Z0-5]+/)+
+文章: `http://doupress.com/?post/[a-z0-5]{6}`
+
+标签: `http://doupress.com/?tag/[^/]+/`
+
+页面: `http://doupress.com/?([-a-zA-Z0-5]+/)+`
 
 # 模板标签
 
