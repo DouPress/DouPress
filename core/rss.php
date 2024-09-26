@@ -1,5 +1,6 @@
 <?php header("Content-Type: application/rss+xml; charset=UTF-8"); ?>
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>'; ?>
+
 <rss version="2.0"
   xmlns:content="http://purl.org/rss/1.0/modules/content/"
   xmlns:wfw="http://wellformedweb.org/CommentAPI/"
@@ -15,7 +16,7 @@
   <language>zh_CN</language>
   <sy:updatePeriod>hourly</sy:updatePeriod>
   <sy:updateFrequency>1</sy:updateFrequency>
-  <generator>https://github.com/doufox/doufox-mini</generator>
+  <generator>https://github.com/doufox/doupress</generator>
 <?php while (mc_next_post()) { ?>
     <item>
       <title><?php mc_the_title(); ?></title>
@@ -26,6 +27,7 @@
 <?php mc_the_tags("      <category><![CDATA[", "\n", "]]></category>"); echo "\n"; ?>
       <content:encoded><![CDATA[<?php mc_the_content();?>]]></content:encoded>
     </item>
-<?php   } ?>
+<?php } ?>
+
 </channel>
 </rss>

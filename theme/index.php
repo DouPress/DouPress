@@ -2,9 +2,19 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<title><?php if (mc_is_post() || mc_is_page()) { mc_the_title(); ?> | <?php mc_site_name(); } else { mc_site_name(); ?> | <?php mc_site_desc(); }?></title>
-<link href="<?php mc_theme_url('style.css'); ?>" type="text/css" rel="stylesheet"/>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" /> -->
+  <meta content="telephone=no,email=no" name="format-detection" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="description" content="DouPress" />
+  <meta name="keywords" content="DouPress" />
+  <meta name="author" content="上海程江科技中心" />
+  <meta name="copyright" content="程江® 程江科技 CROGRAM" />
+  <link rel="icon" href="favicon.ico" />
+  <title><?php if (mc_is_post() || mc_is_page()) { mc_the_title(); ?> | <?php mc_site_name(); } else { mc_site_name(); ?> | <?php mc_site_desc(); }?></title>
+  <link href="<?php mc_theme_url('style.css'); ?>" type="text/css" rel="stylesheet"/>
 </head>
 <body>
   <div id="main">
@@ -33,16 +43,12 @@
     <?php } ?>
 <?php } else if (mc_is_archive()) { ?>
     <div class="date_list">
-    <h1>月份</h1>
-    <ul>
-<?php mc_date_list(); ?>
-    </ul>
+      <h1>月份</h1>
+      <ul><?php mc_date_list(); ?></ul>
     </div>
     <div class="tag_list">
-    <h1>标签</h1>
-    <ul>
-<?php mc_tag_list(); ?>
-    </ul>
+      <h1>标签</h1>
+      <ul><?php mc_tag_list(); ?></ul>
     </div>
     <div class="clearer"></div>
 <?php } else { ?>
@@ -77,13 +83,13 @@
     <div id="navbar">
       <ul>
         <li><a href="<?php mc_site_link(); ?>/">首页</a></li>
-        <li><a href="<?php mc_site_link(); ?>/?archive/">存档</a></li>
-        <li><a href="<?php mc_site_link(); ?>/?rss/">订阅</a></li>
+        <li><a href="<?php mc_site_link(); ?>/?archive">存档</a></li>
+        <li><a href="<?php mc_site_link(); ?>/?rss">订阅</a></li>
       </ul>
     </div>
   </div>
   <div class="clearer"></div>
-  <div id="footer">本站由 <a href="https://github.com/doufox/doufox-mini" target="_blank">Doufox Mini</a> 驱动</div>
+  <div id="footer">本站由 <a href="https://github.com/doufox/doupress" target="_blank">DouPress</a> 驱动</div>
   </div>
 </body>
 </html>

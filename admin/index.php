@@ -1,11 +1,11 @@
 <?php
-require_once dirname(dirname(__FILE__)).'/mc-files/mc-conf.php';
+require_once dirname(dirname(__FILE__)).'/data/config.php';
 
 if (isset($_COOKIE['mc_token'])) {
   $token = $_COOKIE['mc_token'];
 
   if ($token == md5($mc_config['user_name'].'_'.$mc_config['user_pass'])) {
-    Header("Location:{$mc_config['site_link']}/mc-admin/post.php");
+    Header("Location: post.php");
   }
 }
 
@@ -13,7 +13,7 @@ if (isset($_POST['login'])) {
   if ($_POST['user'] == $mc_config['user_name'] 
   && $_POST['pass'] == $mc_config['user_pass']) {
     setcookie('mc_token', md5($mc_config['user_name'].'_'.$mc_config['user_pass']));
-    Header("Location:{$mc_config['site_link']}/mc-admin/post.php");
+    Header("Location: post.php");
   }
 }
 ?>
@@ -21,7 +21,7 @@ if (isset($_POST['login'])) {
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>MiniCMS</title>
+  <title>DouPress</title>
   <style type="text/css">
 * { font-family:"Microsoft YaHei",Segoe UI,Tahoma,Arial,Verdana,sans-serif; }
 body { background:#f9f9f9; font-size:14px; }
@@ -37,7 +37,7 @@ body { background:#f9f9f9; font-size:14px; }
 </head>
 <body>
   <form action="<?php echo htmlentities($_SERVER['REQUEST_URI']); ?>" method="post">
-  <div id="login_title">MiniCMS</div>
+  <div id="login_title">DouPress</div>
   <div id="login_form">
     <div id="login_form_box">
       <div class="label">帐号</div>

@@ -16,7 +16,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   $post_id          = $_POST['id'];
   $post_state       = $_POST['state'];
   $post_title       = trim($_POST['title']);
-  $post_content     = trim($_POST['content']);
+  $post_content     = htmlspecialchars(trim($_POST['content']));
   $post_tags        = explode(',', trim($_POST['tags']));
   $post_date        = date("Y-m-d");
   $post_time        = date("H:i:s");
@@ -66,7 +66,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       $file_names = shorturl($post_title);
       
       foreach ($file_names as $file_name) {
-        $file_path = '../mc-files/posts/data/'.$file_name.'.dat';
+        $file_path = '../data/posts/data/'.$file_name.'.dat';
         
         if (!is_file($file_path)) {
           $post_id = $file_name;
@@ -75,14 +75,14 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       }
     }
     else {
-      $file_path = '../mc-files/posts/data/'.$post_id.'.dat';
+      $file_path = '../data/posts/data/'.$post_id.'.dat';
   
       $data = unserialize(file_get_contents($file_path));
       
       $post_old_state = $data['state'];
       
       if ($post_old_state != $post_state) {
-        $index_file = '../mc-files/posts/index/'.$post_old_state.'.php';
+        $index_file = '../data/posts/index/'.$post_old_state.'.php';
         
         require $index_file;
         
@@ -104,7 +104,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       'can_comment'  => $post_can_comment,
     );
     
-    $index_file = '../mc-files/posts/index/'.$post_state.'.php';
+    $index_file = '../data/posts/index/'.$post_state.'.php';
     
     require $index_file;
     
@@ -123,7 +123,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
     $succeed = true;
   }
 } else if (isset($_GET['id'])) {
-  $file_path = '../mc-files/posts/data/'.$_GET['id'].'.dat';
+  $file_path = '../data/posts/data/'.$_GET['id'].'.dat';
   
   $data = unserialize(file_get_contents($file_path));
   
@@ -171,7 +171,7 @@ function empty_textbox_blur(target) {
   </div>
   <div style="margin-bottom:20px;">
     <?php require 'editor.php'; ?>
-    <?php editor($post_content); ?>
+    <?php editor(htmlspecialchars_decode($post_content)); ?>
   </div>
   <div style="margin-bottom:20px;">
     <input name="tags" type="text" class="edit_textbox" placeholder="在此输入标签，多个标签之间用逗号分隔" value="<?php echo htmlspecialchars(implode(',', $post_tags)); ?>"/>

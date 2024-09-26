@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
-<title>MiniCMS安装程序</title>
+<title>DouPress 安装程序</title>
 <style>
 * {padding:0;margin:0;font-family:"Microsoft YaHei",Segoe UI,Tahoma,Arial,Verdana,sans-serif;}
 html,body { height:100%; }
@@ -51,12 +51,12 @@ window.onload = window.onresize = function(){
 </head>
 <body style="background:#f2f2f2;">
   <div id="main">
-    <div style="font-size:32px;font-weight:bold;text-align:center;padding-top:40px;">MiniCMS安装程序</div>
-    <div style="font-size:13px;color:#888;text-align:center;padding:10px 0 20px;">v/*MINICMS_VERSION*/</div>
+    <div style="font-size:32px;font-weight:bold;text-align:center;padding-top:40px;">DouPress 安装程序</div>
+    <div style="font-size:13px;color:#888;text-align:center;padding:10px 0 20px;">v/*DOUPRESS_VERSION*/</div>
     <div id="mainbox">
 <?php if (!isset($_POST["start_install"])) { ?>
     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-<?php if (!is_file('mc-files/mc-conf.php')) { ?>
+<?php if (!is_file('data/config.php')) { ?>
       <label>网站标题</label>
       <div class="textbox"><input type="text" name="sitename" value="我的网站"/></div>
       <label>网站地址</label>
@@ -72,7 +72,7 @@ window.onload = window.onresize = function(){
       <div class="textbox"><input type="text" name="password" value="123456"/></div>
       <div style="text-align:center;"><input type="submit" name="start_install" value="开始安装" class="btn btn-primary"/></div>
 <?php } else { ?>
-      <div style="text-align:center;padding-bottom:20px;">检测到MiniCMS配置文件，将使用升级模式安装。</div>
+      <div style="text-align:center;padding-bottom:20px;">检测到 DouPress 配置文件，将使用升级模式安装。</div>
       <div style="text-align:center;"><input type="submit" name="start_install" value="开始升级" class="btn btn-primary"/></div>
 <?php } ?>
     <form>
@@ -107,21 +107,21 @@ window.onload = window.onresize = function(){
         <style> #main { min-width:400px; } </style>
         <div style="font-size:13px;color:#666;line-height:16px;padding:20px;margin:0 auto;">
 <?php
-/*MINICMS_FILES*/
+/*DOUPRESS_FILES*/
 
 $is_upgrade=true;
 
 if (!$install_failed) {
-  if (!is_file('mc-files/mc-conf.php')) {
+  if (!is_file('data/config.php')) {
     $is_upgrade = false;
     echo '<br/>';
     echo "创建配置文件";
-    if (!@file_put_contents('mc-files/mc-conf.php', 
+    if (!@file_put_contents('data/config.php', 
     	"<?php \$mc_config = array(".
-    	"'version'   => '/*MINICMS_VERSION*/',".
+    	"'version'   => '/*DOUPRESS_VERSION*/',".
     	"'site_link' => '{$_POST['sitelink']}',".
     	"'site_name' => '{$_POST['sitename']}',".
-    	"'site_desc' => '又一个MiniCMS网站',".
+    	"'site_desc' => '又一个 DouPress 网站',".
     	"'user_name' => '{$_POST['username']}',".
     	"'user_pass' => '{$_POST['password']}',".
     	"'user_nick' => '{$_POST['nickname']}',".
@@ -134,29 +134,29 @@ if (!$install_failed) {
   } else {
     echo '<br/>';
     echo "升级配置文件";
-    require 'mc-files/mc-conf.php';
-    $mc_config['version'] = '/*MINICMS_VERSION*/';
-    if (!@file_put_contents('mc-files/mc-conf.php', "<?php \$mc_config = ".var_export($mc_config, true)."; ?>")) {
+    require 'data/config.php';
+    $mc_config['version'] = '/*DOUPRESS_VERSION*/';
+    if (!@file_put_contents('data/config.php', "<?php \$mc_config = ".var_export($mc_config, true)."; ?>")) {
       $install_failed = true;
       echo '[<span style="color:red;">失败</span>]';
     }
     echo '<br/>';
   }
 
-  if (!is_dir('mc-files/posts/index')) {
+  if (!is_dir('data/posts/index')) {
     echo '<br/>';
     echo "创建文章索引目录";
-    if (@mkdir('mc-files/posts/index', 0744, true)) {
+    if (@mkdir('data/posts/index', 0744, true)) {
       echo '<br/>';
       echo "创建页面索引文件";
       if (
-        !@file_put_contents('mc-files/posts/index/delete.php', '<?php $mc_posts=array(); ?>') ||
-        !@file_put_contents('mc-files/posts/index/publish.php', '<?php $mc_posts=array(); ?>') ||
-        !@file_put_contents('mc-files/posts/index/draft.php', '<?php $mc_posts=array(); ?>')
+        !@file_put_contents('data/posts/index/delete.php', '<?php $mc_posts=array(); ?>') ||
+        !@file_put_contents('data/posts/index/publish.php', '<?php $mc_posts=array(); ?>') ||
+        !@file_put_contents('data/posts/index/draft.php', '<?php $mc_posts=array(); ?>')
       ) {
         $install_failed = true;
         echo '[<span style="color:red;">失败</span>]';
-        rmdir('mc-files/posts/index');
+        rmdir('data/posts/index');
       }
       echo '<br/>';
     } else {
@@ -166,20 +166,20 @@ if (!$install_failed) {
     }
   }
 
-  if (!is_dir('mc-files/pages/index')) {
+  if (!is_dir('data/pages/index')) {
     echo '<br/>';
     echo "创建页面索引目录";
-    if (@mkdir('mc-files/pages/index', 0744, true)) {
+    if (@mkdir('data/pages/index', 0744, true)) {
       echo '<br/>';
       echo "创建页面索引文件";
       if (
-        !@file_put_contents('mc-files/pages/index/delete.php', '<?php $mc_pages=array(); ?>') ||
-        !@file_put_contents('mc-files/pages/index/publish.php', '<?php $mc_pages=array(); ?>') ||
-        !@file_put_contents('mc-files/pages/index/draft.php', '<?php $mc_pages=array(); ?>')
+        !@file_put_contents('data/pages/index/delete.php', '<?php $mc_pages=array(); ?>') ||
+        !@file_put_contents('data/pages/index/publish.php', '<?php $mc_pages=array(); ?>') ||
+        !@file_put_contents('data/pages/index/draft.php', '<?php $mc_pages=array(); ?>')
       ) {
         $install_failed = true;
         echo '[<span style="color:red;">失败</span>]';
-        rmdir('mc-files/pages/index');
+        rmdir('data/pages/index');
       }
       echo '<br/>';
     } else {
@@ -199,7 +199,7 @@ if (!$install_failed) {
      <div style=\"text-align:center;padding-top:20px;color:red;\">安装文件无法删除，请手工删除。</div>
 <?php } ?>
     <div style="text-align:center;padding:20px 0 0;">
-    <form method="get" action="mc-admin/">
+    <form method="get" action="admin/">
     <input type="submit" value="开始体验" class="btn btn-primary"/>
     </form>
     </div>

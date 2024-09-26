@@ -1,4 +1,2 @@
-mc-files/pages/*
-mc-files/posts/*
-mc-files/mc-conf.php
-mc-data
+/data
+/uploads
