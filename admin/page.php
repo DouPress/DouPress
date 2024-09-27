@@ -225,7 +225,6 @@ else if ($page_num > $last_page)
 
   function do_filter() {
     var date = document.getElementById('date');
-
     location.href = '?state=<?php echo $state; ?>&date=' + date.value;
   }
 
@@ -241,7 +240,7 @@ else if ($page_num > $last_page)
 <?php if (isset($message)) { ?>
   <div class="updated"><?php echo $message; ?></div>
 <?php } ?>
-<div class="admin_page_name">管理页面<a class="link_button" href="page-edit.php">创建页面</a></div>
+<div class="admin_page_name">页面管理<a class="link_button" href="page-edit.php">创建页面</a></div>
 <div class="post_mode_link">
   <a href="?state=publish" class="link_button <?php if ($state == 'publish') echo 'current'; ?>">已发布</a>
   <a href="?state=draft" class="link_button <?php if ($state == 'draft') echo 'current'; ?>">草稿箱</a>
@@ -308,7 +307,7 @@ else if ($page_num > $last_page)
               <?php } else { ?>
                 <a class="link_button" href="?delete=<?php echo urlencode($page_id); ?>&state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>">回收</a>
               <?php } ?>
-              <a class="link_button" href="<?php echo htmlentities($mc_config['site_link']); ?>/?<?php echo $page_id; ?>/" target="_blank">查看</a>
+              <a class="link_button" href="<?php echo htmlentities($mc_config['site_link']); ?>/?<?php echo $page_id; ?>" target="_blank">查看</a>
             </div>
           </td>
           <td><?php

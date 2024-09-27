@@ -223,11 +223,12 @@ function apply_all(opid, name)
       ids += el[i].value + ',';
     }
   }
-  
+
   var op = document.getElementById(opid);
-  
-  if (ids != '')
+
+  if (ids != '') {
     location.href = '?state=<?php echo $state; ?>&apply=' + op.value + '&ids=' + ids;
+  }
 }
 function do_filter()
 {
@@ -249,7 +250,7 @@ function goto_page(e)
 <?php if (isset($message)) { ?>
 <div class="updated"><?php echo $message; ?></div>
 <?php } ?>
-<div class="admin_page_name">管理文章<a class="link_button" href="post-edit.php">撰写文章</a></div>
+<div class="admin_page_name">文章管理<a class="link_button" href="post-edit.php">撰写文章</a></div>
 <div class="post_mode_link">
 <a href="?state=publish" class="link_button <?php if ($state == 'publish') echo 'current'; ?>">已发布</a>
 <a href="?state=draft" class="link_button <?php if ($state == 'draft') echo 'current'; ?>">草稿箱</a>

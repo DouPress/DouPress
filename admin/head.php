@@ -82,6 +82,7 @@ function post_sort($a, $b)
       <li <?php echo $page_file == 'post.php' || $page_file == 'post-edit.php' ? 'class="current"' : ''; ?>><a href="post.php">文章</a></li>
       <li <?php echo $page_file == 'page.php' || $page_file == 'page-edit.php' ? 'class="current"' : ''; ?>><a href="page.php">页面</a></li>
       <li <?php echo $page_file == 'config.php' ? 'class="current"' : ''; ?>><a href="config.php">设置</a></li>
+      <li><a href="logout.php">登出</a></li>
     </ul>
     <div class="clear"></div>
   </div>
