@@ -4,10 +4,18 @@ define('PATH_ROOT', dirname(__FILE__)); // 定义根路径
 require_once PATH_ROOT . '/core/common.php';
 
 $mc_post_per_page = 10;
-
-$qs = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
-// 移除之后一个/
-// $qs = rtrim($qs, '/');
+global $mc_config;
+if (@$mc_config['site_route'] == 'path') {
+  // print_r(var_export($_SERVER, true));
+  // path 模式 /post/abc
+  $qs = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+  $qs = ltrim($qs, '/');
+} else {
+  // 参数模式/?post/abc
+  $qs = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
+  // 移除之后一个/
+  // $qs = rtrim($qs, '/');
+}
 
 if (preg_match('|^post/([a-z0-5]{6})$|', rtrim($qs, '/'), $matches)) {
   $mc_get_type = 'post';
@@ -26,7 +34,11 @@ if (preg_match('|^post/([a-z0-5]{6})$|', rtrim($qs, '/'), $matches)) {
   $mc_get_type = 'rss';
   $mc_get_name = '';
   $mc_page_num = isset($_GET['page']) ? $_GET['page'] : 1;
-// } else if (preg_match('|^(([-a-zA-Z0-5]+/)+)$|', $qs, $matches)) {
+} else if (rtrim($qs, '/') == 'xml') {
+  $mc_get_type = 'xml';
+  $mc_get_name = '';
+  $mc_page_num = isset($_GET['page']) ? $_GET['page'] : 1;
+  // } else if (preg_match('|^(([-a-zA-Z0-5]+/)+)$|', $qs, $matches)) {
 } else if (preg_match('|^(([-a-zA-Z0-5/])+)$|', $qs, $matches)) {
   // } else if (preg_match('|^([^/]+)$|', $qs, $matches)) {
   $mc_get_type = 'page';
@@ -153,9 +165,10 @@ if ($mc_get_type == 'post') {
   $mc_post_count = count($mc_post_ids);
 }
 
-
 if ($mc_get_type == 'rss') {
-  require 'core/rss.php';
+  require PATH_ROOT . '/core/rss.php';
+} else if ($mc_get_type == 'xml') {
+  require PATH_ROOT . '/core/xml.php';
 } else {
-  require 'theme/index.php';
+  require PATH_ROOT . '/theme/' . $mc_config['site_theme'] . '/index.php';
 }

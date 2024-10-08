@@ -1,6 +1,9 @@
 <?php
 require 'head.php';
 
+define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
+require_once PATH_ROOT . '/core/common.php';
+
 $post_id          = '';
 $post_state       = '';
 $post_title       = '';
@@ -66,7 +69,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       $file_names = shorturl($post_title);
       
       foreach ($file_names as $file_name) {
-        $file_path = '../data/posts/data/'.$file_name.'.dat';
+        $file_path = PATH_ROOT . '/data/posts/data/'.$file_name.'.dat';
         
         if (!is_file($file_path)) {
           $post_id = $file_name;
@@ -75,14 +78,14 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       }
     }
     else {
-      $file_path = '../data/posts/data/'.$post_id.'.dat';
+      $file_path = PATH_ROOT . '/data/posts/data/'.$post_id.'.dat';
   
       $data = unserialize(file_get_contents($file_path));
       
       $post_old_state = $data['state'];
       
       if ($post_old_state != $post_state) {
-        $index_file = '../data/posts/index/'.$post_old_state.'.php';
+        $index_file = PATH_ROOT . '/data/posts/index/'.$post_old_state.'.php';
         
         require $index_file;
         
@@ -104,7 +107,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       'can_comment'  => $post_can_comment,
     );
     
-    $index_file = '../data/posts/index/'.$post_state.'.php';
+    $index_file = PATH_ROOT . '/data/posts/index/'.$post_state.'.php';
     
     require $index_file;
     
@@ -123,7 +126,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
     $succeed = true;
   }
 } else if (isset($_GET['id'])) {
-  $file_path = '../data/posts/data/'.$_GET['id'].'.dat';
+  $file_path = PATH_ROOT . '/data/posts/data/'.$_GET['id'].'.dat';
   
   $data = unserialize(file_get_contents($file_path));
   
@@ -158,7 +161,7 @@ function empty_textbox_blur(target) {
   <input type="hidden" name="_IS_POST_BACK_" value=""/>
   <?php if ($succeed) { ?>
   <?php if ($post_state == 'publish') { ?>
-  <div class="updated">文章已发布。 <a href="<?php echo $mc_config['site_link']; ?>/?post/<?php echo $post_id; ?>" target="_blank">查看文章</a></div>
+  <div class="updated">文章已发布。 <a href="<?php echo mc_get_url('post', $post_id); ?>" target="_blank">查看文章</a></div>
   <?php } else { ?>
   <div class="updated">文章已保存到“草稿箱”。 <a href="post.php?state=draft">打开草稿箱</a></div>
   <?php } ?>

@@ -15,6 +15,8 @@ if (isset($_POST['login'])) {
   && $_POST['pass'] == $mc_config['user_pass']) {
     setcookie('mc_token', md5($mc_config['user_name'].'_'.$mc_config['user_pass']));
     Header("Location: post.php");
+  } else {
+    $display_message = '账号或密码错误';
   }
 }
 ?>
@@ -36,30 +38,38 @@ if (isset($_POST['login'])) {
   <style type="text/css">
     * { font-family:"Microsoft YaHei",Segoe UI,Tahoma,Arial,Verdana,sans-serif; }
     body { background:#f9f9f9; font-size:14px; }
-    #login_title { text-align:center; width:360px; margin:120px auto; margin-bottom:0px; font-size:32px; color:#333; text-shadow: 0 2px 0 #FFFFFF;}
+    .login-form {width: 360px;margin: 120px auto 0;}
+    #login_title { text-align:center; margin: 0 auto; font-size:32px; color:#333; text-shadow: 0 2px 0 #FFFFFF;}
     #login_form { width:360px; margin:0 auto; margin-top:20px; border:solid 1px #e0e0e0; background:#fff; border-radius:3px 3px 3px 3px;}
     #login_form_box { padding:16px; }
     #login_form .label { font-weight:bold; padding-bottom:6px; color:#333; }
-    #login_form .textbox input { border:none; padding:0; font-size:24px; width:312px; color:#333; }
     #login_form .textbox { border:1px solid #e0e0e0; padding:6px; margin-bottom:20px; border-radius:3px 3px 3px 3px; }
+    #login_form .textbox input { border:none; padding:0; font-size:24px; width:100%; color:#333; outline: none; }
     #login_form .bottom { text-align:center; }
     #login_form .button { padding:4px 16px; font-size:14px; }
     #login_footer { text-align:center; margin: 10px; color: #333; }
+
+    .display-message { border-radius:3px; border-style:solid; border-width:1px; }
+    .display-message { background-color: #FFFFE0; border-color: #E6DB55; padding:8px; margin: 10px 0; }
+
   </style>
 </head>
 <body>
-  <form action="login.php" method="post">
-  <div id="login_title">DouPress</div>
-  <div id="login_form">
-    <div id="login_form_box">
-      <div class="label">登录帐号</div>
-      <div class="textbox"><input name="user" type="text" /></div>
-      <div class="label">登录密码</div>
-      <div class="textbox"><input name="pass" type="password" /></div>
-      <div class="bottom"><input name="login" type="submit" value="登录" class="button" /></div>
+  <form action="login.php" method="post" class="login-form">
+    <div id="login_title">DouPress</div>
+    <?php if (isset($display_message)) { ?>
+      <div class="display-message"><?php echo $display_message; ?></div>
+    <?php } ?>
+    <div id="login_form">
+      <div id="login_form_box">
+        <div class="label">登录帐号</div>
+        <div class="textbox"><input name="user" type="text" /></div>
+        <div class="label">登录密码</div>
+        <div class="textbox"><input name="pass" type="password" /></div>
+        <div class="bottom"><input name="login" type="submit" value="登录" class="button" /></div>
+      </div>
     </div>
-  </div>
-  <div id="login_footer">Powered by DouPress</div>
+    <div id="login_footer">Powered by <a href="http://doupress.com" target="_blank">DouPress</a></div>
   </form>
 </body>
 </html>

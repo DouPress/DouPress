@@ -11,7 +11,6 @@ $dirs = array(".");
 $ignores = array(
     '.gitignore',
     'data',
-    'uploads',
     'README.md',
     'build.php',
     'install.php',

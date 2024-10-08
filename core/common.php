@@ -13,11 +13,16 @@ function app_404()
   exit();
 }
 
-function mc_get_url($mc_get_type, $mc_get_name, $path = '', $print = true)
+function mc_get_url($mc_get_type, $mc_get_name = '', $path = '', $print = true)
 {
   global $mc_config;
+  $r = @$mc_config['site_route'] == 'path' ? '/' : '/?';
+  $t = empty($mc_get_type) ? '' : $mc_get_type;
+  $n = empty($mc_get_name) ? '' : '/' . $mc_get_name;
 
-  $url = $mc_config['site_link'] . '/?' . $mc_get_type . '/' . $mc_get_name;
+  $url = $r . $t . $n;
+  $url = str_replace('//', '/', $url);
+  $url = $mc_config['site_link'] . $url;
 
   if ($print) {
     echo $url;

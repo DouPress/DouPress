@@ -1,8 +1,10 @@
 <?php
-require_once '../data/config.php';
 
-if (!is_dir('../data/pages/data/'))
-  mkdir('../data/pages/data/');
+define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
+require_once PATH_ROOT . '/core/common.php';
+
+if (!is_dir(PATH_ROOT . '/data/pages/data/'))
+  mkdir(PATH_ROOT . '/data/pages/data/');
 
 function load_pages()
 {
@@ -11,17 +13,17 @@ function load_pages()
   if (isset($_GET['state'])) {
     if ($_GET['state'] == 'draft') {
       $state = 'draft';
-      $index_file = '../data/pages/index/draft.php';
+      $index_file = PATH_ROOT . '/data/pages/index/draft.php';
     } else if ($_GET['state'] == 'delete') {
       $state = 'delete';
-      $index_file = '../data/pages/index/delete.php';
+      $index_file = PATH_ROOT . '/data/pages/index/delete.php';
     } else {
       $state = 'publish';
-      $index_file = '../data/pages/index/publish.php';
+      $index_file = PATH_ROOT . '/data/pages/index/publish.php';
     }
   } else {
     $state = 'publish';
-    $index_file = '../data/pages/index/publish.php';
+    $index_file = PATH_ROOT . '/data/pages/index/publish.php';
   }
 
   require $index_file;
@@ -40,7 +42,7 @@ function delete_page($id)
   file_put_contents($index_file, "<?php\n\$mc_pages=" . var_export($mc_pages, true) . "\n?>");
 
   if ($state != 'delete') {
-    $index_file2 = '../data/pages/index/delete.php';
+    $index_file2 = PATH_ROOT . '/data/pages/index/delete.php';
 
     require $index_file2;
 
@@ -48,7 +50,7 @@ function delete_page($id)
 
     file_put_contents($index_file2, "<?php\n\$mc_pages=" . var_export($mc_pages, true) . "\n?>");
   } else {
-    unlink('../data/pages/data/' . $page['file'] . '.dat');
+    unlink(PATH_ROOT . '/data/pages/data/' . $page['file'] . '.dat');
   }
 }
 
@@ -66,7 +68,7 @@ function revert_page($id)
 
   file_put_contents($index_file, "<?php\n\$mc_pages=" . var_export($mc_pages, true) . "\n?>");
 
-  $index_file2 = '../data/pages/index/' . $prev_state . '.php';
+  $index_file2 = PATH_ROOT . '/data/pages/index/' . $prev_state . '.php';
 
   require $index_file2;
 
@@ -307,7 +309,7 @@ else if ($page_num > $last_page)
               <?php } else { ?>
                 <a class="link_button" href="?delete=<?php echo urlencode($page_id); ?>&state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>">回收</a>
               <?php } ?>
-              <a class="link_button" href="<?php echo htmlentities($mc_config['site_link']); ?>/?<?php echo $page_id; ?>" target="_blank">查看</a>
+              <a class="link_button" href="<?php echo mc_get_url('', $page_id);?>" target="_blank">查看</a>
             </div>
           </td>
           <td><?php

@@ -62,8 +62,7 @@ function mc_nick_name($print = true)
 function mc_theme_url($path, $print = true)
 {
   global $mc_config;
-
-  $url = htmlentities($mc_config['site_link']) . '/theme/' . $path;
+  $url = htmlentities($mc_config['site_link']) . '/theme/' . $mc_config['site_theme'] . '/' . $path;
 
   if ($print) {
     echo $url;
@@ -147,13 +146,10 @@ function mc_goto_old($text)
 {
   global $mc_get_type, $mc_get_name, $mc_page_num, $mc_config;
   echo '<a href="';
-  echo htmlentities($mc_config['site_link']);
   if ($mc_get_type == 'tag') {
-    echo '/?tag/';
-    echo htmlspecialchars($mc_get_name);
+    mc_get_url('tag', htmlspecialchars($mc_get_name));
   } else if ($mc_get_type == 'date') {
-    echo '/?date/';
-    echo htmlspecialchars($mc_get_name);
+    mc_get_url('date', htmlspecialchars($mc_get_name));
   }
   echo '/?page=';
   echo ($mc_page_num + 1);
@@ -166,13 +162,10 @@ function mc_goto_new($text)
 {
   global $mc_get_type, $mc_get_name, $mc_page_num, $mc_config;
   echo '<a href="';
-  echo htmlentities($mc_config['site_link']);
   if ($mc_get_type == 'tag') {
-    echo '/?tag/';
-    echo htmlspecialchars($mc_get_name);
+    mc_get_url('tag', htmlspecialchars($mc_get_name));
   } else if ($mc_get_type == 'date') {
-    echo '/?date/';
-    echo htmlspecialchars($mc_get_name);
+    mc_get_url('date', htmlspecialchars($mc_get_name));
   }
   echo '/?page=';
   echo ($mc_page_num - 1);
@@ -193,9 +186,7 @@ function mc_date_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
 
       echo $item_begin;
       echo '<a href="';
-      echo htmlentities($mc_config['site_link']);
-      echo '/?date/';
-      echo $date;
+      mc_get_url('date', $date);
       echo '">';
       echo $date;
       echo '</a>';
@@ -219,9 +210,7 @@ function mc_tag_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
 
       echo $item_begin;
       echo '<a href="';
-      echo htmlentities($mc_config['site_link']);
-      echo '/?tag/';
-      echo urlencode($tag);
+      mc_get_url('tag', urlencode($tag));
       echo '">';
       echo htmlspecialchars($tag);
       echo '</a>';
@@ -313,9 +302,7 @@ function mc_the_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_lin
 
     if ($as_link) {
       echo '<a href="';
-      echo htmlentities($mc_config['site_link']);
-      echo '/?tag/';
-      echo urlencode($tag);
+      mc_get_url('tag', urlencode($tag));
       echo '">';
     }
 
@@ -368,8 +355,7 @@ function mc_the_link()
 function mc_the_url($print = true)
 {
   global $mc_post_id, $mc_post, $mc_config;
-
-  $url = htmlentities($mc_config['site_link']) . '/?post/' . $mc_post_id;
+  $url = mc_get_url('post', $mc_post_id);
 
   if ($print) {
     echo $url;

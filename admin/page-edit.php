@@ -1,6 +1,9 @@
 <?php
 require 'head.php';
 
+define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
+require_once PATH_ROOT . '/core/common.php';
+
 $page_file        = '';
 $page_path        = '';
 $page_state       = '';
@@ -70,7 +73,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       $file_names = shorturl($page_title);
 
       foreach ($file_names as $file_name) {
-        $file_path = '../data/pages/data/' . $file_name . '.dat';
+        $file_path = PATH_ROOT . '/data/pages/data/' . $file_name . '.dat';
 
         if (!is_file($file_path)) {
           $page_file = $file_name;
@@ -78,7 +81,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
         }
       }
     } else {
-      $file_path = '../data/pages/data/' . $page_file . '.dat';
+      $file_path = PATH_ROOT . '/data/pages/data/' . $page_file . '.dat';
 
       $data = unserialize(file_get_contents($file_path));
 
@@ -86,7 +89,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       $page_old_state = $data['state'];
 
       if ($page_old_state != $page_state || $page_old_path != $page_path) {
-        $index_file = '../data/pages/index/' . $page_old_state . '.php';
+        $index_file = PATH_ROOT . '/data/pages/index/' . $page_old_state . '.php';
 
         require $index_file;
 
@@ -109,7 +112,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       'can_comment' => $page_can_comment,
     );
 
-    $index_file = '../data/pages/index/' . $page_state . '.php';
+    $index_file = PATH_ROOT . '/data/pages/index/' . $page_state . '.php';
 
     require $index_file;
 
@@ -129,7 +132,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
     $succeed = true;
   }
 } else if (isset($_GET['file'])) {
-  $file_path = '../data/pages/data/' . $_GET['file'] . '.dat';
+  $file_path = PATH_ROOT . '/data/pages/data/' . $_GET['file'] . '.dat';
 
   $data = unserialize(file_get_contents($file_path));
 
@@ -164,7 +167,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   <input type="hidden" name="_IS_POST_BACK_" value="" />
   <?php if ($succeed) { ?>
     <?php if ($page_state == 'publish') { ?>
-      <div class="updated">页面已发布。 <a href="<?php echo $mc_config['site_link']; ?>/?<?php echo $page_path; ?>/" target="_blank">查看页面</a></div>
+      <div class="updated">页面已发布。 <a href="<?php echo mc_get_url('', $page_path); ?>" target="_blank">查看页面</a></div>
     <?php } else { ?>
       <div class="updated">页面已保存到“草稿箱”。 <a href="page.php?state=draft">打开草稿箱</a></div>
     <?php } ?>

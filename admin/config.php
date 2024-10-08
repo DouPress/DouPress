@@ -1,15 +1,17 @@
-<?php require 'head.php' ?>
+<?php require 'head.php'; ?>
 <?php
 $display_info = false;
 
 if (isset($_POST['save'])) {
   $user_name_changed = $_POST['user_name'] != $mc_config['user_name'];
 
-  $mc_config['site_name'] = $_POST['site_name'];
-  $mc_config['site_desc'] = $_POST['site_desc'];
-  $mc_config['site_link'] = $_POST['site_link'];
-  $mc_config['user_nick'] = $_POST['user_nick'];
-  $mc_config['user_name'] = $_POST['user_name'];
+  $mc_config['site_name']    = $_POST['site_name'];
+  $mc_config['site_desc']    = $_POST['site_desc'];
+  $mc_config['site_link']    = $_POST['site_link'];
+  $mc_config['site_theme']   = $_POST['site_theme'];
+  $mc_config['site_route']   = $_POST['site_route'];
+  $mc_config['user_nick']    = $_POST['user_nick'];
+  $mc_config['user_name']    = $_POST['user_name'];
   $mc_config['comment_code'] = trim($_POST['comment_code']);
 
   if ($_POST['user_pass'] != '')
@@ -26,11 +28,13 @@ if (isset($_POST['save'])) {
   $display_info = true;
 }
 
-$site_name = $mc_config['site_name'];
-$site_desc = $mc_config['site_desc'];
-$site_link = $mc_config['site_link'];
-$user_nick = $mc_config['user_nick'];
-$user_name = $mc_config['user_name'];
+$site_name   = $mc_config['site_name'];
+$site_desc   = $mc_config['site_desc'];
+$site_link   = $mc_config['site_link'];
+$site_theme  = $mc_config['site_theme'];
+$site_route  = @$mc_config['site_route'];
+$user_nick   = $mc_config['user_nick'];
+$user_name   = $mc_config['user_name'];
 $comment_code = isset($mc_config['comment_code']) ? $mc_config['comment_code'] : '';
 ?>
 <form action="<?php echo htmlentities($_SERVER['REQUEST_URI']); ?>" method="post">
@@ -42,6 +46,7 @@ $comment_code = isset($mc_config['comment_code']) ? $mc_config['comment_code'] :
     <div class="field">
       <div class="label">网站标题</div>
       <input class="textbox" type="text" name="site_name" value="<?php echo htmlspecialchars($site_name); ?>" />
+      <div class="info">起个好听的名字。</div>
     </div>
     <div class="clear"></div>
     <div class="field">
@@ -54,6 +59,21 @@ $comment_code = isset($mc_config['comment_code']) ? $mc_config['comment_code'] :
       <div class="label">网站地址</div>
       <input class="textbox" type="text" name="site_link" value="<?php echo htmlspecialchars($site_link); ?>" />
       <div class="info"></div>
+    </div>
+    <div class="clear"></div>
+    <div class="field">
+      <div class="label">网站主题</div>
+      <input class="textbox" type="text" name="site_theme" value="<?php echo htmlspecialchars($site_theme); ?>" />
+      <div class="info"></div>
+    </div>
+    <div class="clear"></div>
+    <div class="field">
+      <div class="label">网站URL类型</div>
+      <select name="site_route" class="textbox">
+        <option value="default" <?php if (empty($site_route) || $site_route == 'default') echo 'selected="selected"'; ?>>默认形式（domain.com/?post/abcdef）</option>
+        <option value="path" <?php if ($site_route == 'path') echo 'selected="selected"'; ?>>路径模式（domain.com/post/abcdef）</option>
+      </select>
+      <div class="info">路径模式需要服务端支持</div>
     </div>
     <div class="clear"></div>
     <div class="field">
