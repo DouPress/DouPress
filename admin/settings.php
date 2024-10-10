@@ -23,6 +23,7 @@ if (isset($_POST['save'])) {
   $dp_config['site_link']    = $_POST['site_link'];
   $dp_config['site_theme']   = $_POST['site_theme'];
   $dp_config['site_route']   = $_POST['site_route'];
+  $dp_config['site_icpno']   = $_POST['site_icpno'];
   $dp_config['user_nick']    = $_POST['user_nick'];
   $dp_config['user_name']    = $_POST['user_name'];
   $dp_config['comment_code'] = trim($_POST['comment_code']);
@@ -46,7 +47,8 @@ $site_name   = $dp_config['site_name'];
 $site_desc   = $dp_config['site_desc'];
 $site_link   = $dp_config['site_link'];
 $site_theme  = $dp_config['site_theme'];
-$site_route  = @$dp_config['site_route'];
+$site_route  = $dp_config['site_route'];
+$site_icpno  = $dp_config['site_icpno'];
 $user_nick   = $dp_config['user_nick'];
 $user_name   = $dp_config['user_name'];
 $comment_code = isset($dp_config['comment_code']) ? $dp_config['comment_code'] : '';
@@ -98,6 +100,12 @@ $comment_code = isset($dp_config['comment_code']) ? $dp_config['comment_code'] :
         <option value="path" <?php if ($site_route == 'path') echo 'selected="selected"'; ?>>路径模式（domain.com/post/abcdef）</option>
       </select>
       <div class="info">路径模式需要服务端支持</div>
+    </div>
+    <div class="clear"></div>
+    <div class="field">
+      <div class="label">ICP备案号</div>
+      <input class="textbox" type="text" name="site_icpno" value="<?php echo $site_icpno; ?>" placeholder="工信部ICP备案号" />
+      <div class="info"></div>
     </div>
     <div class="clear"></div>
     <div class="field">

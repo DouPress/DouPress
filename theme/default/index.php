@@ -2,7 +2,7 @@
 if (!isset($dp_config)) exit;
 ?>
 <!DOCTYPE html>
-<html dir="ltr" lang="zh-CN">
+<html lang="zh-CN">
 
 <head>
   <meta charset="UTF-8" />
@@ -11,11 +11,11 @@ if (!isset($dp_config)) exit;
   <meta content="telephone=no,email=no" name="format-detection" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="description" content="DouPress" />
+  <meta name="description" content="<?php echo $dp_config['site_desc'];?> - DouPress" />
   <meta name="keywords" content="DouPress" />
   <meta name="author" content="上海程江科技中心" />
   <meta name="copyright" content="程江® 程江科技 CROGRAM" />
-  <link rel="icon" href="favicon.ico" />
+  <link rel="icon" href="<?php mc_site_link(); ?>/favicon.ico" />
   <title><?php if (mc_is_post() || mc_is_page()) { mc_the_title(); ?> | <?php mc_site_name();} else { mc_site_name(); ?> | <?php mc_site_desc(); } ?></title>
   <link href="<?php mc_theme_url('style.css'); ?>" type="text/css" rel="stylesheet" />
 </head>
@@ -94,7 +94,10 @@ if (!isset($dp_config)) exit;
     </div>
     <div class="clearer"></div>
   </div>
-  <div id="footer">本站由 <a href="https://github.com/doufox/doupress" target="_blank">DouPress</a> 驱动</div>
+  <div id="footer">
+    <div>本站由 <a href="https://github.com/doufox/doupress" target="_blank">DouPress</a> 驱动</div>
+    <?php if (!empty($dp_config['site_icpno'])) { ?><p><a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank"><?php echo $dp_config['site_icpno'];?></a></p><?php } ?>
+  </div>
 </body>
 
 </html>

@@ -17,6 +17,7 @@ if (@$dp_config['site_route'] == 'path') {
   // $qs = rtrim($qs, '/');
 }
 
+$mc_get_type = '';
 if (preg_match('|^post/([a-z0-5]{6})$|', rtrim($qs, '/'), $matches)) {
   $mc_get_type = 'post';
   $mc_get_name = $matches[1];
@@ -50,7 +51,7 @@ if (preg_match('|^post/([a-z0-5]{6})$|', rtrim($qs, '/'), $matches)) {
   //   $mc_get_name = isset($matches[1]) ? $matches[1] : 'index';
   //   // $mc_get_action = isset($matches[2]) ? $matches[2] : '';
   //   // echo $mc_get_name;exit;
-} else {
+} else if (empty($qs)) {
   $mc_get_type = 'index';
   $mc_get_name = '';
   $mc_page_num = isset($_GET['page']) ? $_GET['page'] : 1;
@@ -158,17 +159,18 @@ if ($mc_get_type == 'post') {
   // } else {
   //   app_404();
   // }
-} else {
+} else if ($mc_get_type == 'index') {
   require 'data/posts/index/publish.php';
-
   $mc_post_ids = array_keys($mc_posts);
   $mc_post_count = count($mc_post_ids);
 }
 
-if ($mc_get_type == 'rss') {
-  require PATH_ROOT . '/core/rss.php';
+if (in_array($mc_get_type, array('index', 'post', 'tag', 'date', 'archive', 'page'))) {
+  require PATH_ROOT . '/theme/' . $dp_config['site_theme'] . '/index.php';
 } else if ($mc_get_type == 'xml') {
   require PATH_ROOT . '/core/xml.php';
+} else if ($mc_get_type == 'rss') {
+  require PATH_ROOT . '/core/rss.php';
 } else {
-  require PATH_ROOT . '/theme/' . $dp_config['site_theme'] . '/index.php';
+  app_404();
 }
