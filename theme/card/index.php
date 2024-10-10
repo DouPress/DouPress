@@ -1,6 +1,9 @@
-<?php if (!isset($mc_config)) exit; ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?php
+if (!isset($dp_config)) exit;
+
+?>
+<!DOCTYPE html>
+<html>
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -18,7 +21,7 @@
       <div id="sitename"><a href="<?php mc_site_link(); ?>" title="<?php mc_site_desc(); ?>"><?php mc_site_name(); ?></a></div>
     </div>
     <div class="clear"></div>
-    <div id="side">
+    <div id="sidebar">
       <div class="photo"><img src="<?php mc_theme_url('photo.jpg'); ?>"></div>
       <div class="about">简短介绍或者联系方式什么的；简短介绍或者联系方式什么的</div>
       <div id="navbar">

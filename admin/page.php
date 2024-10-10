@@ -3,6 +3,8 @@
 define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
 require_once PATH_ROOT . '/core/common.php';
 
+dp_check_login();
+
 if (!is_dir(PATH_ROOT . '/data/pages/data/'))
   mkdir(PATH_ROOT . '/data/pages/data/');
 

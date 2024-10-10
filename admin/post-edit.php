@@ -1,8 +1,8 @@
 <?php
-require 'head.php';
-
 define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
 require_once PATH_ROOT . '/core/common.php';
+
+dp_check_login();
 
 $post_id          = '';
 $post_state       = '';
@@ -140,22 +140,23 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   $post_can_comment = isset($data['can_comment']) ? $data['can_comment'] : '1';
 }
 ?>
+<?php require 'head.php'; ?>
 <script type="text/javascript">
-function empty_textbox_focus(target){
-  if (target.temp_value != undefined && target.value != target.temp_value)
-    return;
-  
-  target.temp_value = target.value;
-  target.value='';
-  target.style.color='#000';
-}
-
-function empty_textbox_blur(target) {
-  if (target.value == '') {
-    target.style.color='#888';
-    target.value = target.temp_value;
+  function empty_textbox_focus(target){
+    if (target.temp_value != undefined && target.value != target.temp_value)
+      return;
+    
+    target.temp_value = target.value;
+    target.value='';
+    target.style.color='#000';
   }
-}
+
+  function empty_textbox_blur(target) {
+    if (target.value == '') {
+      target.style.color='#888';
+      target.value = target.temp_value;
+    }
+  }
 </script>
 <form action="<?php echo htmlentities($_SERVER['REQUEST_URI']); ?>" method="post">
   <input type="hidden" name="_IS_POST_BACK_" value=""/>

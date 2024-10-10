@@ -1,5 +1,5 @@
 <?php
-if (!isset($mc_config)) exit;
+if (!isset($dp_config)) exit;
 ?>
 <!DOCTYPE html>
 <html dir="ltr" lang="zh-CN">
@@ -39,7 +39,7 @@ if (!isset($mc_config)) exit;
         <?php } else if (mc_is_page()) { ?>
           <div class="post">
             <?php /*<h1 class="title"><?php mc_the_link(); ?></h1>
-      <div class="tags">by <?php mc_nick_name(); ?> at <?php mc_the_date(); ?></div> */ ?>
+            <div class="tags">by <?php mc_nick_name(); ?> at <?php mc_the_date(); ?></div> */ ?>
             <div class="content"><?php mc_the_content(); ?></div>
           </div>
           <?php if (mc_can_comment()) { ?>
@@ -83,7 +83,7 @@ if (!isset($mc_config)) exit;
         <?php } ?>
       </div>
     </div>
-    <div id="side">
+    <div id="sidebar">
       <div id="navbar">
         <ul>
           <li><a href="<?php mc_site_link(); ?>">首页</a></li>
@@ -93,8 +93,8 @@ if (!isset($mc_config)) exit;
       </div>
     </div>
     <div class="clearer"></div>
-    <div id="footer">本站由 <a href="https://github.com/doufox/doupress" target="_blank">DouPress</a> 驱动</div>
   </div>
+  <div id="footer">本站由 <a href="https://github.com/doufox/doupress" target="_blank">DouPress</a> 驱动</div>
 </body>
 
 </html>

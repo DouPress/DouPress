@@ -3,8 +3,11 @@
 define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
 require_once PATH_ROOT . '/core/common.php';
 
-if (!is_dir(PATH_ROOT . '/data/posts/data/'))
+dp_check_login();
+
+if (!is_dir(PATH_ROOT . '/data/posts/data/')) {
   mkdir(PATH_ROOT . '/data/posts/data/');
+}
 
 function load_posts()
 {
@@ -255,9 +258,9 @@ else if ($page_num > $last_page)
 <?php } ?>
 <div class="admin_page_name">文章管理<a class="link_button" href="post-edit.php">撰写文章</a></div>
 <div class="post_mode_link">
-  <a href="?state=publish" class="link_button <?php if ($state == 'publish') echo 'current'; ?>">已发布</a>
-  <a href="?state=draft" class="link_button <?php if ($state == 'draft') echo 'current'; ?>">草稿箱</a>
-  <a href="?state=delete" class="link_button <?php if ($state == 'delete') echo 'current'; ?>">回收站</a>
+  <a href="post.php?state=publish" class="link_button <?php if ($state == 'publish') echo 'current'; ?>">已发布</a>
+  <a href="post.php?state=draft" class="link_button <?php if ($state == 'draft') echo 'current'; ?>">草稿箱</a>
+  <a href="post.php?state=delete" class="link_button <?php if ($state == 'delete') echo 'current'; ?>">回收站</a>
 </div>
 <div class="table_list_tool">
   <span>

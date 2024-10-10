@@ -1,8 +1,8 @@
 <?php
-require 'head.php';
-
 define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
 require_once PATH_ROOT . '/core/common.php';
+
+dp_check_login();
 
 $page_file        = '';
 $page_path        = '';
@@ -82,7 +82,6 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       }
     } else {
       $file_path = PATH_ROOT . '/data/pages/data/' . $page_file . '.dat';
-
       $data = unserialize(file_get_contents($file_path));
 
       $page_old_path  = $data['path'];
@@ -146,6 +145,8 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   $page_can_comment = isset($data['can_comment']) ? $data['can_comment'] : '1';
 }
 ?>
+<?php require 'head.php'; ?>
+
 <script type="text/javascript">
   function empty_textbox_focus(target) {
     if (target.temp_value != undefined && target.value != target.temp_value)

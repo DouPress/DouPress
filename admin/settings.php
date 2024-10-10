@@ -1,42 +1,57 @@
-<?php require 'head.php'; ?>
 <?php
+define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
+require_once PATH_ROOT . '/core/common.php';
+
+dp_check_login();
+
 $display_info = false;
 
+$theme_files = scandir(PATH_ROOT . '/theme');
+$theme_list = array();
+$filter = array('.', '..', '.cvs', '.svn', '.git', '.DS_Store');
+foreach ($theme_files as $file) {
+    if (!is_dir($file) && !in_array($file, $filter)) {
+      $theme_list[] = $file;
+    }
+}
+
 if (isset($_POST['save'])) {
-  $user_name_changed = $_POST['user_name'] != $mc_config['user_name'];
+  $user_name_changed = $_POST['user_name'] != $dp_config['user_name'];
 
-  $mc_config['site_name']    = $_POST['site_name'];
-  $mc_config['site_desc']    = $_POST['site_desc'];
-  $mc_config['site_link']    = $_POST['site_link'];
-  $mc_config['site_theme']   = $_POST['site_theme'];
-  $mc_config['site_route']   = $_POST['site_route'];
-  $mc_config['user_nick']    = $_POST['user_nick'];
-  $mc_config['user_name']    = $_POST['user_name'];
-  $mc_config['comment_code'] = trim($_POST['comment_code']);
+  $dp_config['site_name']    = $_POST['site_name'];
+  $dp_config['site_desc']    = $_POST['site_desc'];
+  $dp_config['site_link']    = $_POST['site_link'];
+  $dp_config['site_theme']   = $_POST['site_theme'];
+  $dp_config['site_route']   = $_POST['site_route'];
+  $dp_config['user_nick']    = $_POST['user_nick'];
+  $dp_config['user_name']    = $_POST['user_name'];
+  $dp_config['comment_code'] = trim($_POST['comment_code']);
 
-  if ($_POST['user_pass'] != '')
-    $mc_config['user_pass'] = $_POST['user_pass'];
+  if ($_POST['user_pass'] != '') {
+    $dp_config['user_pass'] = $_POST['user_pass'];
+  }
 
-  $code = "<?php\n\$mc_config = " . var_export($mc_config, true) . "\n?>";
+  $code = "<?php\n\$dp_config = " . var_export($dp_config, true) . "\n?>";
 
-  file_put_contents('../data/config.php', $code);
+  file_put_contents(PATH_ROOT . '/data/config.php', $code);
 
   if ($_POST['user_pass'] != '' || $user_name_changed) {
-    setcookie('mc_token', md5($mc_config['user_name'] . '_' . $mc_config['user_pass']));
+    setcookie('mc_token', md5($dp_config['user_name'] . '_' . $dp_config['user_pass']));
   }
 
   $display_info = true;
 }
 
-$site_name   = $mc_config['site_name'];
-$site_desc   = $mc_config['site_desc'];
-$site_link   = $mc_config['site_link'];
-$site_theme  = $mc_config['site_theme'];
-$site_route  = @$mc_config['site_route'];
-$user_nick   = $mc_config['user_nick'];
-$user_name   = $mc_config['user_name'];
-$comment_code = isset($mc_config['comment_code']) ? $mc_config['comment_code'] : '';
+$site_name   = $dp_config['site_name'];
+$site_desc   = $dp_config['site_desc'];
+$site_link   = $dp_config['site_link'];
+$site_theme  = $dp_config['site_theme'];
+$site_route  = @$dp_config['site_route'];
+$user_nick   = $dp_config['user_nick'];
+$user_name   = $dp_config['user_name'];
+$comment_code = isset($dp_config['comment_code']) ? $dp_config['comment_code'] : '';
 ?>
+<?php require 'head.php'; ?>
 <form action="<?php echo htmlentities($_SERVER['REQUEST_URI']); ?>" method="post">
   <?php if ($display_info) { ?>
     <div class="updated">设置保存成功！</div>
@@ -63,7 +78,16 @@ $comment_code = isset($mc_config['comment_code']) ? $mc_config['comment_code'] :
     <div class="clear"></div>
     <div class="field">
       <div class="label">网站主题</div>
-      <input class="textbox" type="text" name="site_theme" value="<?php echo htmlspecialchars($site_theme); ?>" />
+      <select name="site_theme" class="textbox">
+      <?php foreach ($theme_list as $theme) { ?>
+        <option
+          value="<?php echo $theme; ?>"
+          <?php if ($theme == $site_theme || empty($site_theme) && $theme == 'default') echo 'selected="selected";' ?>
+        >
+          <?php echo $theme; ?>
+        </option>
+      <?php } ?>
+      </select>
       <div class="info"></div>
     </div>
     <div class="clear"></div>

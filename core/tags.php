@@ -5,9 +5,9 @@ use Michelf\MarkdownExtra;
 
 function mc_site_name($print = true)
 {
-  global $mc_config;
+  global $dp_config;
 
-  $site_name = htmlspecialchars($mc_config['site_name']);
+  $site_name = htmlspecialchars($dp_config['site_name']);
 
   if ($print) {
     echo $site_name;
@@ -19,9 +19,9 @@ function mc_site_name($print = true)
 
 function mc_site_desc($print = true)
 {
-  global $mc_config;
+  global $dp_config;
 
-  $site_desc = htmlspecialchars($mc_config['site_desc']);
+  $site_desc = htmlspecialchars($dp_config['site_desc']);
 
   if ($print) {
     echo $site_desc;
@@ -33,9 +33,9 @@ function mc_site_desc($print = true)
 
 function mc_site_link($print = true)
 {
-  global $mc_config;
+  global $dp_config;
 
-  $site_link = htmlentities($mc_config['site_link']);
+  $site_link = htmlentities($dp_config['site_link']);
 
   if ($print) {
     echo $site_link;
@@ -47,9 +47,9 @@ function mc_site_link($print = true)
 
 function mc_nick_name($print = true)
 {
-  global $mc_config;
+  global $dp_config;
 
-  $nick_name = htmlspecialchars($mc_config['user_nick']);
+  $nick_name = htmlspecialchars($dp_config['user_nick']);
 
   if ($print) {
     echo $nick_name;
@@ -61,8 +61,8 @@ function mc_nick_name($print = true)
 
 function mc_theme_url($path, $print = true)
 {
-  global $mc_config;
-  $url = htmlentities($mc_config['site_link']) . '/theme/' . $mc_config['site_theme'] . '/' . $path;
+  global $dp_config;
+  $url = htmlentities($dp_config['site_link']) . '/theme/' . $dp_config['site_theme'] . '/' . $path;
 
   if ($print) {
     echo $url;
@@ -144,7 +144,7 @@ function mc_has_old()
 
 function mc_goto_old($text)
 {
-  global $mc_get_type, $mc_get_name, $mc_page_num, $mc_config;
+  global $mc_get_type, $mc_get_name, $mc_page_num, $dp_config;
   echo '<a href="';
   if ($mc_get_type == 'tag') {
     mc_get_url('tag', htmlspecialchars($mc_get_name));
@@ -160,7 +160,7 @@ function mc_goto_old($text)
 
 function mc_goto_new($text)
 {
-  global $mc_get_type, $mc_get_name, $mc_page_num, $mc_config;
+  global $mc_get_type, $mc_get_name, $mc_page_num, $dp_config;
   echo '<a href="';
   if ($mc_get_type == 'tag') {
     mc_get_url('tag', htmlspecialchars($mc_get_name));
@@ -176,7 +176,7 @@ function mc_goto_new($text)
 
 function mc_date_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
 {
-  global $mc_dates, $mc_config;
+  global $mc_dates, $dp_config;
 
   if (isset($mc_dates)) {
     $date_count = count($mc_dates);
@@ -200,7 +200,7 @@ function mc_date_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
 
 function mc_tag_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
 {
-  global $mc_tags, $mc_config;
+  global $mc_tags, $dp_config;
 
   if (isset($mc_tags)) {
     $tag_count = count($mc_tags);
@@ -289,7 +289,7 @@ function mc_the_time($print = true)
 
 function mc_the_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_link = true)
 {
-  global $mc_post, $mc_config;
+  global $mc_post, $dp_config;
 
   $tags = $mc_post['tags'];
 
@@ -343,7 +343,7 @@ function mc_the_content($print = true)
 
 function mc_the_link()
 {
-  global $mc_post_id, $mc_post, $mc_config;
+  global $mc_post_id, $mc_post, $dp_config;
 
   echo '<a href="';
   mc_the_url();
@@ -354,7 +354,7 @@ function mc_the_link()
 
 function mc_the_url($print = true)
 {
-  global $mc_post_id, $mc_post, $mc_config;
+  global $mc_post_id, $mc_post, $dp_config;
   $url = mc_get_url('post', $mc_post_id);
 
   if ($print) {
@@ -374,7 +374,7 @@ function mc_can_comment()
 
 function mc_comment_code()
 {
-  global $mc_config;
+  global $dp_config;
 
-  echo isset($mc_config['comment_code']) ? $mc_config['comment_code'] : '';
+  echo isset($dp_config['comment_code']) ? $dp_config['comment_code'] : '';
 }

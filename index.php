@@ -4,8 +4,8 @@ define('PATH_ROOT', dirname(__FILE__)); // 定义根路径
 require_once PATH_ROOT . '/core/common.php';
 
 $mc_post_per_page = 10;
-global $mc_config;
-if (@$mc_config['site_route'] == 'path') {
+global $dp_config;
+if (@$dp_config['site_route'] == 'path') {
   // print_r(var_export($_SERVER, true));
   // path 模式 /post/abc
   $qs = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
@@ -170,5 +170,5 @@ if ($mc_get_type == 'rss') {
 } else if ($mc_get_type == 'xml') {
   require PATH_ROOT . '/core/xml.php';
 } else {
-  require PATH_ROOT . '/theme/' . $mc_config['site_theme'] . '/index.php';
+  require PATH_ROOT . '/theme/' . $dp_config['site_theme'] . '/index.php';
 }

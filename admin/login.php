@@ -5,16 +5,16 @@ require_once dirname(dirname(__FILE__)).'/data/config.php';
 if (isset($_COOKIE['mc_token'])) {
   $token = $_COOKIE['mc_token'];
 
-  if ($token == md5($mc_config['user_name'].'_'.$mc_config['user_pass'])) {
-    Header("Location: post.php");
+  if ($token == md5($dp_config['user_name'].'_'.$dp_config['user_pass'])) {
+    Header("Location: index.php");
   }
 }
 
 if (isset($_POST['login'])) {
-  if ($_POST['user'] == $mc_config['user_name'] 
-  && $_POST['pass'] == $mc_config['user_pass']) {
-    setcookie('mc_token', md5($mc_config['user_name'].'_'.$mc_config['user_pass']));
-    Header("Location: post.php");
+  if ($_POST['user'] == $dp_config['user_name'] 
+  && $_POST['pass'] == $dp_config['user_pass']) {
+    setcookie('mc_token', md5($dp_config['user_name'].'_'.$dp_config['user_pass']));
+    Header("Location: index.php");
   } else {
     $display_message = '账号或密码错误';
   }

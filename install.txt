@@ -128,7 +128,7 @@ if (!$install_failed) {
     echo '<br/>';
     echo "创建配置文件";
     if (!@file_put_contents('data/config.php',
-      "<?php \$mc_config = array(".
+      "<?php \$dp_config = array(".
       "'version'      => '1.1.3',".
       "'site_link'    => '{$_POST['sitelink']}',".
       "'site_name'    => '{$_POST['sitename']}',".
@@ -148,8 +148,8 @@ if (!$install_failed) {
     echo '<br/>';
     echo "升级配置文件";
     require 'data/config.php';
-    $mc_config['version'] = '/*DOUPRESS_VERSION*/';
-    if (!@file_put_contents('data/config.php', "<?php \$mc_config = ".var_export($mc_config, true)."; ?>")) {
+    $dp_config['version'] = '/*DOUPRESS_VERSION*/';
+    if (!@file_put_contents('data/config.php', "<?php \$dp_config = ".var_export($dp_config, true)."; ?>")) {
       $install_failed = true;
       echo '[<span style="color:red;">失败</span>]';
     }

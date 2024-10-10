@@ -1,4 +1,4 @@
-body { font-family:"Microsoft YaHei",Segoe UI,Tahoma,Arial,Verdana,sans-serif; font-size:14px; width:960px; margin:0 auto; background:#FFF; }
+body { font-family:"Microsoft YaHei",Segoe UI,Tahoma,Arial,Verdana,sans-serif; font-size:14px; margin:0 auto; background:#FFF; }
 a { color:#44f; text-decoration:none; }
 a:hover { color:#bc0000; }
 p { padding:0; margin:16px 0; line-height:20px; }
@@ -10,11 +10,11 @@ h1,h2,h3,h4,h5,h6,b,strong { color:#3f3f3f; }
 #sitename { font-size:28px; color:#333; text-shadow: 0 1px 0 #fff; }
 #sitename a { color:#3f3f3f; }
 #sitename a:hover { color:#44f; }
-#header { margin:40px 0 40px 0; }
-#side { float:left; width:150px; }
-#navbar { margin-top:30px; }
+#header { padding: 30px 0; }
+#sidebar { float:left; width:150px; }
+#navbar { margin-top: 0; }
 #navbar ul, #navbar li { list-style:none; margin:0; padding:0; }
-#navbar a { color:#44F; font-size:18px; display:block; padding-bottom:20px; }
+#navbar a { color:#44F; font-size:18px; display:block; padding:10px 0; }
 #navbar a:hover { color:#bc0000; }
 #page_info { font-size:16px; margin-bottom:20px; color:#888; }
 #page_info span { padding:4px; background:#bc0000; color:#fff; border-radius:3px; }
@@ -45,7 +45,7 @@ h1,h2,h3,h4,h5,h6,b,strong { color:#3f3f3f; }
 
 #page_bar { margin-top:20px; }
 
-#footer { text-align:center; margin:30px 0; color:#888; }
+#footer { margin-top: 20px; text-align:center; padding:30px 0; color:#888; background-color: aliceblue;}
 pre, pre.code, pre.prettyprint { margin-bottom:18px; padding:10px !important; font-size:13px; background:#fff; color:#000; font-family: monospace; border:solid 1px #afafaf; overflow-x:scroll;}
 pre * { font-family: monospace; }
 

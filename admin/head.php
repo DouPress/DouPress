@@ -3,19 +3,19 @@ ini_set("display_errors", "On");
 error_reporting(E_ALL);
 require_once '../data/config.php';
 
-if (isset($_COOKIE['mc_token'])) {
-  $token = $_COOKIE['mc_token'];
+// if (isset($_COOKIE['mc_token'])) {
+//   $token = $_COOKIE['mc_token'];
 
-  if ($token != md5($mc_config['user_name'] . '_' . $mc_config['user_pass'])) {
-    Header("Location:index.php");
-    exit;
-  }
-} else {
-  Header("Location:index.php");
-  exit;
-}
+//   if ($token != md5($dp_config['user_name'] . '_' . $dp_config['user_pass'])) {
+//     Header("Location:index.php");
+//     exit;
+//   }
+// } else {
+//   Header("Location:index.php");
+//   exit;
+// }
 
-$page_file = basename($_SERVER['PHP_SELF']);
+$pagefile = basename($_SERVER['PHP_SELF']);
 
 function shorturl($input)
 {
@@ -77,11 +77,11 @@ function post_sort($a, $b)
 
 <body>
   <div id="menu">
-    <h3 id="menu_title"><a href="index.php"><?php echo htmlspecialchars($mc_config['site_name']); ?></a></h3>
+    <h3 id="menu_title"><a href="index.php"><?php echo htmlspecialchars($dp_config['site_name']); ?></a></h3>
     <ul>
-      <li <?php echo $page_file == 'post.php' || $page_file == 'post-edit.php' ? 'class="current"' : ''; ?>><a href="post.php">文章</a></li>
-      <li <?php echo $page_file == 'page.php' || $page_file == 'page-edit.php' ? 'class="current"' : ''; ?>><a href="page.php">页面</a></li>
-      <li <?php echo $page_file == 'config.php' ? 'class="current"' : ''; ?>><a href="config.php">设置</a></li>
+      <li <?php echo $pagefile == 'post.php' || $pagefile == 'post-edit.php' ? 'class="current"' : ''; ?>><a href="post.php">文章</a></li>
+      <li <?php echo $pagefile == 'page.php' || $pagefile == 'page-edit.php' ? 'class="current"' : ''; ?>><a href="page.php">页面</a></li>
+      <li <?php echo $pagefile == 'settings.php' ? 'class="current"' : ''; ?>><a href="settings.php">设置</a></li>
       <li><a href="logout.php">登出</a></li>
     </ul>
     <div class="clear"></div>

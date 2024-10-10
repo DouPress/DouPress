@@ -14,8 +14,8 @@ select { border:solid 1px #e0e0e0; padding:2px; border-radius:3px 3px 3px 3px; b
 #menu ul, #menu li { list-style:none; margin:0; padding:0; }
 #menu ul { float:right; }
 #menu li { float:left; }
-#menu ul a { font-size:16px; display:block; padding:10px 24px; }
-#menu .current a, #menu li a:hover { color:#cc0000; border-bottom:2px solid #cc0000; }
+#menu ul a { font-size:16px; display:block; padding:10px 24px; border-bottom: 2px solid transparent;}
+#menu .current a, #menu li a:hover { color:#cc0000; border-bottom-color:#cc0000; }
 
 #submenu { border-bottom:solid 1px #e0e0e0; }
 #submenu ul, #submenu li { list-style:none; margin:0; padding:0; }
@@ -63,8 +63,9 @@ div.updated, div.error { border-radius:3px; border-style:solid; border-width:1px
 .small_form .info { color:#666; font-size:12px; padding-top:4px; }
 .small_form .button { text-align: center; }
 
-.small_form2 .label { float:left; width:150px; padding:4px 0 0 0; }
+.small_form2 .label { float:left; width:100px; padding:4px 0 0 0; }
 .small_form2 .textbox { width:300px; float:left; }
+.small_form2 select.textbox { width:310px; float:left; }
 .small_form2 .field_body { width:300px; }
 .small_form2 .info { width:300px; float:left; margin-left:2px; }
 
