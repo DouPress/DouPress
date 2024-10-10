@@ -17,32 +17,39 @@ if (isset($_POST['login'])) {
 ?>
 <?php require 'head.php' ?>
 <div>
-  <div class="admin_page_name">页面管理
+  <div>
+    <div class="admin_page_name">网站:
+      <a href="<?php mc_site_link(); ?>" class="link_button" target="_blank">首页</a>
+      <a href="<?php mc_get_url('archive'); ?>" class="link_button" target="_blank">存档</a>
+      <a href="<?php mc_get_url('rss'); ?>" class="link_button" target="_blank">订阅</a>
+    </div>
+  </div>
+  <div class="admin_page_name">页面:
+    <a href="page-edit.php" class="link_button">创建页面</a>
     <a href="page.php" class="link_button">所有页面</a>
-    <a href="page-edit.php" class="link_button">+创建页面</a>
     <a href="page.php?state=publish" class="link_button">已发布</a>
     <a href="page.php?state=draft" class="link_button">草稿箱</a>
     <a href="page.php?state=delete" class="link_button">回收站</a>
   </div>
 </div>
 <div>
-  <div class="admin_page_name">文章管理
-    <a href="post.php" class="link_button">所有文章</a>
+  <div class="admin_page_name">文章:
     <a href="post-edit.php" class="link_button">撰写文章</a>
+    <a href="post.php" class="link_button">所有文章</a>
     <a href="post.php?state=publish" class="link_button">已发布</a>
     <a href="post.php?state=draft" class="link_button">草稿箱</a>
     <a href="post.php?state=delete" class="link_button">回收站</a>
   </div>
 </div>
 <div>
-  <div class="admin_page_name">系统管理
-    <a href="<?php mc_site_link(); ?>" class="link_button" target="_blank">首页</a>
-    <a href="<?php mc_get_url('archive'); ?>" class="link_button" target="_blank">存档</a>
-    <a href="<?php mc_get_url('rss'); ?>" class="link_button" target="_blank">订阅</a>
+  <div class="admin_page_name">系统:
     <a href="settings.php" class="link_button">设置</a>
     <a href="logout.php" class="link_button">退出登录</a>
   </div>
 </div>
 <hr />
-<div>DouPress v<?php echo $dp_config['version'];?></div>
+<div>
+  DouPress v<?php echo $dp_config['version']; ?>
+  源码：<a href="https://github.com/doupress" class="link_button" target="_blank">Github</a>
+</div>
 <?php require 'foot.php' ?>

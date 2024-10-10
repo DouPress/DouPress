@@ -99,7 +99,7 @@ $comment_code = isset($dp_config['comment_code']) ? $dp_config['comment_code'] :
         <option value="default" <?php if (empty($site_route) || $site_route == 'default') echo 'selected="selected"'; ?>>默认形式（domain.com/?post/abcdef）</option>
         <option value="path" <?php if ($site_route == 'path') echo 'selected="selected"'; ?>>路径模式（domain.com/post/abcdef）</option>
       </select>
-      <div class="info">路径模式需要服务端支持</div>
+      <div class="info">注意：路径模式需要服务端支持</div>
     </div>
     <div class="clear"></div>
     <div class="field">
