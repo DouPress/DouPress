@@ -1,7 +1,6 @@
 <?php
 
-define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
-require_once PATH_ROOT . '/core/common.php';
+require_once 'common.php';
 
 dp_check_login();
 
@@ -320,7 +319,7 @@ else if ($page_num > $last_page)
         <tr<?php if ($i % 2 == 0) echo ' class="alt"'; ?>>
           <td><input type="checkbox" name="ids" value="<?php echo $post_id; ?>" /></td>
           <td>
-            <a class="row_name" href="post-edit.php?id=<?php echo $post_id; ?>"><?php echo htmlspecialchars($post['title']); ?></a>
+            <a class="row_name link" href="post-edit.php?id=<?php echo $post_id; ?>"><?php echo htmlspecialchars($post['title']); ?></a>
             <div class="row_tool">
               <a class="link_button" href="post-edit.php?id=<?php echo $post_id; ?>">编辑</a>
               <?php if ($state == 'delete') { ?>
@@ -336,9 +335,9 @@ else if ($page_num > $last_page)
             $tags = $post['tags'];
             $tag_count = count($tags);
             for ($j = 0; $j < $tag_count; $j++) { $tag = $tags[$j]; ?>
-              <a href="?state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&tag=<?php echo urlencode($tag); ?>">
+              <a class="link" href="?state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&tag=<?php echo urlencode($tag); ?>">
                 <?php echo htmlspecialchars($tag); ?></a>
-              <?php if ($j < $tag_count - 1) echo ',&nbsp;';}?>
+              <?php if ($j < $tag_count - 1) echo ',';}?>
           </td>
           <td><?php echo htmlspecialchars($post['date']); ?></td>
           </tr>

@@ -17,11 +17,12 @@ function mc_get_url($mc_get_type, $mc_get_name = '', $path = '', $print = true)
 {
   global $dp_config;
   $r = @$dp_config['site_route'] == 'path' ? '/' : '/?';
-  $t = empty($mc_get_type) ? '' : $mc_get_type;
-  $n = empty($mc_get_name) ? '' : '/' . $mc_get_name;
+  $t = empty($mc_get_type) ? '' : $mc_get_type . '/';
+  $n = empty($mc_get_name) ? '' : $mc_get_name;
 
   $url = $r . $t . $n;
   $url = str_replace('//', '/', $url);
+  $url = rtrim($url, '/');
   $url = $dp_config['site_link'] . $url;
 
   if ($print) {
@@ -32,17 +33,3 @@ function mc_get_url($mc_get_type, $mc_get_name = '', $path = '', $print = true)
   return $url;
 }
 
-function dp_check_login()
-{
-  if (isset($_COOKIE['mc_token'])) {
-    $token = $_COOKIE['mc_token'];
-    global $dp_config;
-    if ($token != md5($dp_config['user_name'] . '_' . $dp_config['user_pass'])) {
-      Header("Location:login.php");
-      exit;
-    }
-  } else {
-    Header("Location:login.php");
-    exit;
-  }
-}

@@ -16,7 +16,7 @@
   <language>zh_CN</language>
   <sy:updatePeriod>hourly</sy:updatePeriod>
   <sy:updateFrequency>1</sy:updateFrequency>
-  <generator>https://github.com/doufox/doupress</generator>
+  <generator>DouPress</generator>
 <?php while (mc_next_post()) { ?>
     <item>
       <title><?php mc_the_title(); ?></title>

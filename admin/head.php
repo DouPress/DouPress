@@ -16,45 +16,8 @@ require_once '../data/config.php';
 // }
 
 $pagefile = basename($_SERVER['PHP_SELF']);
+// echo $pagefile;exit;
 
-function shorturl($input)
-{
-  $base32 = array(
-    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
-    'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
-    'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
-    'y', 'z', '0', '1', '2', '3', '4', '5'
-  );
-
-  $hex = md5('prefix' . $input . 'surfix' . time());
-  $hexLen = strlen($hex);
-  $subHexLen = $hexLen / 8;
-  $output = array();
-
-  for ($i = 0; $i < $subHexLen; $i++) {
-    $subHex = substr($hex, $i * 8, 8);
-    $int = 0x3FFFFFFF & (1 * hexdec('0x' . $subHex));
-    $out = '';
-    for ($j = 0; $j < 6; $j++) {
-      $val = 0x0000001F & $int;
-      $out .= $base32[$val];
-      $int = $int >> 5;
-    }
-    $output[] = $out;
-  }
-  return $output;
-}
-
-function post_sort($a, $b)
-{
-  $a_date = $a['date'];
-  $b_date = $b['date'];
-
-  if ($a_date != $b_date)
-    return $a_date > $b_date ? -1 : 1;
-
-  return $a['time'] > $b['time'] ? -1 : 1;
-}
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -71,13 +34,15 @@ function post_sort($a, $b)
   <meta name="keywords" content="DouPress" />
   <meta name="author" content="上海程江科技中心" />
   <meta name="copyright" content="程江® 程江科技 CROGRAM" />
-  <link rel="icon" href="favicon.ico" />
+  <link rel="icon" href="../favicon.ico" />
   <link href="style.css" rel="stylesheet" />
 </head>
 
 <body>
   <div id="menu">
-    <h3 id="menu_title"><a href="index.php"><?php echo htmlspecialchars($dp_config['site_name']); ?></a></h3>
+    <h3 id="menu_title">
+      <a href="index.php" class="link"><?php echo htmlspecialchars($dp_config['site_name']); ?></a>
+    </h3>
     <ul>
       <li <?php echo $pagefile == 'post.php' || $pagefile == 'post-edit.php' ? 'class="current"' : ''; ?>><a href="post.php">文章</a></li>
       <li <?php echo $pagefile == 'page.php' || $pagefile == 'page-edit.php' ? 'class="current"' : ''; ?>><a href="page.php">页面</a></li>

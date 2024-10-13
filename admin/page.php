@@ -1,12 +1,12 @@
 <?php
 
-define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
-require_once PATH_ROOT . '/core/common.php';
+require_once 'common.php';
 
 dp_check_login();
 
-if (!is_dir(PATH_ROOT . '/data/pages/data/'))
+if (!is_dir(PATH_ROOT . '/data/pages/data/')) {
   mkdir(PATH_ROOT . '/data/pages/data/');
+}
 
 function load_pages()
 {
@@ -134,10 +134,11 @@ for ($i = $page_count - 1; $i >= 0; $i--) {
 
 $date_array = array_unique($date_array);
 
-if (isset($_GET['date']))
+if (isset($_GET['date'])) {
   $filter_date = $_GET['date'];
-else
+} else {
   $filter_date = '';
+}
 
 $mc_pages2 = array();
 
@@ -158,30 +159,32 @@ $page_count = count($page_ids);
 
 $last_page = ceil($page_count / 10);
 
-if (isset($_GET['page']))
+if (isset($_GET['page'])) {
   $page_num = $_GET['page'];
-else
+} else {
   $page_num = 1;
+}
 
-if ($page_num > 1)
+if ($page_num > 1) {
   $prev_page = $page_num - 1;
-else
+} else {
   $prev_page = 1;
-
-if ($page_num < $last_page)
+}
+if ($page_num < $last_page) {
   $next_page = $page_num + 1;
-else
+} else {
   $next_page = $last_page;
-
-if ($page_num < $last_page)
+}
+if ($page_num < $last_page) {
   $next_page = $page_num + 1;
-else
+} else {
   $next_page = $last_page;
-
-if ($page_num < 0)
+}
+if ($page_num < 0) {
   $page_num = 1;
-else if ($page_num > $last_page)
+} else if ($page_num > $last_page) {
   $page_num = $last_page;
+}
 ?>
 <?php require 'head.php' ?>
 <script type="text/javascript">
@@ -244,7 +247,10 @@ else if ($page_num > $last_page)
 <?php if (isset($message)) { ?>
   <div class="updated"><?php echo $message; ?></div>
 <?php } ?>
-<div class="admin_page_name">页面管理<a class="link_button" href="page-edit.php">创建页面</a></div>
+<div class="admin_page_name">
+  页面管理
+  <a class="link_button" href="page-edit.php">创建页面</a>
+</div>
 <div class="post_mode_link">
   <a href="?state=publish" class="link_button <?php if ($state == 'publish') echo 'current'; ?>">已发布</a>
   <a href="?state=draft" class="link_button <?php if ($state == 'draft') echo 'current'; ?>">草稿箱</a>
@@ -314,16 +320,7 @@ else if ($page_num > $last_page)
               <a class="link_button" href="<?php echo mc_get_url('', $page_id);?>" target="_blank">查看</a>
             </div>
           </td>
-          <td><?php
-              echo $page_id;
-              // $paths = explode('/', $page_id);
-              // $paths_count = count($paths);
-              // for ($j = 0; $j < $paths_count - 1; $j++) {
-              //   echo '－';
-              // }
-              // echo htmlspecialchars($paths[$paths_count - 1]);
-              ?>
-          </td>
+          <td>/<?php echo $page_id; ?></td>
           <td><?php echo htmlspecialchars($page['date']); ?></td>
           </tr>
         <?php } ?>

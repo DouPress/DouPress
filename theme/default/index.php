@@ -23,7 +23,9 @@ if (!isset($dp_config)) exit;
 <body>
   <div id="main">
     <div id="header">
-      <div id="sitename"><a href="<?php mc_site_link(); ?>"><?php mc_site_name(); ?></a></div>
+      <div id="sitename">
+        <a href="<?php mc_site_link(); ?>" class="link"><?php mc_site_name(); ?></a>
+      </div>
     </div>
     <div id="content">
       <div id="content_box">
@@ -71,10 +73,10 @@ if (!isset($dp_config)) exit;
             <?php   } ?>
             <div id="page_bar">
               <?php if (mc_has_new()) { ?>
-                <span class="prev" style="float:left;"><?php mc_goto_new('&larr;较新文章'); ?></span>
+                <span class="prev link" style="float:left;"><?php mc_goto_new('&larr; 较新文章'); ?></span>
               <?php   } ?>
               <?php if (mc_has_old()) { ?>
-                <span class="next" style="float:right;"><?php mc_goto_old('早期文章&rarr;'); ?></span>
+                <span class="next link" style="float:right;"><?php mc_goto_old('早期文章 &rarr;'); ?></span>
               <?php   } ?>
               <div class="clearer"></div>
             </div>
@@ -86,17 +88,17 @@ if (!isset($dp_config)) exit;
     <div id="sidebar">
       <div id="navbar">
         <ul>
-          <li><a href="<?php mc_site_link(); ?>">首页</a></li>
-          <li><a href="<?php mc_get_url('archive'); ?>">存档</a></li>
-          <li><a href="<?php mc_get_url('rss'); ?>">订阅</a></li>
+          <li><a href="<?php mc_site_link(); ?>" class="link">首页</a></li>
+          <li><a href="<?php mc_get_url('archive'); ?>" class="link">存档</a></li>
+          <li><a href="<?php mc_get_url('rss'); ?>" class="link">订阅</a></li>
         </ul>
       </div>
     </div>
     <div class="clearer"></div>
-  </div>
-  <div id="footer">
-    <div>本站由 <a href="https://github.com/doufox/doupress" target="_blank">DouPress</a> 驱动</div>
-    <?php if (!empty($dp_config['site_icpno'])) { ?><p><a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank"><?php echo $dp_config['site_icpno'];?></a></p><?php } ?>
+    <div id="footer">
+      <div>本站由 <a href="https://github.com/doufox/doupress" class="link" target="_blank">DouPress</a> 驱动</div>
+      <?php if (!empty($dp_config['site_icpno'])) { ?><p><a href="https://beian.miit.gov.cn/#/Integrated/index" class="link" target="_blank"><?php echo $dp_config['site_icpno'];?></a></p><?php } ?>
+    </div>
   </div>
 </body>
 

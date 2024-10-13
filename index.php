@@ -5,42 +5,52 @@ require_once PATH_ROOT . '/core/common.php';
 
 $mc_post_per_page = 10;
 global $dp_config;
-if (@$dp_config['site_route'] == 'path') {
-  // print_r(var_export($_SERVER, true));
-  // path 模式 /post/abc
-  $qs = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-  $qs = ltrim($qs, '/');
-} else {
-  // 参数模式/?post/abc
-  $qs = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
-  // 移除之后一个/
-  // $qs = rtrim($qs, '/');
-}
+// 处理URL
+// print_r(var_export($_SERVER, true));
+// exit;
+// 移除文件名
+$subpath = str_replace('/' . basename(__FILE__), '', $_SERVER['SCRIPT_NAME']);
+// 完整的访问路径
+$fullpath = str_replace('/' . basename(__FILE__), '', $_SERVER['REQUEST_URI']);
+// 移除参数
+$fullpath = str_replace($_SERVER['QUERY_STRING'], '', $fullpath);
 
+// 移除子路径
+$route = preg_replace('/^' . preg_quote($subpath, '/') . '/', '', $fullpath, 1);
+// 参数模式移除?
+$route = preg_replace('/^\/\?/', '/', $route, 1);
+// if (@$dp_config['site_route'] == 'path') {
+//   // path 模式 /post/abc
+// } else {
+//   // 参数模式/?post/abc
+//   $route = preg_replace('/^\/\?/', '/', $route, 1);
+// }
+
+// 分配路由
 $mc_get_type = '';
-if (preg_match('|^post/([a-z0-5]{6})$|', rtrim($qs, '/'), $matches)) {
+if (preg_match('|^/post/([a-z0-5]{6})$|', rtrim($route, '/'), $matches)) {
   $mc_get_type = 'post';
   $mc_get_name = $matches[1];
-} else if (preg_match('|^tag/([^/]+)(/\?page=([0-9]+)){0,1}$|', rtrim($qs, '/'), $matches)) {
+} else if (preg_match('|^/tag/([^/]+)(/\?page=([0-9]+)){0,1}$|', rtrim($route, '/'), $matches)) {
   $mc_get_type = 'tag';
   $mc_get_name = isset($matches[1]) ? urldecode($matches[1]) : '';
   $mc_page_num = isset($matches[2]) ? $matches[3] : 1;
-} else if (preg_match('|^date/([0-9]{4}-[0-9]{2})(/\?page=([0-9]+)){0,1}$|', rtrim($qs, '/'), $matches)) {
+} else if (preg_match('|^/date/([0-9]{4}-[0-9]{2})(/\?page=([0-9]+)){0,1}$|', rtrim($route, '/'), $matches)) {
   $mc_get_type = 'date';
   $mc_get_name = urldecode($matches[1]);
   $mc_page_num = isset($matches[2]) ? $matches[3] : 1;
-} else if (preg_match('|^archive$|', rtrim($qs, '/'), $matches)) {
+} else if (preg_match('|^/archive$|', rtrim($route, '/'), $matches)) {
   $mc_get_type = 'archive';
-} else if (rtrim($qs, '/') == 'rss') {
+} else if (rtrim($route, '/') == '/rss') {
   $mc_get_type = 'rss';
   $mc_get_name = '';
   $mc_page_num = isset($_GET['page']) ? $_GET['page'] : 1;
-} else if (rtrim($qs, '/') == 'xml') {
+} else if (rtrim($route, '/') == '/xml') {
   $mc_get_type = 'xml';
   $mc_get_name = '';
   $mc_page_num = isset($_GET['page']) ? $_GET['page'] : 1;
   // } else if (preg_match('|^(([-a-zA-Z0-5]+/)+)$|', $qs, $matches)) {
-} else if (preg_match('|^(([-a-zA-Z0-5/])+)$|', $qs, $matches)) {
+} else if (preg_match('|^/(([-a-zA-Z0-5/])+)$|', $route, $matches)) {
   // } else if (preg_match('|^([^/]+)$|', $qs, $matches)) {
   $mc_get_type = 'page';
   $mc_get_name = rtrim($matches[1], '/');
@@ -51,12 +61,13 @@ if (preg_match('|^post/([a-z0-5]{6})$|', rtrim($qs, '/'), $matches)) {
   //   $mc_get_name = isset($matches[1]) ? $matches[1] : 'index';
   //   // $mc_get_action = isset($matches[2]) ? $matches[2] : '';
   //   // echo $mc_get_name;exit;
-} else if (empty($qs)) {
+// } else {
+} else if (empty($route) || $route == '/') {
   $mc_get_type = 'index';
   $mc_get_name = '';
   $mc_page_num = isset($_GET['page']) ? $_GET['page'] : 1;
 }
-
+// 加载数据
 if ($mc_get_type == 'post') {
   if (empty($mc_get_name)) {
     app_404();
@@ -163,8 +174,16 @@ if ($mc_get_type == 'post') {
   require 'data/posts/index/publish.php';
   $mc_post_ids = array_keys($mc_posts);
   $mc_post_count = count($mc_post_ids);
+} else if ($mc_get_type == 'xml') {
+  require 'data/posts/index/publish.php';
+  $mc_post_ids = array_keys($mc_posts);
+  $mc_post_count = count($mc_post_ids);
+} else if ($mc_get_type == 'rss') {
+  require 'data/posts/index/publish.php';
+  $mc_post_ids = array_keys($mc_posts);
+  $mc_post_count = count($mc_post_ids);
 }
-
+// 加载视图
 if (in_array($mc_get_type, array('index', 'post', 'tag', 'date', 'archive', 'page'))) {
   require PATH_ROOT . '/theme/' . $dp_config['site_theme'] . '/index.php';
 } else if ($mc_get_type == 'xml') {

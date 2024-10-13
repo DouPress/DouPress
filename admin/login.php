@@ -34,7 +34,7 @@ if (isset($_POST['login'])) {
   <meta name="keywords" content="DouPress" />
   <meta name="author" content="上海程江科技中心" />
   <meta name="copyright" content="程江® 程江科技 CROGRAM" />
-  <link rel="icon" href="favicon.ico" />
+  <link rel="icon" href="../favicon.ico" />
   <style type="text/css">
     * { font-family:"Microsoft YaHei",Segoe UI,Tahoma,Arial,Verdana,sans-serif; }
     body { background:#f9f9f9; font-size:14px; }
@@ -44,14 +44,13 @@ if (isset($_POST['login'])) {
     #login_form_box { padding:16px; }
     #login_form .label { font-weight:bold; padding-bottom:6px; color:#333; }
     #login_form .textbox { border:1px solid #e0e0e0; padding:6px; margin-bottom:20px; border-radius:3px 3px 3px 3px; }
-    #login_form .textbox input { border:none; padding:0; font-size:24px; width:100%; color:#333; outline: none; }
+    #login_form .textbox input { border:none; padding:0; font-size: 20px; width:100%; color:#333; outline: none; }
     #login_form .bottom { text-align:center; }
     #login_form .button { padding:4px 16px; font-size:14px; }
-    #login_footer { text-align:center; margin: 10px; color: #333; }
-
+    #footer { text-align:center; margin: 10px; color: #333; }
+    #footer a { color: #333; }
     .display-message { border-radius:3px; border-style:solid; border-width:1px; }
     .display-message { background-color: #FFFFE0; border-color: #E6DB55; padding:8px; margin: 10px 0; }
-
   </style>
 </head>
 <body>
@@ -69,7 +68,7 @@ if (isset($_POST['login'])) {
         <div class="bottom"><input name="login" type="submit" value="登录" class="button" /></div>
       </div>
     </div>
-    <div id="login_footer">Powered by <a href="http://doupress.com" target="_blank">DouPress</a></div>
+    <div id="footer">Powered by <a href="http://doupress.com" target="_blank">DouPress</a></div>
   </form>
 </body>
 </html>

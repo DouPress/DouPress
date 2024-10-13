@@ -1,6 +1,6 @@
 <?php
-define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
-require_once PATH_ROOT . '/core/common.php';
+// define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
+require_once 'common.php';
 
 dp_check_login();
 
