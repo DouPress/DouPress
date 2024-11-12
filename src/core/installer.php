@@ -7,7 +7,7 @@
 * {padding:0;margin:0;font-family:"Microsoft YaHei",Segoe UI,Tahoma,Arial,Verdana,sans-serif;}
 html,body { height:100%; }
 body { background:#f9f9f9; color:#2d2d2d; font-size:14px; }
-#main { position:absolute; left:50%; top:50%; }
+#main { width:400px; margin: 20px auto 0; }
 #mainbox { background-color: #fff; border: 1px solid #e5e5e5; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .05); -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .05); box-shadow: 0 1px 2px rgba(0, 0, 0, .05); padding:20px; margin-bottom:20px; }
 .btn { display: inline-block;padding: 4px 12px;margin-bottom: 0;font-size: 15px;line-height: 21px;color: #434848;text-align: center;text-shadow: 0 1px 1px rgba(255,255,255,0.75);vertical-align: middle;cursor: pointer;background-color: #f8f8f8;background-image: -moz-linear-gradient(top,#fff,#eee);background-image: -webkit-gradient(linear,0 0,0 100%,from(#fff),to(#eee));background-image: -webkit-linear-gradient(top,#fff,#eee);background-image: -o-linear-gradient(top,#fff,#eee);background-image: linear-gradient(to bottom,#fff,#eee);background-repeat: repeat-x;border: 1px solid #ccc;border-color: #eee #eee #c8c8c8;border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);border-bottom-color: #b3b3b3;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff',endColorstr='#ffeeeeee',GradientType=0);filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);-webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);-moz-box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05); }
 .btn-primary { color: #fff;text-shadow: 0 -1px 0 rgba(0,0,0,0.25);background-color: #0aaaf1;background-image: -moz-linear-gradient(top,#11b6ff,#09d);background-image: -webkit-gradient(linear,0 0,0 100%,from(#11b6ff),to(#09d));background-image: -webkit-linear-gradient(top,#11b6ff,#09d);background-image: -o-linear-gradient(top,#11b6ff,#09d);background-image: linear-gradient(to bottom,#11b6ff,#09d);background-repeat: repeat-x;border-color: #09d #09d #006491;border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff11b6ff',endColorstr='#ff0099dd',GradientType=0);filter: progid:DXImageTransform.Microsoft.gradient(enabled=false); }
@@ -17,36 +17,36 @@ label { font-weight:bold; color:#333; font-size:12px; }
 .textbox { border:1px solid #e0e0e0; padding:6px; margin:6px 0 20px; border-radius:3px 3px 3px 3px; }
 </style>
 <script type="text/javascript">
-function vMiddle(inner){
-	var outer = (inner.parentNode.tagName == 'body') ?  document.documentElement : inner.parentNode;
+// function vMiddle(inner){
+//   var outer = (inner.parentNode.tagName == 'body') ?  document.documentElement : inner.parentNode;
 
-	var innerHeight = inner.offsetHeight,
-		innerWidth = inner.offsetWidth,
-		outerHeight = outer.offsetHeight ,
-		outerWidth = outer.offsetWidth ;
+//   var innerHeight = inner.offsetHeight,
+//     innerWidth = inner.offsetWidth,
+//     outerHeight = outer.offsetHeight ,
+//     outerWidth = outer.offsetWidth ;
 
-	(outerHeight > innerHeight) ? (function(){
-		inner.style.marginTop = -innerHeight/2 + "px" ;
-		inner.style.top = "50%";
-	})()
-	: (function(){
-		inner.style.marginTop = 0;
-		inner.style.top = 0;
-	})();
+//   (outerHeight > innerHeight) ? (function(){
+//     inner.style.marginTop = -innerHeight/2 + "px" ;
+//     inner.style.top = "50%";
+//   })()
+//   : (function(){
+//     inner.style.marginTop = 0;
+//     inner.style.top = 0;
+//   })();
 
-	(outerWidth > innerWidth) ?  (function(){
-		inner.style.marginLeft = -innerWidth/2 + "px" ;
-		inner.style.left = "50%";
-	})()
-	: (function(){
-		inner.style.marginLeft = 0;
-		inner.style.left = 0;
-	})();
-}
+//   (outerWidth > innerWidth) ?  (function(){
+//     inner.style.marginLeft = -innerWidth/2 + "px" ;
+//     inner.style.left = "50%";
+//   })()
+//   : (function(){
+//     inner.style.marginLeft = 0;
+//     inner.style.left = 0;
+//   })();
+// }
 
-window.onload = window.onresize = function(){
-	vMiddle(document.getElementById("main"));
-}
+// window.onload = window.onresize = function(){
+//   vMiddle(document.getElementById("main"));
+// }
 </script>
 </head>
 <body>
@@ -78,33 +78,31 @@ window.onload = window.onresize = function(){
     <form>
 <?php } ?>
 <?php
-      $install_failed=false;
+    $install_failed=false;
 
-      function install($file, $content) {
-        global $install_failed;
+    function install($file, $content) {
+      global $install_failed;
 
-        if ($install_failed)
-        	return;
+      if ($install_failed) return;
 
-        echo "解压 $file";
+      echo "解压 $file";
 
-        $dir = dirname($file);
+      $dir = dirname($file);
 
-        if (is_dir($dir) || @mkdir($dir, 0744, true)) {
-          if (!@file_put_contents($file, gzuncompress(base64_decode($content)))) {
-            $install_failed = true;
-            echo '[<span style="color:red;">失败</span>]';
-          }
-        } else {
-            $install_failed = true;
-            echo '[<span style="color:red;">无法创建目录</span>]';
+      if (is_dir($dir) || @mkdir($dir, 0744, true)) {
+        if (!@file_put_contents($file, gzuncompress(base64_decode($content)))) {
+          $install_failed = true;
+          echo '[<span style="color:red;">失败</span>]';
         }
-        echo '<br/>';
+      } else {
+          $install_failed = true;
+          echo '[<span style="color:red;">无法创建目录</span>]';
       }
+      echo '<br/>';
+    }
 
       if (isset($_POST["start_install"])) {
       ?>
-        <style> #main { min-width:400px; } </style>
         <div style="font-size:13px;color:#666;line-height:16px;padding:20px;margin:0 auto;">
 <?php
 /*DOUPRESS_FILES*/
@@ -129,19 +127,21 @@ if (!$install_failed) {
     echo "创建配置文件";
     if (!@file_put_contents('data/config.php',
       "<?php \$dp_config = array(".
-      "'version'      => '1.1.3',".
+      "'version'      => '/*DOUPRESS_VERSION*/',".
       "'site_link'    => '{$_POST['sitelink']}',".
       "'site_name'    => '{$_POST['sitename']}',".
       "'site_desc'    => '又一个 DouPress 网站',".
+      "'site_keywords'    => 'DouPress',".
       "'site_theme'   => 'default',".
       "'site_route'   => 'default',".
+      "'site_icpno'   => '',".
       "'user_name'    => '{$_POST['username']}',".
       "'user_pass'    => '{$_POST['password']}',".
       "'user_nick'    => '{$_POST['nickname']}',".
       "'comment_code' => '');?>"
     )) {
       $install_failed = true;
-      echo '[<span style="color:red;">失败1</span>]';
+      echo '[<span style="color:red;">失败</span>]';
     }
     echo '<br/>';
   } else {

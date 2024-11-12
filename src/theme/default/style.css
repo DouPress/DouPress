@@ -6,23 +6,23 @@ p { padding:0; margin:16px 0; line-height:20px; }
 img { border:0; }
 h1,h2,h3,h4,h5,h6,b,strong { color:#3f3f3f; }
 
-#main { width:960px; margin:0 auto; }
+#main { width: 960px; margin:0 auto; }
+#header { padding: 30px; border-left: solid 1px #ccc; }
 #sitename { font-size:28px; color:#333; }
 #sitename a { padding: 0 4px; }
-#header { padding: 30px; border-left: solid 1px #ccc; }
-#sidebar { float:left; width:150px; border: solid 1px #ccc; border-left-color: transparent;}
 #navbar { margin-top: 0; }
 #navbar ul, #navbar li { list-style:none; margin:0; padding:0; }
 #navbar a { font-size:18px; display:block; padding:10px 0; text-align: center; }
 #page_info { font-size:16px; margin-bottom:20px; color:#888; }
 #page_info span { padding:4px; background:#bc0000; color:#fff; border-radius:3px; }
 
-#content { float:right; width:100%; margin-left:-160px; }
-#content_box { margin-left:160px; border:solid 1px #ccc; padding:20px;border-right-color: transparent;border-bottom-color: transparent; }
+#sidebar { float:left; width:150px; border: solid 1px #ccc; border-left-color: transparent;}
+#content { float:right; width: 80%; width: -moz-calc(100% - 160px); width: -webkit-calc(100% - 160px); width: calc(100% - 160px); }
+#content_box { border:solid 1px #ccc; padding:20px;border-right-color: transparent;border-bottom-color: transparent; }
 #content .post .title { font-weight:normal; font-size:24px; color:#333; text-shadow: 0 1px 0 #ffffff; margin:0; padding:0 0 10px 0; }
 #content .post .title a { color:#3f3f3f; }
 #content .post .title a:hover { color:#44f; }
-#content .post .tags { padding-bottom:10px; color:#888; font-size:11px; }
+#content .post .tags { color:#888; font-size:11px; }
 #content .post .tags a { color:#fff; background:#aaa; padding:2px 4px; margin-right:6px;  border-radius:3px; }
 #content .post .tags a:hover { background:#bc0000; }
 #content .post .content { margin-bottom:1.625em; }
@@ -55,3 +55,17 @@ pre * { font-family: monospace; }
 .page_nav li { float:left; }
 .page_nav a { display:block; padding:6px 20px; }
 .page_nav a { border:solid 1px #ccc; border-right:0; }
+
+@media (max-width: 960px) {
+    body { padding: 0 10px; }
+    #main { width: 100%; }
+    #header { border-left: none; padding: 20px; }
+    #sitename { text-align: center; }
+    #sidebar { float:none; width:100%; border: none;}
+    #navbar { border:solid 1px #ccc; }
+    #navbar ul { display: flex; justify-content: center; }
+    #navbar a { padding: 5px 10px; }
+    #content { width: 100%; float:none; margin-left:auto; }
+    #content_box { margin: 10px auto; border:solid 1px #ccc; padding: 10px; }
+    #content .tag_list, #content .date_list { text-align: center; }
+}

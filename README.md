@@ -19,6 +19,7 @@ DouPress 是一个针对个人网站设计的微型内容管理系统。
 # 文件结构
 
 ```
+index.php          入口文件
 admin              后台管理
 core               核心
 theme              主题
@@ -34,11 +35,21 @@ data               内容数据
 
 # URL 格式
 
+默认 query 模式
+
 文章: `http://doupress.com/?post/[a-z0-5]{6}`
 
-标签: `http://doupress.com/?tag/[^/]+/`
+标签: `http://doupress.com/?tag/[^/]+`
 
-页面: `http://doupress.com/?([-a-zA-Z0-5]+/)+`
+页面: `http://doupress.com/?([-a-zA-Z0-5]+)+`
+
+可选 history 模式，需要服务器支持开启路径重写
+
+文章: `http://doupress.com/post/[a-z0-5]{6}`
+
+标签: `http://doupress.com/tag/[^/]+`
+
+页面: `http://doupress.com/([-a-zA-Z0-5]+)+`
 
 # 模板标签
 

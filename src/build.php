@@ -23,7 +23,7 @@ $files = '';
 
 build($dirs, $files);
 
-$template = file_get_contents("install.txt");
+$template = file_get_contents("core/installer.php");
 
 $template = str_replace('/*DOUPRESS_VERSION*/', $version, $template);
 $template = str_replace('/*DOUPRESS_FILES*/', $files, $template);

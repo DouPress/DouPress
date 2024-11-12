@@ -308,7 +308,7 @@ if ($page_num < 0) {
         <tr<?php if ($i % 2 == 0) echo ' class="alt"'; ?>>
           <td><input type="checkbox" name="ids" value="<?php echo htmlentities($page_id); ?>" /></td>
           <td>
-            <a class="row_name" href="page-edit.php?file=<?php echo $page['file']; ?>"><?php echo htmlspecialchars($page['title']); ?></a>
+            <a class="row_name link" href="page-edit.php?file=<?php echo $page['file']; ?>"><?php echo htmlspecialchars($page['title']); ?></a>
             <div class="row_tool">
               <a class="link_button" href="page-edit.php?file=<?php echo $page['file']; ?>">编辑</a>
               <?php if ($state == 'delete') { ?>

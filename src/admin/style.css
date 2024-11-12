@@ -9,8 +9,7 @@ select { border:solid 1px #e0e0e0; padding:2px; border-radius:3px 3px 3px 3px; b
 .clear { clear:both; height:0; padding:0; margin:0; font-size:0; border:none; }
 
 #menu { max-width:1000px; margin:10px auto; border-radius:0 0 3px 3px; }
-#menu_title { margin:0; font-size:24px; float:left; padding: 8px 0 0 20px; font-weight:normal; }
-#menu_title a { padding: 0 4px;}
+#menu_title { margin:0; font-size:24px; float:left; padding-top: 8px; font-weight:normal; }
 #menu ul, #menu li { list-style:none; margin:0; padding:0; }
 #menu ul { float:right; }
 #menu li { float:left; }
@@ -28,7 +27,7 @@ select { border:solid 1px #e0e0e0; padding:2px; border-radius:3px 3px 3px 3px; b
 
 #footer { color:#888; margin-top:20px; max-width:1000px; margin:0 auto; font-size:12px; border-top:solid 1px #e0e0e0; }
 #footer span { float:right; }
-#footer .footer_box { padding:12px 20px; }
+#footer .footer_box { padding:10px 0; }
 
 .link { text-decoration:none; color:#0000ff; }
 .link:hover { background:#0000ff; color:#fff; }

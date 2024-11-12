@@ -7,7 +7,7 @@ if (!isset($dp_config)) exit;
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" /> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta content="telephone=no,email=no" name="format-detection" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -25,6 +25,15 @@ if (!isset($dp_config)) exit;
     <div id="header">
       <div id="sitename">
         <a href="<?php mc_site_link(); ?>" class="link"><?php mc_site_name(); ?></a>
+      </div>
+    </div>
+    <div id="sidebar">
+      <div id="navbar">
+        <ul>
+          <li><a href="<?php mc_site_link(); ?>" class="link">首页</a></li>
+          <li><a href="<?php mc_get_url('archive'); ?>" class="link">存档</a></li>
+          <li><a href="<?php mc_get_url('rss'); ?>" class="link">订阅</a></li>
+        </ul>
       </div>
     </div>
     <div id="content">
@@ -85,18 +94,9 @@ if (!isset($dp_config)) exit;
         <?php } ?>
       </div>
     </div>
-    <div id="sidebar">
-      <div id="navbar">
-        <ul>
-          <li><a href="<?php mc_site_link(); ?>" class="link">首页</a></li>
-          <li><a href="<?php mc_get_url('archive'); ?>" class="link">存档</a></li>
-          <li><a href="<?php mc_get_url('rss'); ?>" class="link">订阅</a></li>
-        </ul>
-      </div>
-    </div>
     <div class="clearer"></div>
     <div id="footer">
-      <div>本站由 <a href="https://github.com/doufox/doupress" class="link" target="_blank">DouPress</a> 驱动</div>
+      <div>本站由 <a href="https://github.com/doupress/doupress" class="link" target="_blank">DouPress</a> 驱动</div>
       <?php if (!empty($dp_config['site_icpno'])) { ?><p><a href="https://beian.miit.gov.cn/#/Integrated/index" class="link" target="_blank"><?php echo $dp_config['site_icpno'];?></a></p><?php } ?>
     </div>
   </div>

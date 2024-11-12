@@ -161,7 +161,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   <input type="hidden" name="_IS_POST_BACK_" value=""/>
   <?php if ($succeed) { ?>
   <?php if ($post_state == 'publish') { ?>
-  <div class="updated">文章已发布。 <a href="<?php echo mc_get_url('post', $post_id); ?>" target="_blank">查看文章</a></div>
+  <div class="updated">文章已发布。 <a href="<?php echo mc_get_url('post', $post_id); ?>" class="link" target="_blank">查看文章</a></div>
   <?php } else { ?>
   <div class="updated">文章已保存到“草稿箱”。 <a href="post.php?state=draft">打开草稿箱</a></div>
   <?php } ?>

@@ -337,7 +337,7 @@ else if ($page_num > $last_page)
             for ($j = 0; $j < $tag_count; $j++) { $tag = $tags[$j]; ?>
               <a class="link" href="?state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&tag=<?php echo urlencode($tag); ?>">
                 <?php echo htmlspecialchars($tag); ?></a>
-              <?php if ($j < $tag_count - 1) echo ',';}?>
+              <?php if ($j < $tag_count - 1) echo '|';}?>
           </td>
           <td><?php echo htmlspecialchars($post['date']); ?></td>
           </tr>

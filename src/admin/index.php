@@ -47,8 +47,8 @@ if (isset($_POST['login'])) {
 
 <div class="admin_index_help">
   <span>资源链接：</span>
-  <span><a href="https://github.com/doufox/doupress" class="link" target="_blank">源码@Github</a></span>
-  <span><a href="https://gitee.com/doufox/doupress" class="link" target="_blank">源码@Gitee</a></span>
+  <span><a href="https://github.com/doupress/doupress" class="link" target="_blank">源码@Github</a></span>
+  <span><a href="https://gitee.com/doupress/doupress" class="link" target="_blank">源码@Gitee</a></span>
   <span><a href="http://doupress.com" class="link" target="_blank">官方网站</a></span>
   <span><a href="http://crogram.com" class="link" target="_blank">技术支持</a></span>
 </div>

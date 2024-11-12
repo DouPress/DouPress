@@ -19,6 +19,7 @@ if (isset($_POST['save'])) {
 
   $dp_config['site_name']    = $_POST['site_name'];
   $dp_config['site_desc']    = $_POST['site_desc'];
+  $dp_config['site_keywords']    = $_POST['site_keywords'];
   $dp_config['site_link']    = $_POST['site_link'];
   $dp_config['site_theme']   = $_POST['site_theme'];
   $dp_config['site_route']   = $_POST['site_route'];
@@ -44,6 +45,7 @@ if (isset($_POST['save'])) {
 
 $site_name   = $dp_config['site_name'];
 $site_desc   = $dp_config['site_desc'];
+$site_keywords   = $dp_config['site_keywords'];
 $site_link   = $dp_config['site_link'];
 $site_theme  = $dp_config['site_theme'];
 $site_route  = $dp_config['site_route'];
@@ -68,7 +70,13 @@ $comment_code = isset($dp_config['comment_code']) ? $dp_config['comment_code'] :
     <div class="field">
       <div class="label">网站描述</div>
       <input class="textbox" type="text" name="site_desc" value="<?php echo htmlspecialchars($site_desc); ?>" />
-      <div class="info">用简洁的文字没描述本站点。</div>
+      <div class="info">用简洁的文字描述本站点。</div>
+    </div>
+    <div class="clear"></div>
+    <div class="field">
+      <div class="label">网站关键词</div>
+      <input class="textbox" type="text" name="site_keywords" value="<?php echo htmlspecialchars($site_keywords); ?>" />
+      <div class="info">用简洁的文字描述本站点。</div>
     </div>
     <div class="clear"></div>
     <div class="field">
