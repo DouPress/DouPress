@@ -2,8 +2,8 @@
 // 后台登录页
 require_once dirname(dirname(__FILE__)).'/data/config.php';
 
-if (isset($_COOKIE['mc_token'])) {
-  $token = $_COOKIE['mc_token'];
+if (isset($_COOKIE['dp_token'])) {
+  $token = $_COOKIE['dp_token'];
 
   if ($token == md5($dp_config['user_name'].'_'.$dp_config['user_pass'])) {
     Header("Location: index.php");
@@ -13,7 +13,7 @@ if (isset($_COOKIE['mc_token'])) {
 if (isset($_POST['login'])) {
   if ($_POST['user'] == $dp_config['user_name'] 
   && $_POST['pass'] == $dp_config['user_pass']) {
-    setcookie('mc_token', md5($dp_config['user_name'].'_'.$dp_config['user_pass']));
+    setcookie('dp_token', md5($dp_config['user_name'].'_'.$dp_config['user_pass']));
     Header("Location: index.php");
   } else {
     $display_message = '账号或密码错误';

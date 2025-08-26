@@ -328,7 +328,7 @@ else if ($page_num > $last_page)
               <?php } else { ?>
                 <a class="link_button" href="?delete=<?php echo $post_id; ?>&state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&tag=<?php echo urlencode($filter_tag); ?>">回收</a>
               <?php } ?>
-              <a class="link_button" href="<?php echo mc_get_url('post', $post_id); ?>" target="_blank">查看</a>
+              <a class="link_button" href="<?php echo dp_get_url('post', $post_id); ?>" target="_blank">查看</a>
             </div>
           </td>
           <td><?php

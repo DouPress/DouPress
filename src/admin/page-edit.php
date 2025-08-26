@@ -168,14 +168,13 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   <input type="hidden" name="_IS_POST_BACK_" value="" />
   <?php if ($succeed) { ?>
     <?php if ($page_state == 'publish') { ?>
-      <div class="updated">页面已发布。 <a href="<?php echo mc_get_url('', $page_path); ?>" class="link" target="_blank">查看页面</a></div>
+      <div class="updated">页面已发布。 <a href="<?php echo dp_get_url('', $page_path); ?>" class="link" target="_blank">查看页面</a></div>
     <?php } else { ?>
       <div class="updated">页面已保存到“草稿箱”。 <a href="page.php?state=draft">打开草稿箱</a></div>
     <?php } ?>
   <?php } ?>
   <div class="admin_page_name">
-    <?php if ($page_path == '') echo "创建页面";
-    else echo "编辑页面"; ?>
+    <?php if ($page_path == '') {echo "创建页面";} else {echo "编辑页面";} ?><a class="link_button" href="page.php">所有页面</a>
   </div>
   <div style="margin-bottom:20px;">
     <input name="title" type="text" class="edit_textbox" placeholder="在此输入标题" value="<?php echo htmlspecialchars($page_title); ?>" />

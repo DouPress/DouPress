@@ -8,7 +8,7 @@ if (isset($_POST['login'])) {
     $_POST['user'] == $dp_config['user_name']
     && $_POST['pass'] == $dp_config['user_pass']
   ) {
-    setcookie('mc_token', md5($dp_config['user_name'] . '_' . $dp_config['user_pass']));
+    setcookie('dp_token', md5($dp_config['user_name'] . '_' . $dp_config['user_pass']));
     // Header("Location: post.php");
   }
 }
@@ -34,9 +34,10 @@ if (isset($_POST['login'])) {
   </div>
   <div class="admin_page_name">
     <span>网站前台:</span>
-    <a href="<?php mc_site_link(); ?>" class="link" target="_blank">首页</a>
-    <a href="<?php mc_get_url('archive'); ?>" class="link" target="_blank">存档</a>
-    <a href="<?php mc_get_url('rss'); ?>" class="link" target="_blank">订阅</a>
+    <a href="<?php dp_site_link(); ?>" class="link" target="_blank">首页</a>
+    <a href="<?php dp_get_url('archive'); ?>" class="link" target="_blank">存档</a>
+    <a href="<?php dp_get_url('rss'); ?>" class="link" target="_blank">订阅</a>
+    <a href="<?php dp_get_url('xml'); ?>" class="link" target="_blank">地图</a>
   </div>
   <div class="admin_page_name">
     <span>网站后台:</span>

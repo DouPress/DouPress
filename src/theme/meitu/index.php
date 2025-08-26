@@ -41,12 +41,12 @@ if (!isset($dp_config)) exit;
         <?php if (dp_is_post()) { ?>
           <div class="post">
             <h1 class="title"><?php dp_the_link(); ?></h1>
-            <div class="tags"><?php dp_the_tags('', '', ''); ?> by <?php dp_nick_name(); ?> at <?php dp_the_date(); ?></div>
+            <div class="tags"><?php dp_nick_name(); ?> <?php dp_the_date(); ?> <?php dp_the_time(); ?> <?php dp_the_tags('', '', ''); ?></div>
             <div class="content"><?php dp_the_content(); ?></div>
           </div>
-          <?php if (dp_can_comment()) {
-            dp_comment_code();
-          } ?>
+          <?php if (dp_can_comment()) { ?>
+            <?php dp_comment_code(); ?>
+          <?php } ?>
         <?php } else if (dp_is_page()) { ?>
           <div class="post">
             <?php /*<h1 class="title"><?php dp_the_link(); ?></h1>
@@ -76,10 +76,10 @@ if (!isset($dp_config)) exit;
             <?php while (dp_next_post()) { ?>
               <div class="post">
                 <h1 class="title"><?php dp_the_link(); ?></h1>
-                <div class="tags"><?php dp_the_tags('', '', ''); ?> by <?php dp_nick_name(); ?> at <?php dp_the_date(); ?></div>
+                <div class="tags"><?php dp_nick_name(); ?> <?php dp_the_date(); ?> <?php dp_the_tags('', '', ''); ?></div>
                 <div class="clearer"></div>
               </div>
-            <?php   } ?>
+            <?php } ?>
             <div id="page_bar">
               <?php if (dp_has_new()) { ?>
                 <span class="prev link" style="float:left;"><?php dp_goto_new('&larr; 较新文章'); ?></span>
@@ -96,8 +96,7 @@ if (!isset($dp_config)) exit;
     </div>
     <div class="clearer"></div>
     <div id="footer">
-      <div>本站由 <a href="https://github.com/doupress/doupress" class="link" target="_blank">DouPress</a> 驱动</div>
-      <?php if (!empty($dp_config['site_icpno'])) { ?><p><a href="https://beian.miit.gov.cn/#/Integrated/index" class="link" target="_blank"><?php echo $dp_config['site_icpno'];?></a></p><?php } ?>
+      <div>图片素材采集自网络，如有侵权请联系删除。</div>
     </div>
   </div>
 </body>

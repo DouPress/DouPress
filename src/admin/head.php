@@ -3,8 +3,8 @@ ini_set("display_errors", "On");
 error_reporting(E_ALL);
 require_once '../data/config.php';
 
-// if (isset($_COOKIE['mc_token'])) {
-//   $token = $_COOKIE['mc_token'];
+// if (isset($_COOKIE['dp_token'])) {
+//   $token = $_COOKIE['dp_token'];
 
 //   if ($token != md5($dp_config['user_name'] . '_' . $dp_config['user_pass'])) {
 //     Header("Location:index.php");

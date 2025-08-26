@@ -161,13 +161,13 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   <input type="hidden" name="_IS_POST_BACK_" value=""/>
   <?php if ($succeed) { ?>
   <?php if ($post_state == 'publish') { ?>
-  <div class="updated">文章已发布。 <a href="<?php echo mc_get_url('post', $post_id); ?>" class="link" target="_blank">查看文章</a></div>
+  <div class="updated">文章已发布。 <a href="<?php echo dp_get_url('post', $post_id); ?>" class="link" target="_blank">查看文章</a></div>
   <?php } else { ?>
   <div class="updated">文章已保存到“草稿箱”。 <a href="post.php?state=draft">打开草稿箱</a></div>
   <?php } ?>
   <?php } ?>
   <div class="admin_page_name">
-  <?php if ($post_id == '') echo "撰写文章"; else echo "编辑文章"; ?>
+    <?php if ($post_id == '') echo "撰写文章"; else echo "编辑文章"; ?><a class="link_button" href="post.php">所有文章</a>
   </div>
   <div style="margin-bottom:20px;">
     <input name="title" type="text" class="edit_textbox" placeholder="在此输入标题" value="<?php echo htmlspecialchars($post_title); ?>"/>

@@ -8,12 +8,11 @@ require_once PATH_ROOT . '/data/config.php';
 function app_404()
 {
   header('HTTP/1.0 404 Not Found');
-  echo "<h1>404 Not Found</h1>";
-  echo "The page that you have requested could not be found.";
+  echo "<h1>404 Not Found</h1><p>The page that you have requested could not be found.</p>";
   exit();
 }
 
-function mc_get_url($mc_get_type, $mc_get_name = '', $path = '', $print = true)
+function dp_get_url($mc_get_type, $mc_get_name = '', $path = '', $print = true)
 {
   global $dp_config;
   $r = @$dp_config['site_route'] == 'path' ? '/' : '/?';

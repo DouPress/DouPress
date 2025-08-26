@@ -137,7 +137,7 @@ if (!$install_failed) {
       "'site_icpno'   => '',".
       "'user_name'    => '{$_POST['username']}',".
       "'user_pass'    => '{$_POST['password']}',".
-      "'user_nick'    => '{$_POST['nickname']}',".
+      "'nick_name'    => '{$_POST['nickname']}',".
       "'comment_code' => '');?>"
     )) {
       $install_failed = true;

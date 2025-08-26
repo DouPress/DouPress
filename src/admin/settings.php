@@ -7,7 +7,7 @@ $display_info = false;
 
 $theme_files = scandir(PATH_ROOT . '/theme');
 $theme_list = array();
-$filter = array('.', '..', '.cvs', '.svn', '.git', '.DS_Store');
+$filter = array('.', '..', '.cvs', '.svn', '.git', '.DS_Store', '._.DS_Store');
 foreach ($theme_files as $file) {
     if (!is_dir($file) && !in_array($file, $filter)) {
       $theme_list[] = $file;
@@ -24,7 +24,7 @@ if (isset($_POST['save'])) {
   $dp_config['site_theme']   = $_POST['site_theme'];
   $dp_config['site_route']   = $_POST['site_route'];
   $dp_config['site_icpno']   = $_POST['site_icpno'];
-  $dp_config['user_nick']    = $_POST['user_nick'];
+  $dp_config['nick_name']    = $_POST['nick_name'];
   $dp_config['user_name']    = $_POST['user_name'];
   $dp_config['comment_code'] = trim($_POST['comment_code']);
 
@@ -37,7 +37,7 @@ if (isset($_POST['save'])) {
   file_put_contents(PATH_ROOT . '/data/config.php', $code);
 
   if ($_POST['user_pass'] != '' || $user_name_changed) {
-    setcookie('mc_token', md5($dp_config['user_name'] . '_' . $dp_config['user_pass']));
+    setcookie('dp_token', md5($dp_config['user_name'] . '_' . $dp_config['user_pass']));
   }
 
   $display_info = true;
@@ -50,7 +50,7 @@ $site_link   = $dp_config['site_link'];
 $site_theme  = $dp_config['site_theme'];
 $site_route  = $dp_config['site_route'];
 $site_icpno  = $dp_config['site_icpno'];
-$user_nick   = $dp_config['user_nick'];
+$nick_name   = $dp_config['nick_name'];
 $user_name   = $dp_config['user_name'];
 $comment_code = isset($dp_config['comment_code']) ? $dp_config['comment_code'] : '';
 ?>
@@ -76,7 +76,7 @@ $comment_code = isset($dp_config['comment_code']) ? $dp_config['comment_code'] :
     <div class="field">
       <div class="label">网站关键词</div>
       <input class="textbox" type="text" name="site_keywords" value="<?php echo htmlspecialchars($site_keywords); ?>" />
-      <div class="info">用简洁的文字描述本站点。</div>
+      <div class="info">用关键词描述本站点，请使用半角逗号,分隔。</div>
     </div>
     <div class="clear"></div>
     <div class="field">
@@ -103,8 +103,8 @@ $comment_code = isset($dp_config['comment_code']) ? $dp_config['comment_code'] :
     <div class="field">
       <div class="label">网站URL类型</div>
       <select name="site_route" class="textbox">
-        <option value="default" <?php if (empty($site_route) || $site_route == 'default') echo 'selected="selected"'; ?>>默认形式（domain.com/?post/abcdef）</option>
-        <option value="path" <?php if ($site_route == 'path') echo 'selected="selected"'; ?>>路径模式（domain.com/post/abcdef）</option>
+        <option value="default" <?php if (empty($site_route) || $site_route == 'default') echo 'selected="selected"'; ?>>默认形式 domain.com/?post/pathname</option>
+        <option value="path" <?php if ($site_route == 'path') echo 'selected="selected"'; ?>>路径模式 domain.com/post/pathname</option>
       </select>
       <div class="info">注意：路径模式需要服务端支持</div>
     </div>
@@ -117,26 +117,26 @@ $comment_code = isset($dp_config['comment_code']) ? $dp_config['comment_code'] :
     <div class="clear"></div>
     <div class="field">
       <div class="label">站长昵称</div>
-      <input class="textbox" type="text" name="user_nick" value="<?php echo htmlspecialchars($user_nick); ?>" />
+      <input class="textbox" type="text" name="nick_name" value="<?php echo htmlspecialchars($nick_name); ?>" placeholder="站长昵称" />
       <div class="info"></div>
     </div>
     <div class="clear"></div>
     <div class="field">
-      <div class="label">后台帐号</div>
-      <input class="textbox" type="text" name="user_name" value="<?php echo htmlspecialchars($user_name); ?>" />
+      <div class="label">管理员帐号</div>
+      <input class="textbox" type="text" name="user_name" value="<?php echo htmlspecialchars($user_name); ?>" placeholder="后台管理员帐号" />
       <div class="info"></div>
     </div>
     <div class="clear"></div>
     <div class="field">
-      <div class="label">后台密码</div>
-      <input class="textbox" type="password" name="user_pass" />
-      <div class="info"></div>
+      <div class="label">管理员密码</div>
+      <input class="textbox" type="password" name="user_pass" placeholder="如需修改请填写新密码" />
+      <div class="info">不修改请留空</div>
     </div>
     <div class="clear"></div>
     <div class="field">
       <div class="label">确认密码</div>
-      <input class="textbox" type="password" />
-      <div class="info"></div>
+      <input class="textbox" type="password" placeholder="如需修改请填写" />
+      <div class="info">不修改请留空</div>
     </div>
     <div class="clear"></div>
     <div class="field">

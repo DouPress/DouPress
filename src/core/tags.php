@@ -3,7 +3,7 @@ require_once dirname(__FILE__) . '/Michelf/MarkdownExtra.inc.php';
 
 use Michelf\MarkdownExtra;
 
-function mc_site_name($print = true)
+function dp_site_name($print = true)
 {
   global $dp_config;
 
@@ -17,7 +17,7 @@ function mc_site_name($print = true)
   return $site_name;
 }
 
-function mc_site_desc($print = true)
+function dp_site_desc($print = true)
 {
   global $dp_config;
 
@@ -31,7 +31,7 @@ function mc_site_desc($print = true)
   return $site_desc;
 }
 
-function mc_site_link($print = true)
+function dp_site_link($print = true)
 {
   global $dp_config;
 
@@ -45,11 +45,11 @@ function mc_site_link($print = true)
   return $site_link;
 }
 
-function mc_nick_name($print = true)
+function dp_nick_name($print = true)
 {
   global $dp_config;
 
-  $nick_name = htmlspecialchars($dp_config['user_nick']);
+  $nick_name = htmlspecialchars($dp_config['nick_name']);
 
   if ($print) {
     echo $nick_name;
@@ -59,7 +59,7 @@ function mc_nick_name($print = true)
   return $nick_name;
 }
 
-function mc_theme_url($path, $print = true)
+function dp_theme_url($path, $print = true)
 {
   global $dp_config;
   $url = htmlentities($dp_config['site_link']) . '/theme/' . $dp_config['site_theme'] . '/' . $path;
@@ -72,39 +72,39 @@ function mc_theme_url($path, $print = true)
   return $url;
 }
 
-function mc_is_post()
+function dp_is_post()
 {
   global $mc_get_type;
 
   return $mc_get_type == 'post';
 }
 
-function mc_is_page()
+function dp_is_page()
 {
   global $mc_get_type;
 
   return $mc_get_type == 'page';
 }
 
-function mc_is_tag()
+function dp_is_tag()
 {
   global $mc_get_type;
   return $mc_get_type == 'tag';
 }
 
-function mc_is_date()
+function dp_is_date()
 {
   global $mc_get_type;
   return $mc_get_type == 'date';
 }
 
-function mc_is_archive()
+function dp_is_archive()
 {
   global $mc_get_type;
   return $mc_get_type == 'archive';
 }
 
-function mc_tag_name($print = true)
+function dp_tag_name($print = true)
 {
   global $mc_get_name;
 
@@ -116,7 +116,7 @@ function mc_tag_name($print = true)
   return $mc_get_name;
 }
 
-function mc_date_name($print = true)
+function dp_date_name($print = true)
 {
   global $mc_get_name;
 
@@ -128,28 +128,28 @@ function mc_date_name($print = true)
   return $mc_get_name;
 }
 
-function mc_has_new()
+function dp_has_new()
 {
   global $mc_page_num;
 
   return $mc_page_num != 1;
 }
 
-function mc_has_old()
+function dp_has_old()
 {
   global $mc_page_num, $mc_post_count, $mc_post_per_page;
 
   return $mc_page_num < ($mc_post_count / $mc_post_per_page);
 }
 
-function mc_goto_old($text)
+function dp_goto_old($text)
 {
   global $mc_get_type, $mc_get_name, $mc_page_num, $dp_config;
   echo '<a href="';
   if ($mc_get_type == 'tag') {
-    mc_get_url('tag', htmlspecialchars($mc_get_name));
+    dp_get_url('tag', htmlspecialchars($mc_get_name));
   } else if ($mc_get_type == 'date') {
-    mc_get_url('date', htmlspecialchars($mc_get_name));
+    dp_get_url('date', htmlspecialchars($mc_get_name));
   }
   echo '/?page=';
   echo ($mc_page_num + 1);
@@ -158,14 +158,14 @@ function mc_goto_old($text)
   echo '</a>';
 }
 
-function mc_goto_new($text)
+function dp_goto_new($text)
 {
   global $mc_get_type, $mc_get_name, $mc_page_num, $dp_config;
   echo '<a href="';
   if ($mc_get_type == 'tag') {
-    mc_get_url('tag', htmlspecialchars($mc_get_name));
+    dp_get_url('tag', htmlspecialchars($mc_get_name));
   } else if ($mc_get_type == 'date') {
-    mc_get_url('date', htmlspecialchars($mc_get_name));
+    dp_get_url('date', htmlspecialchars($mc_get_name));
   }
   echo '/?page=';
   echo ($mc_page_num - 1);
@@ -174,7 +174,7 @@ function mc_goto_new($text)
   echo '</a>';
 }
 
-function mc_date_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
+function dp_date_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
 {
   global $mc_dates, $dp_config;
 
@@ -186,7 +186,7 @@ function mc_date_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
 
       echo $item_begin;
       echo '<a href="';
-      mc_get_url('date', $date);
+      dp_get_url('date', $date);
       echo '">';
       echo $date;
       echo '</a>';
@@ -198,7 +198,7 @@ function mc_date_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
   }
 }
 
-function mc_tag_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
+function dp_tag_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
 {
   global $mc_tags, $dp_config;
 
@@ -210,7 +210,7 @@ function mc_tag_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
 
       echo $item_begin;
       echo '<a href="';
-      mc_get_url('tag', urlencode($tag));
+      dp_get_url('tag', urlencode($tag));
       echo '">';
       echo htmlspecialchars($tag);
       echo '</a>';
@@ -222,12 +222,13 @@ function mc_tag_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
   }
 }
 
-function mc_next_post()
+function dp_next_post()
 {
   global $mc_posts, $mc_post_ids, $mc_post_count, $mc_post_i, $mc_post_i_end, $mc_post_id, $mc_post, $mc_page_num, $mc_post_per_page;
 
-  if (!isset($mc_posts))
+  if (!isset($mc_posts)) {
     return false;
+  }
 
   if (!isset($mc_post_i)) {
     $mc_post_i = 0 + ($mc_page_num - 1) * $mc_post_per_page;
@@ -236,22 +237,21 @@ function mc_next_post()
       $mc_post_i_end = $mc_post_count;
   }
 
-  if ($mc_post_i == $mc_post_i_end)
+  if ($mc_post_i == $mc_post_i_end) {
     return false;
+  }
 
-  if (!isset($mc_post_ids[$mc_post_i]))
+  if (!isset($mc_post_ids[$mc_post_i])) {
     return false;
+  }
 
   $mc_post_id = $mc_post_ids[$mc_post_i];
-
   $mc_post = $mc_posts[$mc_post_id];
-
   $mc_post_i += 1;
-
   return true;
 }
 
-function mc_the_title($print = true)
+function dp_the_title($print = true)
 {
   global $mc_post;
 
@@ -263,7 +263,7 @@ function mc_the_title($print = true)
   return htmlspecialchars($mc_post['title']);
 }
 
-function mc_the_date($print = true)
+function dp_the_date($print = true)
 {
   global $mc_post;
 
@@ -275,7 +275,7 @@ function mc_the_date($print = true)
   return $mc_post['date'];
 }
 
-function mc_the_time($print = true)
+function dp_the_time($print = true)
 {
   global $mc_post;
 
@@ -287,7 +287,7 @@ function mc_the_time($print = true)
   return $mc_post['time'];
 }
 
-function mc_the_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_link = true)
+function dp_the_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_link = true)
 {
   global $mc_post, $dp_config;
 
@@ -302,7 +302,7 @@ function mc_the_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_lin
 
     if ($as_link) {
       echo '<a href="';
-      mc_get_url('tag', urlencode($tag));
+      dp_get_url('tag', urlencode($tag));
       echo '">';
     }
 
@@ -314,12 +314,13 @@ function mc_the_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_lin
 
     echo $item_end;
 
-    if ($i < $count - 1)
+    if ($i < $count - 1) {
       echo $item_gap;
+    }
   }
 }
 
-function mc_the_content($print = true)
+function dp_the_content($print = true)
 {
   global $mc_data;
 
@@ -341,21 +342,21 @@ function mc_the_content($print = true)
   return $html;
 }
 
-function mc_the_link()
+function dp_the_link()
 {
-  global $mc_post_id, $mc_post, $dp_config;
+  global $mc_post;
 
   echo '<a href="';
-  mc_the_url();
+  dp_the_url();
   echo '">';
   echo htmlspecialchars($mc_post['title']);
   echo '</a>';
 }
 
-function mc_the_url($print = true)
+function dp_the_url($print = true)
 {
   global $mc_post_id, $mc_post, $dp_config;
-  $url = mc_get_url('post', $mc_post_id);
+  $url = dp_get_url('post', $mc_post_id);
 
   if ($print) {
     echo $url;
@@ -365,14 +366,14 @@ function mc_the_url($print = true)
   return $url;
 }
 
-function mc_can_comment()
+function dp_can_comment()
 {
   global $mc_post_id, $mc_post;
 
   return isset($mc_post['can_comment']) ? $mc_post['can_comment'] == '1' : true;
 }
 
-function mc_comment_code()
+function dp_comment_code()
 {
   global $dp_config;
 

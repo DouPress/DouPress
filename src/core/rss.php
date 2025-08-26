@@ -10,22 +10,22 @@
   xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
 >
 <channel>
-  <title><?php mc_site_name(); ?></title>
-  <link><?php mc_site_link(); ?></link>
-  <description><?php mc_site_desc(); ?></description>
+  <title><?php dp_site_name(); ?></title>
+  <link><?php dp_site_link(); ?></link>
+  <description><?php dp_site_desc(); ?></description>
   <language>zh_CN</language>
   <sy:updatePeriod>hourly</sy:updatePeriod>
   <sy:updateFrequency>1</sy:updateFrequency>
   <generator>DouPress</generator>
-<?php while (mc_next_post()) { ?>
+<?php while (dp_next_post()) { ?>
     <item>
-      <title><?php mc_the_title(); ?></title>
-      <link><?php mc_the_url(); ?></link>
-      <guid><?php mc_the_url(); ?></guid>
-      <dc:creator><?php mc_nick_name(); ?></dc:creator>
-      <pubDate><?php mc_the_date(); ?> <?php mc_the_time(); ?></pubDate>
-<?php mc_the_tags("      <category><![CDATA[", "\n", "]]></category>"); echo "\n"; ?>
-      <content:encoded><![CDATA[<?php mc_the_content();?>]]></content:encoded>
+      <title><?php dp_the_title(); ?></title>
+      <link><?php dp_the_url(); ?></link>
+      <guid><?php dp_the_url(); ?></guid>
+      <dc:creator><?php dp_nick_name(); ?></dc:creator>
+      <pubDate><?php dp_the_date(); ?> <?php dp_the_time(); ?></pubDate>
+<?php dp_the_tags("      <category><![CDATA[", "\n", "]]></category>"); echo "\n"; ?>
+      <content:encoded><![CDATA[<?php dp_the_content();?>]]></content:encoded>
     </item>
 <?php } ?>
 

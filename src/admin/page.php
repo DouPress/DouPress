@@ -317,7 +317,7 @@ if ($page_num < 0) {
               <?php } else { ?>
                 <a class="link_button" href="?delete=<?php echo urlencode($page_id); ?>&state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>">回收</a>
               <?php } ?>
-              <a class="link_button" href="<?php echo mc_get_url('', $page_id);?>" target="_blank">查看</a>
+              <a class="link_button" href="<?php echo dp_get_url('', $page_id);?>" target="_blank">查看</a>
             </div>
           </td>
           <td>/<?php echo $page_id; ?></td>

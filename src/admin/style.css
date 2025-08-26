@@ -5,11 +5,10 @@ a { text-decoration:none; color:#0000ff; }
 form { padding:0; margin:0; }
 
 select { border:solid 1px #e0e0e0; padding:2px; border-radius:3px 3px 3px 3px; background:#fff; }
-
 .clear { clear:both; height:0; padding:0; margin:0; font-size:0; border:none; }
 
 #menu { max-width:1000px; margin:10px auto; border-radius:0 0 3px 3px; }
-#menu_title { margin:0; font-size:24px; float:left; padding-top: 8px; font-weight:normal; }
+#menu_title { margin:0; float:left; padding-top: 8px; font-size:24px;letter-spacing: 2px; }
 #menu ul, #menu li { list-style:none; margin:0; padding:0; }
 #menu ul { float:right; }
 #menu li { float:left; }
@@ -30,7 +29,7 @@ select { border:solid 1px #e0e0e0; padding:2px; border-radius:3px 3px 3px 3px; b
 #footer .footer_box { padding:10px 0; }
 
 .link { text-decoration:none; color:#0000ff; }
-.link:hover { background:#0000ff; color:#fff; }
+.link:hover { background:#bc0000; color:#fff; }
 
 .link_button { background:#efefef; padding:2px 4px; font-size:12px; margin-right:4px; border-radius:3px 3px 3px 3px; }
 .link_button:hover,
@@ -78,3 +77,25 @@ div.updated, div.error { border-radius:3px; border-style:solid; border-width:1px
 
 .edit_textbox { width:99%;border:solid 1px #ccc; font-size:20px; padding:3px 4px; border-radius:3px; }
 .edit_textarea { height:400px;width:99%;font-size:13px;border:solid 1px #ccc;padding:3px 4px; border-radius:3px; }
+
+@media (max-width: 660px) {
+    body {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    #menu_title {
+        padding-top: unset;
+    }
+    #menu ul a {
+        padding: 6px 10px;
+    }
+    #content_box {
+        padding: 10px;
+    }
+    .admin_page_name {
+        font-size: 14px;
+    }
+    .admin_page_name a {
+        margin-left: 2px;
+    }
+}

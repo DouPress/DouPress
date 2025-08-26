@@ -4,8 +4,8 @@ require_once PATH_ROOT . '/core/common.php';
 
 function dp_check_login()
 {
-  if (isset($_COOKIE['mc_token'])) {
-    $token = $_COOKIE['mc_token'];
+  if (isset($_COOKIE['dp_token'])) {
+    $token = $_COOKIE['dp_token'];
     global $dp_config;
     if ($token != md5($dp_config['user_name'] . '_' . $dp_config['user_pass'])) {
       Header("Location:login.php");
