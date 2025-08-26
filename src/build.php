@@ -24,11 +24,11 @@ $files = '';
 build($dirs, $files);
 
 $template = file_get_contents("core/installer.php");
-
 $template = str_replace('/*DOUPRESS_VERSION*/', $version, $template);
 $template = str_replace('/*DOUPRESS_FILES*/', $files, $template);
 
 file_put_contents("install.php", $template);
+echo "安装文件已保存到 install.php \n";
 
 function build($dirs, &$files)
 {
@@ -44,16 +44,20 @@ function build($dirs, &$files)
             $sub_dirs = array();
 
             while (($item = readdir($dh)) !== false) {
-                if ($item[0] == '.')
+                // 保留 .htaccess 文件，移除其他 .开头的隐藏文件
+                if ($item[0] == '.' && $item != '.htaccess') {
                     continue;
+                }
 
-                if ($dir == '.')
+                if ($dir == '.') {
                     $file = $item;
-                else
+                } else {
                     $file = $dir . "/" . $item;
-
-                if (in_array($file, $ignores))
+                }
+                // 忽略文件
+                if (in_array($file, $ignores)) {
                     continue;
+                }
 
                 if (is_dir($file)) {
                     $sub_dirs[] = $file;
@@ -61,6 +65,7 @@ function build($dirs, &$files)
                     $files .= "install('$file', '";
                     $files .= base64_encode(gzcompress(file_get_contents($file)));
                     $files .= "');\n";
+                    echo "已添加文件 $file\n";
                 }
             }
 
