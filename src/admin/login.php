@@ -24,7 +24,7 @@ if (isset($_POST['login'])) {
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>DouPress</title>
+  <title><?php echo htmlspecialchars($dp_config['site_name']); ?> - Powered by DouPress</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta content="telephone=no,email=no" name="format-detection" />
@@ -56,7 +56,7 @@ if (isset($_POST['login'])) {
 </head>
 <body>
   <form action="login.php" method="post" class="login-form">
-    <div id="login_title">DouPress</div>
+    <div id="login_title"><?php echo htmlspecialchars($dp_config['site_name']); ?></div>
     <?php if (isset($display_message)) { ?>
       <div class="display-message"><?php echo $display_message; ?></div>
     <?php } ?>
