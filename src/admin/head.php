@@ -28,12 +28,7 @@ $pagefile = basename($_SERVER['PHP_SELF']);
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta content="telephone=no,email=no" name="format-detection" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="description" content="DouPress" />
-  <meta name="keywords" content="DouPress" />
-  <meta name="author" content="上海程江科技中心" />
-  <meta name="copyright" content="程江® 程江科技 CROGRAM" />
+  <meta name="generator" content="DouPress"/>
   <link rel="icon" href="../favicon.ico" />
   <link href="style.css" rel="stylesheet" />
 </head>

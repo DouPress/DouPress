@@ -17,16 +17,18 @@ foreach ($theme_files as $file) {
 if (isset($_POST['save'])) {
   $user_name_changed = $_POST['user_name'] != $dp_config['user_name'];
 
-  $dp_config['site_name']    = $_POST['site_name'];
-  $dp_config['site_desc']    = $_POST['site_desc'];
-  $dp_config['site_keywords']    = $_POST['site_keywords'];
-  $dp_config['site_link']    = $_POST['site_link'];
-  $dp_config['site_theme']   = $_POST['site_theme'];
-  $dp_config['site_route']   = $_POST['site_route'];
-  $dp_config['site_icpno']   = $_POST['site_icpno'];
-  $dp_config['nick_name']    = $_POST['nick_name'];
-  $dp_config['user_name']    = $_POST['user_name'];
-  $dp_config['comment_code'] = trim($_POST['comment_code']);
+  $dp_config['site_name']     = $_POST['site_name'];
+  $dp_config['site_desc']     = $_POST['site_desc'];
+  $dp_config['site_keywords'] = $_POST['site_keywords'];
+  $dp_config['site_link']     = $_POST['site_link'];
+  $dp_config['site_theme']    = $_POST['site_theme'];
+  $dp_config['site_route']    = $_POST['site_route'];
+  $dp_config['site_icpno']    = $_POST['site_icpno'];
+  $dp_config['site_status']   = $_POST['site_status'];
+  $dp_config['nick_name']     = $_POST['nick_name'];
+  $dp_config['user_name']     = $_POST['user_name'];
+  $dp_config['comment_code']  = trim($_POST['comment_code']);
+  $dp_config['footer_code']   = trim($_POST['footer_code']);
 
   if ($_POST['user_pass'] != '') {
     $dp_config['user_pass'] = $_POST['user_pass'];
@@ -43,16 +45,19 @@ if (isset($_POST['save'])) {
   $display_info = true;
 }
 
-$site_name   = $dp_config['site_name'];
-$site_desc   = $dp_config['site_desc'];
-$site_keywords   = $dp_config['site_keywords'];
-$site_link   = $dp_config['site_link'];
-$site_theme  = $dp_config['site_theme'];
-$site_route  = $dp_config['site_route'];
-$site_icpno  = $dp_config['site_icpno'];
-$nick_name   = $dp_config['nick_name'];
-$user_name   = $dp_config['user_name'];
-$comment_code = isset($dp_config['comment_code']) ? $dp_config['comment_code'] : '';
+$site_name     = $dp_config['site_name'];
+$site_desc     = $dp_config['site_desc'];
+$site_keywords = $dp_config['site_keywords'];
+$site_link     = $dp_config['site_link'];
+$site_theme    = $dp_config['site_theme'];
+$site_route    = $dp_config['site_route'];
+$site_status   = $dp_config['site_status'];
+$site_icpno    = $dp_config['site_icpno'];
+$nick_name     = $dp_config['nick_name'];
+$user_name     = $dp_config['user_name'];
+$comment_code  = isset($dp_config['comment_code']) ? $dp_config['comment_code'] : '';
+$footer_code   = isset($dp_config['footer_code']) ? $dp_config['footer_code'] : '';
+
 ?>
 <?php require 'head.php'; ?>
 <form action="<?php echo htmlentities($_SERVER['REQUEST_URI']); ?>" method="post">
@@ -101,12 +106,21 @@ $comment_code = isset($dp_config['comment_code']) ? $dp_config['comment_code'] :
     </div>
     <div class="clear"></div>
     <div class="field">
-      <div class="label">网站URL类型</div>
+      <div class="label">链接形式</div>
       <select name="site_route" class="textbox">
         <option value="default" <?php if (empty($site_route) || $site_route == 'default') echo 'selected="selected"'; ?>>默认形式 domain.com/?post/pathname</option>
         <option value="path" <?php if ($site_route == 'path') echo 'selected="selected"'; ?>>路径模式 domain.com/post/pathname</option>
       </select>
       <div class="info">注意：路径模式需要服务端支持</div>
+    </div>
+    <div class="clear"></div>
+    <div class="field">
+      <div class="label">网站状态</div>
+      <select name="site_status" class="textbox">
+        <option value="open" <?php if (empty($site_status) || $site_status == 'open') echo 'selected="selected"'; ?>>开通</option>
+        <option value="closed" <?php if ($site_status == 'closed') echo 'selected="selected"'; ?>>关闭</option>
+      </select>
+      <div class="info">关闭网站时，前台显示关闭维护页面，所有页面不可看。</div>
     </div>
     <div class="clear"></div>
     <div class="field">
@@ -146,7 +160,13 @@ $comment_code = isset($dp_config['comment_code']) ? $dp_config['comment_code'] :
     </div>
     <div class="clear"></div>
     <div class="field">
-      <!-- <div class="label"></div> -->
+      <div class="label">底部代码</div>
+      <textarea rows="5" class="textbox" name="footer_code"><?php echo htmlspecialchars($footer_code); ?></textarea>
+      <div class="info">网站底部代码：如统计代码、文本文案等。</div>
+    </div>
+    <div class="clear"></div>
+    <div class="field">
+      <div class="label"></div>
       <div class="field_body"><input class="button" type="submit" name="save" value="保存设置" /></div>
       <!-- <div class="info"></div> -->
     </div>

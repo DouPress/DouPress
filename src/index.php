@@ -34,47 +34,47 @@ function parseRoute($requestUri, $scriptName, $siteRoute)
 $route = parseRoute($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'], @$dp_config['site_route']);
 // print_r($route);exit;
 // 分配路由
-$mc_get_type = '';
+$dp_path_type = '';
 if (preg_match('|^/post/([a-z0-5]{6})$|', rtrim($route, '/'), $matches)) {
-  $mc_get_type = 'post';
-  $mc_get_name = $matches[1];
+  $dp_path_type = 'post';
+  $dp_path_name = $matches[1];
 } elseif (preg_match('|^/tag/([^/]+)(/\?page=([0-9]+)){0,1}$|', rtrim($route, '/'), $matches)) {
-  $mc_get_type = 'tag';
-  $mc_get_name = isset($matches[1]) ? urldecode($matches[1]) : '';
-  $mc_page_num = isset($matches[3]) ? $matches[3] : 1;
+  $dp_path_type = 'tag';
+  $dp_path_name = isset($matches[1]) ? urldecode($matches[1]) : '';
+  $dp_page_no = isset($matches[3]) ? $matches[3] : 1;
 } elseif (preg_match('|^/date/([0-9]{4}-[0-9]{2})(/\?page=([0-9]+)){0,1}$|', rtrim($route, '/'), $matches)) {
-  $mc_get_type = 'date';
-  $mc_get_name = urldecode($matches[1]);
-  $mc_page_num = isset($matches[3]) ? $matches[3] : 1;
+  $dp_path_type = 'date';
+  $dp_path_name = urldecode($matches[1]);
+  $dp_page_no = isset($matches[3]) ? $matches[3] : 1;
 } elseif (preg_match('|^/archive$|', rtrim($route, '/'), $matches)) {
-  $mc_get_type = 'archive';
+  $dp_path_type = 'archive';
 } elseif (rtrim($route, '/') == '/rss') {
-  $mc_get_type = 'rss';
-  $mc_get_name = '';
-  $mc_page_num = isset($_GET['page']) ? $_GET['page'] : 1;
+  $dp_path_type = 'rss';
+  $dp_path_name = '';
+  $dp_page_no = isset($_GET['page']) ? $_GET['page'] : 1;
 } elseif (rtrim($route, '/') == '/xml') {
-  $mc_get_type = 'xml';
-  $mc_get_name = '';
-  $mc_page_num = isset($_GET['page']) ? $_GET['page'] : 1;
+  $dp_path_type = 'xml';
+  $dp_path_name = '';
+  $dp_page_no = isset($_GET['page']) ? $_GET['page'] : 1;
 } elseif (preg_match('|^/(([-a-zA-Z0-9/])+)$|', $route, $matches)) {
-  $mc_get_type = 'page';
-  $mc_get_name = rtrim($matches[1], '/');
+  $dp_path_type = 'page';
+  $dp_path_name = rtrim($matches[1], '/');
 } elseif (empty($route) || $route == '/' || preg_match('|^/page=([0-9]+)$|', $route, $matches)) {
-  $mc_get_type = 'index';
-  $mc_get_name = '';
-  $mc_page_num = isset($_GET['page']) ? $_GET['page'] : 1;
+  $dp_path_type = 'index';
+  $dp_path_name = '';
+  $dp_page_no = isset($_GET['page']) ? $_GET['page'] : 1;
 }
 
 // 加载数据
-switch ($mc_get_type) {
+switch ($dp_path_type) {
   case 'post':
-    if (empty($mc_get_name)) {
+    if (empty($dp_path_name)) {
       app_404();
     }
     require 'data/posts/index/publish.php';
 
-    if (array_key_exists($mc_get_name, $mc_posts)) {
-      $mc_post_id = $mc_get_name;
+    if (array_key_exists($dp_path_name, $mc_posts)) {
+      $mc_post_id = $dp_path_name;
       $mc_post = $mc_posts[$mc_post_id];
 
       $mc_data = unserialize(file_get_contents('data/posts/data/' . $mc_post_id . '.dat'));
@@ -83,7 +83,7 @@ switch ($mc_get_type) {
     }
     break;
   case 'tag':
-    if (empty($mc_get_name)) {
+    if (empty($dp_path_name)) {
       app_404();
     }
     require 'data/posts/index/publish.php';
@@ -96,7 +96,7 @@ switch ($mc_get_type) {
     for ($i = 0; $i < $mc_post_count; $i++) {
       $id = $mc_post_ids[$i];
       $post = $mc_posts[$id];
-      if (in_array($mc_get_name, $post['tags'])) {
+      if (in_array($dp_path_name, $post['tags'])) {
         $mc_tag_posts[$id] = $post;
       }
     }
@@ -117,7 +117,7 @@ switch ($mc_get_type) {
     for ($i = 0; $i < $mc_post_count; $i++) {
       $id = $mc_post_ids[$i];
       $post = $mc_posts[$id];
-      if (strpos($post['date'], $mc_get_name) === 0) {
+      if (strpos($post['date'], $dp_path_name) === 0) {
         $mc_date_posts[$id] = $post;
       }
     }
@@ -141,8 +141,8 @@ switch ($mc_get_type) {
     break;
   case 'page':
     require 'data/pages/index/publish.php';
-    if (array_key_exists($mc_get_name, $mc_pages)) {
-      $mc_post_id = $mc_get_name;
+    if (array_key_exists($dp_path_name, $mc_pages)) {
+      $mc_post_id = $dp_path_name;
       $mc_post = $mc_pages[$mc_post_id];
       $mc_data = unserialize(file_get_contents('data/pages/data/' . $mc_post['file'] . '.dat'));
     } else {
@@ -159,12 +159,15 @@ switch ($mc_get_type) {
   default:
     app_404();
 }
+
 // 加载视图
-if (in_array($mc_get_type, ['index', 'post', 'tag', 'date', 'archive', 'page'])) {
+if (isset($dp_config['site_status']) && $dp_config['site_status'] == 'closed') {
+  require PATH_ROOT . '/core/closed.php';
+} else if (in_array($dp_path_type, ['index', 'post', 'tag', 'date', 'archive', 'page'])) {
   require PATH_ROOT . '/theme/' . $dp_config['site_theme'] . '/index.php';
-} elseif ($mc_get_type == 'xml') {
+} elseif ($dp_path_type == 'xml') {
   require PATH_ROOT . '/core/xml.php';
-} elseif ($mc_get_type == 'rss') {
+} elseif ($dp_path_type == 'rss') {
   require PATH_ROOT . '/core/rss.php';
 } else {
   app_404();

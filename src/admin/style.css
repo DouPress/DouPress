@@ -21,12 +21,12 @@ select { border:solid 1px #e0e0e0; padding:2px; border-radius:3px 3px 3px 3px; b
 #submenu li { float:left; }
 #submenu li a { display:block; padding:6px 18px; background:#f0f0f0; border:solid 1px #e0e0e0; margin:6px 0 6px 6px; text-decoration:none; color:#426DC9; }
 
-#content { max-width:1000px; margin:10px auto; background:#fff; border:solid 1px #00f; border-radius:3px 3px 3px 3px; }
+#content { max-width:1000px; margin:10px auto; background:#fff; border:solid 1px #ccc; border-radius:3px 3px 3px 3px; }
 #content_box { padding:20px; }
 
-#footer { color:#888; margin-top:20px; max-width:1000px; margin:0 auto; font-size:12px; border-top:solid 1px #e0e0e0; }
+#footer { max-width:1000px; margin:0 auto 10px; }
 #footer span { float:right; }
-#footer .footer_box { padding:10px 0; }
+#footer .footer_box { color:#888; font-size:12px; }
 
 .link { text-decoration:none; color:#0000ff; }
 .link:hover { background:#bc0000; color:#fff; }

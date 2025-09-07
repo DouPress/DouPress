@@ -13,10 +13,11 @@ if (!isset($dp_config)) exit;
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="description" content="<?php echo $dp_config['site_desc'];?> - DouPress" />
   <meta name="keywords" content="DouPress" />
+  <meta name="generator" content="DouPress"/>
   <meta name="author" content="上海程江科技中心" />
   <meta name="copyright" content="程江® 程江科技 CROGRAM" />
   <link rel="icon" href="<?php dp_site_link(); ?>/favicon.ico" />
-  <title><?php if (dp_is_post() || dp_is_page()) { dp_the_title(); ?> | <?php dp_site_name();} else { dp_site_name(); ?> | <?php dp_site_desc(); } ?></title>
+  <title><?php if (dp_is_post() || dp_is_page()) { dp_post_title(); ?> | <?php dp_site_name();} else { dp_site_name(); ?> | <?php dp_site_desc(); } ?></title>
   <link href="<?php dp_theme_url('style.css'); ?>" type="text/css" rel="stylesheet" />
 </head>
 
@@ -40,18 +41,18 @@ if (!isset($dp_config)) exit;
       <div id="content_box">
         <?php if (dp_is_post()) { ?>
           <div class="post">
-            <h1 class="title"><?php dp_the_link(); ?></h1>
-            <div class="tags"><?php dp_the_tags('', '', ''); ?> by <?php dp_nick_name(); ?> at <?php dp_the_date(); ?></div>
-            <div class="content"><?php dp_the_content(); ?></div>
+            <h1 class="title"><?php dp_post_link(); ?></h1>
+            <div class="tags"><?php dp_post_tags('', '', ''); ?> by <?php dp_nick_name(); ?> at <?php dp_post_date(); ?></div>
+            <div class="content"><?php dp_post_content(); ?></div>
           </div>
           <?php if (dp_can_comment()) {
             dp_comment_code();
           } ?>
         <?php } else if (dp_is_page()) { ?>
           <div class="post">
-            <?php /*<h1 class="title"><?php dp_the_link(); ?></h1>
-            <div class="tags">by <?php dp_nick_name(); ?> at <?php dp_the_date(); ?></div> */ ?>
-            <div class="content"><?php dp_the_content(); ?></div>
+            <?php /*<h1 class="title"><?php dp_post_link(); ?></h1>
+            <div class="tags">by <?php dp_nick_name(); ?> at <?php dp_post_date(); ?></div> */ ?>
+            <div class="content"><?php dp_post_content(); ?></div>
           </div>
           <?php if (dp_can_comment()) { ?>
             <?php dp_comment_code(); ?>
@@ -75,15 +76,15 @@ if (!isset($dp_config)) exit;
           <div class="post_list">
             <?php while (dp_next_post()) { ?>
               <div class="post">
-                <h1 class="title"><?php dp_the_link(); ?></h1>
-                <div class="tags"><?php dp_the_tags('', '', ''); ?> by <?php dp_nick_name(); ?> at <?php dp_the_date(); ?></div>
+                <h1 class="title"><?php dp_post_link(); ?></h1>
+                <div class="tags"><?php dp_post_tags('', '', ''); ?> by <?php dp_nick_name(); ?> at <?php dp_post_date(); ?></div>
                 <div class="clearer"></div>
               </div>
             <?php   } ?>
             <div id="page_bar">
               <?php if (dp_has_new()) { ?>
                 <span class="prev link" style="float:left;"><?php dp_goto_new('&larr; 较新文章'); ?></span>
-              <?php   } ?>
+              <?php } ?>
               <?php if (dp_has_old()) { ?>
                 <span class="next link" style="float:right;"><?php dp_goto_old('早期文章 &rarr;'); ?></span>
               <?php   } ?>
@@ -96,8 +97,9 @@ if (!isset($dp_config)) exit;
     </div>
     <div class="clearer"></div>
     <div id="footer">
-      <div>本站由 <a href="https://github.com/doupress/doupress" class="link" target="_blank">DouPress</a> 驱动</div>
+      <div>Powered by <a href="http://doupress.org" class="link" target="_blank">DouPress</a></div>
       <?php if (!empty($dp_config['site_icpno'])) { ?><p><a href="https://beian.miit.gov.cn/#/Integrated/index" class="link" target="_blank"><?php echo $dp_config['site_icpno'];?></a></p><?php } ?>
+      <?php dp_footer_code(); ?>
     </div>
   </div>
 </body>

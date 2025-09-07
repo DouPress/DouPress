@@ -2,7 +2,7 @@
 
 ## 项目介绍
 
-DouPress 是一个针对个人网站设计的微型内容管理系统。
+DouPress 是一个适合个人使用的开源博客管理系统。
 
 主要特点：
 
@@ -66,12 +66,17 @@ dp_nick_name()  // 站长昵称
 
 dp_theme_url() // 主题文件夹中文件的URL
 
-dp_next_post()   // 循环获取文章
-mc_the_name()    // 文章标题
-dp_the_date()    // 发布日期
-dp_the_time()    // 发布时间
-dp_the_content() // 文章内容
-dp_the_tags()    // 文章标签
+dp_next_post()    // 循环获取文章
+dp_post_title()   // 文章标题
+dp_post_link()    // 文章标题A链接
+dp_post_content() // 文章内容
+dp_post_url()     // 文章URL
+dp_post_date()    // 文章发布日期
+dp_post_time()    // 文章发布时间
+dp_post_tags()    // 文章标签
+
+dp_comment_code()// 文章评论代码
+dp_footer_code() // 网页底部代码
 ```
 
 ## 打包发布

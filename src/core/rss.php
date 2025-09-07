@@ -19,13 +19,13 @@
   <generator>DouPress</generator>
 <?php while (dp_next_post()) { ?>
     <item>
-      <title><?php dp_the_title(); ?></title>
-      <link><?php dp_the_url(); ?></link>
-      <guid><?php dp_the_url(); ?></guid>
+      <title><?php dp_post_title(); ?></title>
+      <link><?php dp_post_url(); ?></link>
+      <guid><?php dp_post_url(); ?></guid>
       <dc:creator><?php dp_nick_name(); ?></dc:creator>
-      <pubDate><?php dp_the_date(); ?> <?php dp_the_time(); ?></pubDate>
-<?php dp_the_tags("      <category><![CDATA[", "\n", "]]></category>"); echo "\n"; ?>
-      <content:encoded><![CDATA[<?php dp_the_content();?>]]></content:encoded>
+      <pubDate><?php dp_post_date(); ?> <?php dp_post_time(); ?></pubDate>
+<?php dp_post_tags("      <category><![CDATA[", "\n", "]]></category>"); echo "\n"; ?>
+      <content:encoded><![CDATA[<?php dp_post_content();?>]]></content:encoded>
     </item>
 <?php } ?>
 

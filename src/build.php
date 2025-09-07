@@ -12,11 +12,9 @@ $ignores = array(
     '.gitignore',
     'data',
     'README.md',
+    'nginx.conf',
     'build.php',
     'install.php',
-    'install.txt',
-    'install_template.txt',
-    'mc-debug'
 );
 
 $files = '';

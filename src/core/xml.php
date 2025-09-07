@@ -9,9 +9,9 @@
   </url>
   <?php while (dp_next_post()) { ?>
     <url>
-      <loc><?php dp_the_url(); ?></loc>
+      <loc><?php dp_post_url(); ?></loc>
       <priority>0.8</priority>
-      <lastmod><?php dp_the_date(); ?> <?php dp_the_time(); ?></lastmod>
+      <lastmod><?php dp_post_date(); ?> <?php dp_post_time(); ?></lastmod>
       <changefreq>daily</changefreq>
     </url>
   <?php } ?>

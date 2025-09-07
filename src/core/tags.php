@@ -31,6 +31,9 @@ function dp_site_desc($print = true)
   return $site_desc;
 }
 
+/**
+ * 网站主域名链接
+ */
 function dp_site_link($print = true)
 {
   global $dp_config;
@@ -74,85 +77,85 @@ function dp_theme_url($path, $print = true)
 
 function dp_is_post()
 {
-  global $mc_get_type;
+  global $dp_path_type;
 
-  return $mc_get_type == 'post';
+  return $dp_path_type == 'post';
 }
 
 function dp_is_page()
 {
-  global $mc_get_type;
+  global $dp_path_type;
 
-  return $mc_get_type == 'page';
+  return $dp_path_type == 'page';
 }
 
 function dp_is_tag()
 {
-  global $mc_get_type;
-  return $mc_get_type == 'tag';
+  global $dp_path_type;
+  return $dp_path_type == 'tag';
 }
 
 function dp_is_date()
 {
-  global $mc_get_type;
-  return $mc_get_type == 'date';
+  global $dp_path_type;
+  return $dp_path_type == 'date';
 }
 
 function dp_is_archive()
 {
-  global $mc_get_type;
-  return $mc_get_type == 'archive';
+  global $dp_path_type;
+  return $dp_path_type == 'archive';
 }
 
 function dp_tag_name($print = true)
 {
-  global $mc_get_name;
+  global $dp_path_name;
 
   if ($print) {
-    echo htmlspecialchars($mc_get_name);
+    echo htmlspecialchars($dp_path_name);
     return;
   }
 
-  return $mc_get_name;
+  return $dp_path_name;
 }
 
 function dp_date_name($print = true)
 {
-  global $mc_get_name;
+  global $dp_path_name;
 
   if ($print) {
-    echo htmlspecialchars($mc_get_name);
+    echo htmlspecialchars($dp_path_name);
     return;
   }
 
-  return $mc_get_name;
+  return $dp_path_name;
 }
 
 function dp_has_new()
 {
-  global $mc_page_num;
+  global $dp_page_no;
 
-  return $mc_page_num != 1;
+  return $dp_page_no != 1;
 }
 
 function dp_has_old()
 {
-  global $mc_page_num, $mc_post_count, $mc_post_per_page;
+  global $dp_page_no, $mc_post_count, $mc_post_per_page;
 
-  return $mc_page_num < ($mc_post_count / $mc_post_per_page);
+  return $dp_page_no < ($mc_post_count / $mc_post_per_page);
 }
 
 function dp_goto_old($text)
 {
-  global $mc_get_type, $mc_get_name, $mc_page_num, $dp_config;
+  global $dp_path_type, $dp_path_name, $dp_page_no, $dp_config;
   echo '<a href="';
-  if ($mc_get_type == 'tag') {
-    dp_get_url('tag', htmlspecialchars($mc_get_name));
-  } else if ($mc_get_type == 'date') {
-    dp_get_url('date', htmlspecialchars($mc_get_name));
+  if ($dp_path_type == 'tag') {
+    dp_get_url('tag', htmlspecialchars($dp_path_name));
+  } else if ($dp_path_type == 'date') {
+    dp_get_url('date', htmlspecialchars($dp_path_name));
   }
   echo '/?page=';
-  echo ($mc_page_num + 1);
+  echo ($dp_page_no + 1);
   echo '">';
   echo $text;
   echo '</a>';
@@ -160,15 +163,15 @@ function dp_goto_old($text)
 
 function dp_goto_new($text)
 {
-  global $mc_get_type, $mc_get_name, $mc_page_num, $dp_config;
+  global $dp_path_type, $dp_path_name, $dp_page_no, $dp_config;
   echo '<a href="';
-  if ($mc_get_type == 'tag') {
-    dp_get_url('tag', htmlspecialchars($mc_get_name));
-  } else if ($mc_get_type == 'date') {
-    dp_get_url('date', htmlspecialchars($mc_get_name));
+  if ($dp_path_type == 'tag') {
+    dp_get_url('tag', htmlspecialchars($dp_path_name));
+  } else if ($dp_path_type == 'date') {
+    dp_get_url('date', htmlspecialchars($dp_path_name));
   }
   echo '/?page=';
-  echo ($mc_page_num - 1);
+  echo ($dp_page_no - 1);
   echo '">';
   echo $text;
   echo '</a>';
@@ -224,14 +227,14 @@ function dp_tag_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
 
 function dp_next_post()
 {
-  global $mc_posts, $mc_post_ids, $mc_post_count, $mc_post_i, $mc_post_i_end, $mc_post_id, $mc_post, $mc_page_num, $mc_post_per_page;
+  global $mc_posts, $mc_post_ids, $mc_post_count, $mc_post_i, $mc_post_i_end, $mc_post_id, $mc_post, $dp_page_no, $mc_post_per_page;
 
   if (!isset($mc_posts)) {
     return false;
   }
 
   if (!isset($mc_post_i)) {
-    $mc_post_i = 0 + ($mc_page_num - 1) * $mc_post_per_page;
+    $mc_post_i = 0 + ($dp_page_no - 1) * $mc_post_per_page;
     $mc_post_i_end = $mc_post_i + $mc_post_per_page;
     if ($mc_post_count < $mc_post_i_end)
       $mc_post_i_end = $mc_post_count;
@@ -251,7 +254,10 @@ function dp_next_post()
   return true;
 }
 
-function dp_the_title($print = true)
+/**
+ * 文章标题
+ */
+function dp_post_title($print = true)
 {
   global $mc_post;
 
@@ -263,7 +269,10 @@ function dp_the_title($print = true)
   return htmlspecialchars($mc_post['title']);
 }
 
-function dp_the_date($print = true)
+/**
+ * 文章发布日期
+ */
+function dp_post_date($print = true)
 {
   global $mc_post;
 
@@ -275,7 +284,10 @@ function dp_the_date($print = true)
   return $mc_post['date'];
 }
 
-function dp_the_time($print = true)
+/**
+ * 文章发布时间
+ */
+function dp_post_time($print = true)
 {
   global $mc_post;
 
@@ -287,7 +299,10 @@ function dp_the_time($print = true)
   return $mc_post['time'];
 }
 
-function dp_the_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_link = true)
+/**
+ * 文章标签链接
+ */
+function dp_post_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_link = true)
 {
   global $mc_post, $dp_config;
 
@@ -320,7 +335,10 @@ function dp_the_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_lin
   }
 }
 
-function dp_the_content($print = true)
+/**
+ * 文章内容
+ */
+function dp_post_content($print = true)
 {
   global $mc_data;
 
@@ -342,18 +360,24 @@ function dp_the_content($print = true)
   return $html;
 }
 
-function dp_the_link()
+/**
+ * 文章标题+链接
+ */
+function dp_post_link()
 {
   global $mc_post;
 
   echo '<a href="';
-  dp_the_url();
+  dp_post_url();
   echo '">';
   echo htmlspecialchars($mc_post['title']);
   echo '</a>';
 }
 
-function dp_the_url($print = true)
+/**
+ * 文章访问URL
+ */
+function dp_post_url($print = true)
 {
   global $mc_post_id, $mc_post, $dp_config;
   $url = dp_get_url('post', $mc_post_id);
@@ -366,6 +390,9 @@ function dp_the_url($print = true)
   return $url;
 }
 
+/**
+ * 是否可评论
+ */
 function dp_can_comment()
 {
   global $mc_post_id, $mc_post;
@@ -373,9 +400,22 @@ function dp_can_comment()
   return isset($mc_post['can_comment']) ? $mc_post['can_comment'] == '1' : true;
 }
 
+/**
+ * 文章评论代码
+ */
 function dp_comment_code()
 {
   global $dp_config;
 
   echo isset($dp_config['comment_code']) ? $dp_config['comment_code'] : '';
+}
+
+/**
+ * 网页底部代码
+ */
+function dp_footer_code()
+{
+  global $dp_config;
+
+  echo isset($dp_config['footer_code']) ? $dp_config['footer_code'] : '';
 }

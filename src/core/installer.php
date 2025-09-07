@@ -127,18 +127,20 @@ if (!$install_failed) {
     echo "创建配置文件";
     if (!@file_put_contents('data/config.php',
       "<?php \$dp_config = array(".
-      "'version'      => '/*DOUPRESS_VERSION*/',".
-      "'site_link'    => '{$_POST['sitelink']}',".
-      "'site_name'    => '{$_POST['sitename']}',".
-      "'site_desc'    => '又一个 DouPress 网站',".
-      "'site_keywords'    => 'DouPress',".
-      "'site_theme'   => 'default',".
-      "'site_route'   => 'default',".
-      "'site_icpno'   => '',".
-      "'user_name'    => '{$_POST['username']}',".
-      "'user_pass'    => '{$_POST['password']}',".
-      "'nick_name'    => '{$_POST['nickname']}',".
-      "'comment_code' => '');?>"
+      "'version'       => '/*DOUPRESS_VERSION*/',".
+      "'site_link'     => '{$_POST['sitelink']}',".
+      "'site_name'     => '{$_POST['sitename']}',".
+      "'site_desc'     => '又一个 DouPress 网站',".
+      "'site_keywords' => 'DouPress',".
+      "'site_theme'    => 'default',".
+      "'site_route'    => 'default',".
+      "'site_icpno'    => '',".
+      "'site_status'   => 'open',".
+      "'user_name'     => '{$_POST['username']}',".
+      "'user_pass'     => '{$_POST['password']}',".
+      "'nick_name'     => '{$_POST['nickname']}',".
+      "'comment_code'  => '',".
+      "'footer_code'   => '');?>"
     )) {
       $install_failed = true;
       echo '[<span style="color:red;">失败</span>]';

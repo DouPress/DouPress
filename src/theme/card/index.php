@@ -3,12 +3,23 @@ if (!isset($dp_config)) exit;
 
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta content="telephone=no,email=no" name="format-detection" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="description" content="<?php echo $dp_config['site_desc'];?> - DouPress" />
+  <meta name="keywords" content="DouPress" />
+  <meta name="generator" content="DouPress"/>
+  <meta name="author" content="上海程江科技中心" />
+  <meta name="copyright" content="程江® 程江科技 CROGRAM" />
+  <link rel="icon" href="<?php dp_site_link(); ?>/favicon.ico" />
   <title><?php if (dp_is_post() || dp_is_page()) {
-    dp_the_title(); ?> | <?php dp_site_name();
+    dp_post_title(); ?> | <?php dp_site_name();
   } else {
     dp_site_name(); ?> | <?php dp_site_desc();
   } ?></title>
@@ -31,19 +42,19 @@ if (!isset($dp_config)) exit;
         <a href="<?php dp_get_url('rss'); ?>" class="rss" title="RSS订阅" target="_blank">RSS订阅</a>
       </div>
       <div class="clear"></div>
-      <div id="footer">Powered by <a href="http://doupress.com" target="_blank">DouPress</a></div>
+      <div id="footer">Powered by <a href="http://doupress.org" target="_blank">DouPress</a></div>
     </div>
     <div id="content">
       <div id="content_box">
         <?php if (dp_is_post()) { ?>
           <div class="post">
-            <h1 class="title"><?php dp_the_link(); ?></h1>
+            <h1 class="title"><?php dp_post_link(); ?></h1>
             <div class="content">
-              <?php dp_the_content(); ?>
+              <?php dp_post_content(); ?>
             </div>
             <div class="post_meta">
-              <div class="post_date"><?php dp_the_date(); ?></div>
-              <div class="post_tag"><?php dp_the_tags('', '', ''); ?></div>
+              <div class="post_date"><?php dp_post_date(); ?></div>
+              <div class="post_tag"><?php dp_post_tags('', '', ''); ?></div>
               <div class="post_comm"><a href="<?php
               //mc_post_link(); 
               ?>#comm">评论</a></div>
@@ -59,7 +70,7 @@ if (!isset($dp_config)) exit;
             //  mc_page_title();
             ?></h1> -->
             <div class="content">
-              <?php dp_the_content(); ?>
+              <?php dp_post_content(); ?>
             </div>
           </div>
           <?php if (dp_can_comment()) { ?>
@@ -93,13 +104,13 @@ if (!isset($dp_config)) exit;
           <?php } ?>
           <?php while (dp_next_post()) { ?>
             <div class="post">
-              <h1 class="title"><?php dp_the_link(); ?></h1>
+              <h1 class="title"><?php dp_post_link(); ?></h1>
               <div class="content">
-                <?php dp_the_content(); ?>
+                <?php dp_post_content(); ?>
               </div>
               <div class="post_meta">
-                <div class="post_date"><?php dp_the_date(); ?></div>
-                <div class="post_tag"><?php dp_the_tags('', '', ''); ?></div>
+                <div class="post_date"><?php dp_post_date(); ?></div>
+                <div class="post_tag"><?php dp_post_tags('', '', ''); ?></div>
                 <div class="post_comm"><a href="<?php 
                 //mc_post_link(); 
                 ?>#comm">评论</a></div>
@@ -115,6 +126,7 @@ if (!isset($dp_config)) exit;
     <?php } ?>
     </div>
   </div>
+<?php dp_footer_code(); ?>
 </body>
 
 </html>
