@@ -99,7 +99,7 @@ php build.php 1.2.5
 
 ## 🤝 贡献
 
-欢迎提交 [Issue](https://github.com/doupress/doupress/issues) 和 [Pull Request](https://github.com/doupress/doupress/pulls)！
+欢迎提交 [Issue](https://github.com/DouPress/DouPress/issues) 和 [Pull Request](https://github.com/DouPress/DouPress/pulls)！
 
 ## 📄 许可证
 
