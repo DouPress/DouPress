@@ -2,12 +2,12 @@
 define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
 require_once PATH_ROOT . '/core/common.php';
 
-function dp_check_login()
+function app_check_login()
 {
-  if (isset($_COOKIE['dp_token'])) {
-    $token = $_COOKIE['dp_token'];
-    global $dp_config;
-    if ($token != md5($dp_config['user_name'] . '_' . $dp_config['user_pass'])) {
+  if (isset($_COOKIE['token'])) {
+    $token = $_COOKIE['token'];
+    global $app_config;
+    if ($token != md5($app_config['user_name'] . '_' . $app_config['user_pass'])) {
       Header("Location:login.php");
       exit;
     }
@@ -50,8 +50,9 @@ function post_sort($a, $b)
     $a_date = $a['date'];
     $b_date = $b['date'];
 
-    if ($a_date != $b_date)
+    if ($a_date != $b_date) {
         return $a_date > $b_date ? -1 : 1;
+    }
 
     return $a['time'] > $b['time'] ? -1 : 1;
 }

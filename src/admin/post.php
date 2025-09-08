@@ -2,7 +2,7 @@
 
 require_once 'common.php';
 
-dp_check_login();
+app_check_login();
 
 if (!is_dir(PATH_ROOT . '/data/posts/data/')) {
   mkdir(PATH_ROOT . '/data/posts/data/');
@@ -10,7 +10,7 @@ if (!is_dir(PATH_ROOT . '/data/posts/data/')) {
 
 function load_posts()
 {
-  global $state, $index_file, $mc_posts;
+  global $state, $index_file, $app_posts;
 
   if (isset($_GET['state'])) {
     if ($_GET['state'] == 'draft') {
@@ -33,24 +33,24 @@ function load_posts()
 
 function delete_post($id)
 {
-  global $state, $index_file, $mc_posts;
+  global $state, $index_file, $app_posts;
 
-  $post = $mc_posts[$id];
+  $post = $app_posts[$id];
 
   $post['prev_state'] = $state;
 
-  unset($mc_posts[$id]);
+  unset($app_posts[$id]);
 
-  file_put_contents($index_file, "<?php\n\$mc_posts=" . var_export($mc_posts, true) . "\n?>");
+  file_put_contents($index_file, "<?php\n\$app_posts=" . var_export($app_posts, true) . "\n?>");
 
   if ($state != 'delete') {
     $index_file2 = PATH_ROOT . '/data/posts/index/delete.php';
 
     require $index_file2;
 
-    $mc_posts[$id] = $post;
+    $app_posts[$id] = $post;
 
-    file_put_contents($index_file2, "<?php\n\$mc_posts=" . var_export($mc_posts, true) . "\n?>");
+    file_put_contents($index_file2, "<?php\n\$app_posts=" . var_export($app_posts, true) . "\n?>");
   } else {
     unlink(PATH_ROOT . '/data/posts/data/' . $id . '.dat');
   }
@@ -58,27 +58,27 @@ function delete_post($id)
 
 function revert_post($id)
 {
-  global $state, $index_file, $mc_posts;
+  global $state, $index_file, $app_posts;
 
-  $post = $mc_posts[$id];
+  $post = $app_posts[$id];
 
   $prev_state = $post['prev_state'];
 
   unset($post['prev_state']);
 
-  unset($mc_posts[$id]);
+  unset($app_posts[$id]);
 
-  file_put_contents($index_file, "<?php\n\$mc_posts=" . var_export($mc_posts, true) . "\n?>");
+  file_put_contents($index_file, "<?php\n\$app_posts=" . var_export($app_posts, true) . "\n?>");
 
   $index_file2 = PATH_ROOT . '/data/posts/index/' . $prev_state . '.php';
 
   require $index_file2;
 
-  $mc_posts[$id] = $post;
+  $app_posts[$id] = $post;
 
-  uasort($mc_posts, "post_sort");
+  uasort($app_posts, "post_sort");
 
-  file_put_contents($index_file2, "<?php\n\$mc_posts=" . var_export($mc_posts, true) . "\n?>");
+  file_put_contents($index_file2, "<?php\n\$app_posts=" . var_export($app_posts, true) . "\n?>");
 }
 
 load_posts();
@@ -121,7 +121,7 @@ if (isset($_GET['done'])) {
   $message = '操作成功';
 }
 
-$post_ids = array_keys($mc_posts);
+$post_ids = array_keys($app_posts);
 $post_count = count($post_ids);
 
 $date_array = array();
@@ -129,7 +129,7 @@ $tags_array = array();
 
 for ($i = 0; $i < $post_count; $i++) {
   $post_id = $post_ids[$i];
-  $post = $mc_posts[$post_id];
+  $post = $app_posts[$post_id];
   $date_array[] = substr($post['date'], 0, 7);
   $tags_array = array_merge($tags_array, $post['tags']);
 }
@@ -147,11 +147,11 @@ if (isset($_GET['date']))
 else
   $filter_date = '';
 
-$mc_posts2 = array();
+$app_posts2 = array();
 
 for ($i = 0; $i < $post_count; $i++) {
   $post_id = $post_ids[$i];
-  $post = $mc_posts[$post_id];
+  $post = $app_posts[$post_id];
 
   if ($filter_tag != '' && !in_array($filter_tag, $post['tags'])) {
     continue;
@@ -161,12 +161,12 @@ for ($i = 0; $i < $post_count; $i++) {
     continue;
   }
 
-  $mc_posts2[$post_id] = $post;
+  $app_posts2[$post_id] = $post;
 }
 
-$mc_posts = $mc_posts2;
+$app_posts = $app_posts2;
 
-$post_ids = array_keys($mc_posts);
+$post_ids = array_keys($app_posts);
 $post_count = count($post_ids);
 
 $last_page = ceil($post_count / 10);
@@ -315,7 +315,7 @@ else if ($page_num > $last_page)
       <?php for ($i = 0; $i < $post_count; $i++) {
         if ($i < ($page_num - 1) * 10 || $i >= ($page_num * 10)) continue;
         $post_id = $post_ids[$i];
-        $post = $mc_posts[$post_id]; ?>
+        $post = $app_posts[$post_id]; ?>
         <tr<?php if ($i % 2 == 0) echo ' class="alt"'; ?>>
           <td><input type="checkbox" name="ids" value="<?php echo $post_id; ?>" /></td>
           <td>
@@ -328,16 +328,18 @@ else if ($page_num > $last_page)
               <?php } else { ?>
                 <a class="link_button" href="?delete=<?php echo $post_id; ?>&state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&tag=<?php echo urlencode($filter_tag); ?>">回收</a>
               <?php } ?>
-              <a class="link_button" href="<?php echo dp_get_url('post', $post_id); ?>" target="_blank">查看</a>
+              <a class="link_button" href="<?php echo app_get_url('post', $post_id); ?>" target="_blank">查看</a>
             </div>
           </td>
           <td><?php
-            $tags = $post['tags'];
-            $tag_count = count($tags);
-            for ($j = 0; $j < $tag_count; $j++) { $tag = $tags[$j]; ?>
+              $tags = $post['tags'];
+              $tag_count = count($tags);
+              for ($j = 0; $j < $tag_count; $j++) {
+                $tag = $tags[$j]; ?>
               <a class="link" href="?state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&tag=<?php echo urlencode($tag); ?>">
                 <?php echo htmlspecialchars($tag); ?></a>
-              <?php if ($j < $tag_count - 1) echo '|';}?>
+            <?php if ($j < $tag_count - 1) echo '|';
+              } ?>
           </td>
           <td><?php echo htmlspecialchars($post['date']); ?></td>
           </tr>

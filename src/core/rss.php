@@ -10,22 +10,22 @@
   xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
 >
 <channel>
-  <title><?php dp_site_name(); ?></title>
-  <link><?php dp_site_link(); ?></link>
-  <description><?php dp_site_desc(); ?></description>
+  <title><?php app_site_name(); ?></title>
+  <link><?php app_site_link(); ?></link>
+  <description><?php app_site_desc(); ?></description>
   <language>zh_CN</language>
   <sy:updatePeriod>hourly</sy:updatePeriod>
   <sy:updateFrequency>1</sy:updateFrequency>
   <generator>DouPress</generator>
-<?php while (dp_next_post()) { ?>
+<?php while (app_next_post()) { ?>
     <item>
-      <title><?php dp_post_title(); ?></title>
-      <link><?php dp_post_url(); ?></link>
-      <guid><?php dp_post_url(); ?></guid>
-      <dc:creator><?php dp_nick_name(); ?></dc:creator>
-      <pubDate><?php dp_post_date(); ?> <?php dp_post_time(); ?></pubDate>
-<?php dp_post_tags("      <category><![CDATA[", "\n", "]]></category>"); echo "\n"; ?>
-      <content:encoded><![CDATA[<?php dp_post_content();?>]]></content:encoded>
+      <title><?php app_post_title(); ?></title>
+      <link><?php app_post_url(); ?></link>
+      <guid><?php app_post_url(); ?></guid>
+      <dc:creator><?php app_nick_name(); ?></dc:creator>
+      <pubDate><?php app_post_date(); ?> <?php app_post_time(); ?></pubDate>
+<?php app_post_tags("      <category><![CDATA[", "\n", "]]></category>"); echo "\n"; ?>
+      <content:encoded><![CDATA[<?php app_post_content();?>]]></content:encoded>
     </item>
 <?php } ?>
 

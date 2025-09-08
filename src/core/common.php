@@ -12,17 +12,17 @@ function app_404()
   exit();
 }
 
-function dp_get_url($dp_path_type, $dp_path_name = '', $path = '', $print = true)
+function app_get_url($app_path_type, $app_path_name = '', $path = '', $print = true)
 {
-  global $dp_config;
-  $r = @$dp_config['site_route'] == 'path' ? '/' : '/?';
-  $t = empty($dp_path_type) ? '' : $dp_path_type . '/';
-  $n = empty($dp_path_name) ? '' : $dp_path_name;
+  global $app_config;
+  $r = @$app_config['site_route'] == 'path' ? '/' : '/?';
+  $t = empty($app_path_type) ? '' : $app_path_type . '/';
+  $n = empty($app_path_name) ? '' : $app_path_name;
 
   $url = $r . $t . $n;
   $url = str_replace('//', '/', $url);
   $url = rtrim($url, '/');
-  $url = $dp_config['site_link'] . $url;
+  $url = $app_config['site_link'] . $url;
 
   if ($print) {
     echo $url;

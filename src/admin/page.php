@@ -2,7 +2,7 @@
 
 require_once 'common.php';
 
-dp_check_login();
+app_check_login();
 
 if (!is_dir(PATH_ROOT . '/data/pages/data/')) {
   mkdir(PATH_ROOT . '/data/pages/data/');
@@ -10,7 +10,7 @@ if (!is_dir(PATH_ROOT . '/data/pages/data/')) {
 
 function load_pages()
 {
-  global $state, $index_file, $mc_pages;
+  global $state, $index_file, $app_pages;
 
   if (isset($_GET['state'])) {
     if ($_GET['state'] == 'draft') {
@@ -33,24 +33,24 @@ function load_pages()
 
 function delete_page($id)
 {
-  global $state, $index_file, $mc_pages;
+  global $state, $index_file, $app_pages;
 
-  $page = $mc_pages[$id];
+  $page = $app_pages[$id];
 
   $page['prev_state'] = $state;
 
-  unset($mc_pages[$id]);
+  unset($app_pages[$id]);
 
-  file_put_contents($index_file, "<?php\n\$mc_pages=" . var_export($mc_pages, true) . "\n?>");
+  file_put_contents($index_file, "<?php\n\$app_pages=" . var_export($app_pages, true) . "\n?>");
 
   if ($state != 'delete') {
     $index_file2 = PATH_ROOT . '/data/pages/index/delete.php';
 
     require $index_file2;
 
-    $mc_pages[$id] = $page;
+    $app_pages[$id] = $page;
 
-    file_put_contents($index_file2, "<?php\n\$mc_pages=" . var_export($mc_pages, true) . "\n?>");
+    file_put_contents($index_file2, "<?php\n\$app_pages=" . var_export($app_pages, true) . "\n?>");
   } else {
     unlink(PATH_ROOT . '/data/pages/data/' . $page['file'] . '.dat');
   }
@@ -58,27 +58,27 @@ function delete_page($id)
 
 function revert_page($id)
 {
-  global $state, $index_file, $mc_pages;
+  global $state, $index_file, $app_pages;
 
-  $page = $mc_pages[$id];
+  $page = $app_pages[$id];
 
   $prev_state = $page['prev_state'];
 
   unset($page['prev_state']);
 
-  unset($mc_pages[$id]);
+  unset($app_pages[$id]);
 
-  file_put_contents($index_file, "<?php\n\$mc_pages=" . var_export($mc_pages, true) . "\n?>");
+  file_put_contents($index_file, "<?php\n\$app_pages=" . var_export($app_pages, true) . "\n?>");
 
   $index_file2 = PATH_ROOT . '/data/pages/index/' . $prev_state . '.php';
 
   require $index_file2;
 
-  $mc_pages[$id] = $page;
+  $app_pages[$id] = $page;
 
-  ksort($mc_pages);
+  ksort($app_pages);
 
-  file_put_contents($index_file2, "<?php\n\$mc_pages=" . var_export($mc_pages, true) . "\n?>");
+  file_put_contents($index_file2, "<?php\n\$app_pages=" . var_export($app_pages, true) . "\n?>");
 }
 
 load_pages();
@@ -121,14 +121,14 @@ if (isset($_GET['done'])) {
   $message = '操作成功';
 }
 
-$page_ids = array_keys($mc_pages);
+$page_ids = array_keys($app_pages);
 $page_count = count($page_ids);
 
 $date_array = array();
 
 for ($i = $page_count - 1; $i >= 0; $i--) {
   $page_id = $page_ids[$i];
-  $page = $mc_pages[$page_id];
+  $page = $app_pages[$page_id];
   $date_array[] = substr($page['date'], 0, 7);
 }
 
@@ -140,21 +140,21 @@ if (isset($_GET['date'])) {
   $filter_date = '';
 }
 
-$mc_pages2 = array();
+$app_pages2 = array();
 
 for ($i = 0; $i < $page_count; $i++) {
   $page_id = $page_ids[$i];
-  $page = $mc_pages[$page_id];
+  $page = $app_pages[$page_id];
 
   if ($filter_date != '' && strpos($page['date'], $filter_date) !== 0)
     continue;
 
-  $mc_pages2[$page_id] = $page;
+  $app_pages2[$page_id] = $page;
 }
 
-$mc_pages = $mc_pages2;
+$app_pages = $app_pages2;
 
-$page_ids = array_keys($mc_pages);
+$page_ids = array_keys($app_pages);
 $page_count = count($page_ids);
 
 $last_page = ceil($page_count / 10);
@@ -304,7 +304,7 @@ if ($page_num < 0) {
       <?php for ($i = 0; $i < $page_count; $i++) {
         if ($i < ($page_num - 1) * 10 || $i >= ($page_num * 10)) continue;
         $page_id = $page_ids[$i];
-        $page = $mc_pages[$page_id]; ?>
+        $page = $app_pages[$page_id]; ?>
         <tr<?php if ($i % 2 == 0) echo ' class="alt"'; ?>>
           <td><input type="checkbox" name="ids" value="<?php echo htmlentities($page_id); ?>" /></td>
           <td>
@@ -317,7 +317,7 @@ if ($page_num < 0) {
               <?php } else { ?>
                 <a class="link_button" href="?delete=<?php echo urlencode($page_id); ?>&state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>">回收</a>
               <?php } ?>
-              <a class="link_button" href="<?php echo dp_get_url('', $page_id);?>" target="_blank">查看</a>
+              <a class="link_button" href="<?php echo app_get_url('', $page_id);?>" target="_blank">查看</a>
             </div>
           </td>
           <td>/<?php echo $page_id; ?></td>

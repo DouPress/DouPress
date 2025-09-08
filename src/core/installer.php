@@ -52,7 +52,7 @@ label { font-weight:bold; color:#333; font-size:12px; }
 <body>
   <div id="main">
     <div style="font-size:32px;font-weight:bold;text-align:center;padding-top:40px;">DouPress 安装程序</div>
-    <div style="font-size:13px;color:#888;text-align:center;padding:10px 0 20px;">v/*DOUPRESS_VERSION*/</div>
+    <div style="font-size:13px;color:#888;text-align:center;padding:10px 0 20px;">v/*APP_VERSION*/</div>
     <div id="mainbox">
 <?php if (!isset($_POST["start_install"])) { ?>
     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
@@ -105,7 +105,7 @@ label { font-weight:bold; color:#333; font-size:12px; }
       ?>
         <div style="font-size:13px;color:#666;line-height:16px;padding:20px;margin:0 auto;">
 <?php
-/*DOUPRESS_FILES*/
+/*INSTALL_FILES*/
 
 $is_upgrade=true;
 
@@ -126,8 +126,8 @@ if (!$install_failed) {
     echo '<br/>';
     echo "创建配置文件";
     if (!@file_put_contents('data/config.php',
-      "<?php \$dp_config = array(".
-      "'version'       => '/*DOUPRESS_VERSION*/',".
+      "<?php \$app_config = array(".
+      "'version'       => '/*APP_VERSION*/',".
       "'site_link'     => '{$_POST['sitelink']}',".
       "'site_name'     => '{$_POST['sitename']}',".
       "'site_desc'     => '又一个 DouPress 网站',".
@@ -150,8 +150,8 @@ if (!$install_failed) {
     echo '<br/>';
     echo "升级配置文件";
     require 'data/config.php';
-    $dp_config['version'] = '/*DOUPRESS_VERSION*/';
-    if (!@file_put_contents('data/config.php', "<?php \$dp_config = ".var_export($dp_config, true)."; ?>")) {
+    $app_config['version'] = '/*APP_VERSION*/';
+    if (!@file_put_contents('data/config.php', "<?php \$app_config = ".var_export($app_config, true)."; ?>")) {
       $install_failed = true;
       echo '[<span style="color:red;">失败</span>]';
     }
@@ -165,9 +165,9 @@ if (!$install_failed) {
       echo '<br/>';
       echo "创建页面索引文件";
       if (
-        !@file_put_contents('data/posts/index/delete.php', '<?php $mc_posts=array(); ?>') ||
-        !@file_put_contents('data/posts/index/publish.php', '<?php $mc_posts=array(); ?>') ||
-        !@file_put_contents('data/posts/index/draft.php', '<?php $mc_posts=array(); ?>')
+        !@file_put_contents('data/posts/index/delete.php', '<?php $app_posts=array(); ?>') ||
+        !@file_put_contents('data/posts/index/publish.php', '<?php $app_posts=array(); ?>') ||
+        !@file_put_contents('data/posts/index/draft.php', '<?php $app_posts=array(); ?>')
       ) {
         $install_failed = true;
         echo '[<span style="color:red;">失败</span>]';
@@ -188,9 +188,9 @@ if (!$install_failed) {
       echo '<br/>';
       echo "创建页面索引文件";
       if (
-        !@file_put_contents('data/pages/index/delete.php', '<?php $mc_pages=array(); ?>') ||
-        !@file_put_contents('data/pages/index/publish.php', '<?php $mc_pages=array(); ?>') ||
-        !@file_put_contents('data/pages/index/draft.php', '<?php $mc_pages=array(); ?>')
+        !@file_put_contents('data/pages/index/delete.php', '<?php $app_pages=array(); ?>') ||
+        !@file_put_contents('data/pages/index/publish.php', '<?php $app_pages=array(); ?>') ||
+        !@file_put_contents('data/pages/index/draft.php', '<?php $app_pages=array(); ?>')
       ) {
         $install_failed = true;
         echo '[<span style="color:red;">失败</span>]';

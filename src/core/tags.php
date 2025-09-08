@@ -3,11 +3,11 @@ require_once dirname(__FILE__) . '/Michelf/MarkdownExtra.inc.php';
 
 use Michelf\MarkdownExtra;
 
-function dp_site_name($print = true)
+function app_site_name($print = true)
 {
-  global $dp_config;
+  global $app_config;
 
-  $site_name = htmlspecialchars($dp_config['site_name']);
+  $site_name = htmlspecialchars($app_config['site_name']);
 
   if ($print) {
     echo $site_name;
@@ -17,11 +17,11 @@ function dp_site_name($print = true)
   return $site_name;
 }
 
-function dp_site_desc($print = true)
+function app_site_desc($print = true)
 {
-  global $dp_config;
+  global $app_config;
 
-  $site_desc = htmlspecialchars($dp_config['site_desc']);
+  $site_desc = htmlspecialchars($app_config['site_desc']);
 
   if ($print) {
     echo $site_desc;
@@ -34,11 +34,11 @@ function dp_site_desc($print = true)
 /**
  * 网站主域名链接
  */
-function dp_site_link($print = true)
+function app_site_link($print = true)
 {
-  global $dp_config;
+  global $app_config;
 
-  $site_link = htmlentities($dp_config['site_link']);
+  $site_link = htmlentities($app_config['site_link']);
 
   if ($print) {
     echo $site_link;
@@ -48,11 +48,11 @@ function dp_site_link($print = true)
   return $site_link;
 }
 
-function dp_nick_name($print = true)
+function app_nick_name($print = true)
 {
-  global $dp_config;
+  global $app_config;
 
-  $nick_name = htmlspecialchars($dp_config['nick_name']);
+  $nick_name = htmlspecialchars($app_config['nick_name']);
 
   if ($print) {
     echo $nick_name;
@@ -62,10 +62,10 @@ function dp_nick_name($print = true)
   return $nick_name;
 }
 
-function dp_theme_url($path, $print = true)
+function app_theme_url($path, $print = true)
 {
-  global $dp_config;
-  $url = htmlentities($dp_config['site_link']) . '/theme/' . $dp_config['site_theme'] . '/' . $path;
+  global $app_config;
+  $url = htmlentities($app_config['site_link']) . '/theme/' . $app_config['site_theme'] . '/' . $path;
 
   if ($print) {
     echo $url;
@@ -75,121 +75,121 @@ function dp_theme_url($path, $print = true)
   return $url;
 }
 
-function dp_is_post()
+function app_is_post()
 {
-  global $dp_path_type;
+  global $app_path_type;
 
-  return $dp_path_type == 'post';
+  return $app_path_type == 'post';
 }
 
-function dp_is_page()
+function app_is_page()
 {
-  global $dp_path_type;
+  global $app_path_type;
 
-  return $dp_path_type == 'page';
+  return $app_path_type == 'page';
 }
 
-function dp_is_tag()
+function app_is_tag()
 {
-  global $dp_path_type;
-  return $dp_path_type == 'tag';
+  global $app_path_type;
+  return $app_path_type == 'tag';
 }
 
-function dp_is_date()
+function app_is_date()
 {
-  global $dp_path_type;
-  return $dp_path_type == 'date';
+  global $app_path_type;
+  return $app_path_type == 'date';
 }
 
-function dp_is_archive()
+function app_is_archive()
 {
-  global $dp_path_type;
-  return $dp_path_type == 'archive';
+  global $app_path_type;
+  return $app_path_type == 'archive';
 }
 
-function dp_tag_name($print = true)
+function app_tag_name($print = true)
 {
-  global $dp_path_name;
+  global $app_path_name;
 
   if ($print) {
-    echo htmlspecialchars($dp_path_name);
+    echo htmlspecialchars($app_path_name);
     return;
   }
 
-  return $dp_path_name;
+  return $app_path_name;
 }
 
-function dp_date_name($print = true)
+function app_date_name($print = true)
 {
-  global $dp_path_name;
+  global $app_path_name;
 
   if ($print) {
-    echo htmlspecialchars($dp_path_name);
+    echo htmlspecialchars($app_path_name);
     return;
   }
 
-  return $dp_path_name;
+  return $app_path_name;
 }
 
-function dp_has_new()
+function app_has_new()
 {
-  global $dp_page_no;
+  global $app_page_no;
 
-  return $dp_page_no != 1;
+  return $app_page_no != 1;
 }
 
-function dp_has_old()
+function app_has_old()
 {
-  global $dp_page_no, $mc_post_count, $mc_post_per_page;
+  global $app_page_no, $app_post_count, $app_post_per_page;
 
-  return $dp_page_no < ($mc_post_count / $mc_post_per_page);
+  return $app_page_no < ($app_post_count / $app_post_per_page);
 }
 
-function dp_goto_old($text)
+function app_goto_old($text)
 {
-  global $dp_path_type, $dp_path_name, $dp_page_no, $dp_config;
+  global $app_path_type, $app_path_name, $app_page_no, $app_config;
   echo '<a href="';
-  if ($dp_path_type == 'tag') {
-    dp_get_url('tag', htmlspecialchars($dp_path_name));
-  } else if ($dp_path_type == 'date') {
-    dp_get_url('date', htmlspecialchars($dp_path_name));
+  if ($app_path_type == 'tag') {
+    app_get_url('tag', htmlspecialchars($app_path_name));
+  } else if ($app_path_type == 'date') {
+    app_get_url('date', htmlspecialchars($app_path_name));
   }
   echo '/?page=';
-  echo ($dp_page_no + 1);
+  echo ($app_page_no + 1);
   echo '">';
   echo $text;
   echo '</a>';
 }
 
-function dp_goto_new($text)
+function app_goto_new($text)
 {
-  global $dp_path_type, $dp_path_name, $dp_page_no, $dp_config;
+  global $app_path_type, $app_path_name, $app_page_no, $app_config;
   echo '<a href="';
-  if ($dp_path_type == 'tag') {
-    dp_get_url('tag', htmlspecialchars($dp_path_name));
-  } else if ($dp_path_type == 'date') {
-    dp_get_url('date', htmlspecialchars($dp_path_name));
+  if ($app_path_type == 'tag') {
+    app_get_url('tag', htmlspecialchars($app_path_name));
+  } else if ($app_path_type == 'date') {
+    app_get_url('date', htmlspecialchars($app_path_name));
   }
   echo '/?page=';
-  echo ($dp_page_no - 1);
+  echo ($app_page_no - 1);
   echo '">';
   echo $text;
   echo '</a>';
 }
 
-function dp_date_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
+function app_date_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
 {
-  global $mc_dates, $dp_config;
+  global $app_dates, $app_config;
 
-  if (isset($mc_dates)) {
-    $date_count = count($mc_dates);
+  if (isset($app_dates)) {
+    $date_count = count($app_dates);
 
     for ($i = 0; $i < $date_count; $i++) {
-      $date = $mc_dates[$i];
+      $date = $app_dates[$i];
 
       echo $item_begin;
       echo '<a href="';
-      dp_get_url('date', $date);
+      app_get_url('date', $date);
       echo '">';
       echo $date;
       echo '</a>';
@@ -201,19 +201,19 @@ function dp_date_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
   }
 }
 
-function dp_tag_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
+function app_tag_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
 {
-  global $mc_tags, $dp_config;
+  global $app_tags, $app_config;
 
-  if (isset($mc_tags)) {
-    $tag_count = count($mc_tags);
+  if (isset($app_tags)) {
+    $tag_count = count($app_tags);
 
     for ($i = 0; $i < $tag_count; $i++) {
-      $tag = $mc_tags[$i];
+      $tag = $app_tags[$i];
 
       echo $item_begin;
       echo '<a href="';
-      dp_get_url('tag', urlencode($tag));
+      app_get_url('tag', urlencode($tag));
       echo '">';
       echo htmlspecialchars($tag);
       echo '</a>';
@@ -225,88 +225,88 @@ function dp_tag_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
   }
 }
 
-function dp_next_post()
+function app_next_post()
 {
-  global $mc_posts, $mc_post_ids, $mc_post_count, $mc_post_i, $mc_post_i_end, $mc_post_id, $mc_post, $dp_page_no, $mc_post_per_page;
+  global $app_posts, $app_post_ids, $app_post_count, $app_post_i, $app_post_i_end, $app_post_id, $app_post, $app_page_no, $app_post_per_page;
 
-  if (!isset($mc_posts)) {
+  if (!isset($app_posts)) {
     return false;
   }
 
-  if (!isset($mc_post_i)) {
-    $mc_post_i = 0 + ($dp_page_no - 1) * $mc_post_per_page;
-    $mc_post_i_end = $mc_post_i + $mc_post_per_page;
-    if ($mc_post_count < $mc_post_i_end)
-      $mc_post_i_end = $mc_post_count;
+  if (!isset($app_post_i)) {
+    $app_post_i = 0 + ($app_page_no - 1) * $app_post_per_page;
+    $app_post_i_end = $app_post_i + $app_post_per_page;
+    if ($app_post_count < $app_post_i_end)
+      $app_post_i_end = $app_post_count;
   }
 
-  if ($mc_post_i == $mc_post_i_end) {
+  if ($app_post_i == $app_post_i_end) {
     return false;
   }
 
-  if (!isset($mc_post_ids[$mc_post_i])) {
+  if (!isset($app_post_ids[$app_post_i])) {
     return false;
   }
 
-  $mc_post_id = $mc_post_ids[$mc_post_i];
-  $mc_post = $mc_posts[$mc_post_id];
-  $mc_post_i += 1;
+  $app_post_id = $app_post_ids[$app_post_i];
+  $app_post = $app_posts[$app_post_id];
+  $app_post_i += 1;
   return true;
 }
 
 /**
  * 文章标题
  */
-function dp_post_title($print = true)
+function app_post_title($print = true)
 {
-  global $mc_post;
+  global $app_post;
 
   if ($print) {
-    echo htmlspecialchars($mc_post['title']);
+    echo htmlspecialchars($app_post['title']);
     return;
   }
 
-  return htmlspecialchars($mc_post['title']);
+  return htmlspecialchars($app_post['title']);
 }
 
 /**
  * 文章发布日期
  */
-function dp_post_date($print = true)
+function app_post_date($print = true)
 {
-  global $mc_post;
+  global $app_post;
 
   if ($print) {
-    echo $mc_post['date'];
+    echo $app_post['date'];
     return;
   }
 
-  return $mc_post['date'];
+  return $app_post['date'];
 }
 
 /**
  * 文章发布时间
  */
-function dp_post_time($print = true)
+function app_post_time($print = true)
 {
-  global $mc_post;
+  global $app_post;
 
   if ($print) {
-    echo $mc_post['time'];
+    echo $app_post['time'];
     return;
   }
 
-  return $mc_post['time'];
+  return $app_post['time'];
 }
 
 /**
  * 文章标签链接
  */
-function dp_post_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_link = true)
+function app_post_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_link = true)
 {
-  global $mc_post, $dp_config;
+  global $app_post, $app_config;
 
-  $tags = $mc_post['tags'];
+  $tags = $app_post['tags'];
 
   $count = count($tags);
 
@@ -317,7 +317,7 @@ function dp_post_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_li
 
     if ($as_link) {
       echo '<a href="';
-      dp_get_url('tag', urlencode($tag));
+      app_get_url('tag', urlencode($tag));
       echo '">';
     }
 
@@ -338,18 +338,18 @@ function dp_post_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_li
 /**
  * 文章内容
  */
-function dp_post_content($print = true)
+function app_post_content($print = true)
 {
-  global $mc_data;
+  global $app_data;
 
-  if (!isset($mc_data)) {
-    global $mc_post_id;
+  if (!isset($app_data)) {
+    global $app_post_id;
 
-    $data = unserialize(file_get_contents('data/posts/data/' . $mc_post_id . '.dat'));
+    $data = unserialize(file_get_contents('data/posts/data/' . $app_post_id . '.dat'));
 
     $html = MarkdownExtra::defaultTransform($data['content']);
   } else {
-    $html = MarkdownExtra::defaultTransform($mc_data['content']);
+    $html = MarkdownExtra::defaultTransform($app_data['content']);
   }
 
   if ($print) {
@@ -363,24 +363,24 @@ function dp_post_content($print = true)
 /**
  * 文章标题+链接
  */
-function dp_post_link()
+function app_post_link()
 {
-  global $mc_post;
+  global $app_post;
 
   echo '<a href="';
-  dp_post_url();
+  app_post_url();
   echo '">';
-  echo htmlspecialchars($mc_post['title']);
+  echo htmlspecialchars($app_post['title']);
   echo '</a>';
 }
 
 /**
  * 文章访问URL
  */
-function dp_post_url($print = true)
+function app_post_url($print = true)
 {
-  global $mc_post_id, $mc_post, $dp_config;
-  $url = dp_get_url('post', $mc_post_id);
+  global $app_post_id, $app_post, $app_config;
+  $url = app_get_url('post', $app_post_id);
 
   if ($print) {
     echo $url;
@@ -393,29 +393,29 @@ function dp_post_url($print = true)
 /**
  * 是否可评论
  */
-function dp_can_comment()
+function app_can_comment()
 {
-  global $mc_post_id, $mc_post;
+  global $app_post_id, $app_post;
 
-  return isset($mc_post['can_comment']) ? $mc_post['can_comment'] == '1' : true;
+  return isset($app_post['can_comment']) ? $app_post['can_comment'] == '1' : true;
 }
 
 /**
  * 文章评论代码
  */
-function dp_comment_code()
+function app_comment_code()
 {
-  global $dp_config;
+  global $app_config;
 
-  echo isset($dp_config['comment_code']) ? $dp_config['comment_code'] : '';
+  echo isset($app_config['comment_code']) ? $app_config['comment_code'] : '';
 }
 
 /**
  * 网页底部代码
  */
-function dp_footer_code()
+function app_footer_code()
 {
-  global $dp_config;
+  global $app_config;
 
-  echo isset($dp_config['footer_code']) ? $dp_config['footer_code'] : '';
+  echo isset($app_config['footer_code']) ? $app_config['footer_code'] : '';
 }

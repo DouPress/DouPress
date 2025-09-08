@@ -3,21 +3,7 @@ ini_set("display_errors", "On");
 error_reporting(E_ALL);
 require_once '../data/config.php';
 
-// if (isset($_COOKIE['dp_token'])) {
-//   $token = $_COOKIE['dp_token'];
-
-//   if ($token != md5($dp_config['user_name'] . '_' . $dp_config['user_pass'])) {
-//     Header("Location:index.php");
-//     exit;
-//   }
-// } else {
-//   Header("Location:index.php");
-//   exit;
-// }
-
 $pagefile = basename($_SERVER['PHP_SELF']);
-// echo $pagefile;exit;
-
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -36,7 +22,7 @@ $pagefile = basename($_SERVER['PHP_SELF']);
 <body>
   <div id="menu">
     <h3 id="menu_title">
-      <a href="index.php" class="link"><?php echo htmlspecialchars($dp_config['site_name']); ?></a>
+      <a href="index.php" class="link"><?php echo htmlspecialchars($app_config['site_name']); ?></a>
     </h3>
     <ul>
       <li <?php echo $pagefile == 'post.php' || $pagefile == 'post-edit.php' ? 'class="current"' : ''; ?>><a href="post.php">文章</a></li>

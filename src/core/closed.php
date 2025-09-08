@@ -9,9 +9,9 @@
     <meta name="renderer" content="webkit">
     <meta name="generator" content="DouPress"/>
     <meta name="MobileOptimized" content="320">
-    <meta name="keywords" content="<?php echo $dp_config['site_keywords'];?>">
-    <meta name="description" content="<?php dp_site_desc(); ?>">
-    <title><?php dp_site_name(); ?></title>
+    <meta name="keywords" content="<?php echo $app_config['site_keywords'];?>">
+    <meta name="description" content="<?php app_site_desc(); ?>">
+    <title><?php app_site_name(); ?></title>
     <style type="text/css">
         html { height: 100%; -webkit-box-sizing: border-box; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-overflow-scrolling: touch; font-family: -apple-system, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; -moz-osx-font-smoothing: grayscale; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility }
         html { background-color: #fff; color: #333 }
@@ -39,9 +39,9 @@
     </div>
     <footer>
         <div class="footer-wrapper">
-            <div class="copyright">&copy; <?php echo date('Y'); ?> <?php dp_site_name(); ?> All Rights Reserved.</div>
-<?php if (!empty($dp_config['site_icpno'])) { ?>
-            <div class="policy-info"><a href="https://beian.miit.gov.cn/#/Integrated/index" class="link" target="_blank"><?php echo $dp_config['site_icpno'];?></a></div>
+            <div class="copyright">&copy; <?php echo date('Y'); ?> <?php app_site_name(); ?> All Rights Reserved.</div>
+<?php if (!empty($app_config['site_icpno'])) { ?>
+            <div class="policy-info"><a href="https://beian.miit.gov.cn/#/Integrated/index" class="link" target="_blank"><?php echo $app_config['site_icpno'];?></a></div>
 <?php } ?>
             <i class="policy-info">Powered by <a href="http://doupress.org" class="link" target="_blank">DouPress</a></i>
         </div>

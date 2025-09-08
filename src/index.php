@@ -3,8 +3,8 @@
 define('PATH_ROOT', dirname(__FILE__)); // 定义根路径
 require_once PATH_ROOT . '/core/common.php';
 
-$mc_post_per_page = 10;
-global $dp_config;
+$app_post_per_page = 10;
+global $app_config;
 
 // 处理 URL
 function parseRoute($requestUri, $scriptName, $siteRoute)
@@ -31,120 +31,120 @@ function parseRoute($requestUri, $scriptName, $siteRoute)
 }
 
 // 解析当前请求的 URL
-$route = parseRoute($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'], @$dp_config['site_route']);
+$route = parseRoute($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'], @$app_config['site_route']);
 // print_r($route);exit;
 // 分配路由
-$dp_path_type = '';
+$app_path_type = '';
 if (preg_match('|^/post/([a-z0-5]{6})$|', rtrim($route, '/'), $matches)) {
-  $dp_path_type = 'post';
-  $dp_path_name = $matches[1];
+  $app_path_type = 'post';
+  $app_path_name = $matches[1];
 } elseif (preg_match('|^/tag/([^/]+)(/\?page=([0-9]+)){0,1}$|', rtrim($route, '/'), $matches)) {
-  $dp_path_type = 'tag';
-  $dp_path_name = isset($matches[1]) ? urldecode($matches[1]) : '';
-  $dp_page_no = isset($matches[3]) ? $matches[3] : 1;
+  $app_path_type = 'tag';
+  $app_path_name = isset($matches[1]) ? urldecode($matches[1]) : '';
+  $app_page_no = isset($matches[3]) ? $matches[3] : 1;
 } elseif (preg_match('|^/date/([0-9]{4}-[0-9]{2})(/\?page=([0-9]+)){0,1}$|', rtrim($route, '/'), $matches)) {
-  $dp_path_type = 'date';
-  $dp_path_name = urldecode($matches[1]);
-  $dp_page_no = isset($matches[3]) ? $matches[3] : 1;
+  $app_path_type = 'date';
+  $app_path_name = urldecode($matches[1]);
+  $app_page_no = isset($matches[3]) ? $matches[3] : 1;
 } elseif (preg_match('|^/archive$|', rtrim($route, '/'), $matches)) {
-  $dp_path_type = 'archive';
+  $app_path_type = 'archive';
 } elseif (rtrim($route, '/') == '/rss') {
-  $dp_path_type = 'rss';
-  $dp_path_name = '';
-  $dp_page_no = isset($_GET['page']) ? $_GET['page'] : 1;
+  $app_path_type = 'rss';
+  $app_path_name = '';
+  $app_page_no = isset($_GET['page']) ? $_GET['page'] : 1;
 } elseif (rtrim($route, '/') == '/xml') {
-  $dp_path_type = 'xml';
-  $dp_path_name = '';
-  $dp_page_no = isset($_GET['page']) ? $_GET['page'] : 1;
+  $app_path_type = 'xml';
+  $app_path_name = '';
+  $app_page_no = isset($_GET['page']) ? $_GET['page'] : 1;
 } elseif (preg_match('|^/(([-a-zA-Z0-9/])+)$|', $route, $matches)) {
-  $dp_path_type = 'page';
-  $dp_path_name = rtrim($matches[1], '/');
+  $app_path_type = 'page';
+  $app_path_name = rtrim($matches[1], '/');
 } elseif (empty($route) || $route == '/' || preg_match('|^/page=([0-9]+)$|', $route, $matches)) {
-  $dp_path_type = 'index';
-  $dp_path_name = '';
-  $dp_page_no = isset($_GET['page']) ? $_GET['page'] : 1;
+  $app_path_type = 'index';
+  $app_path_name = '';
+  $app_page_no = isset($_GET['page']) ? $_GET['page'] : 1;
 }
 
 // 加载数据
-switch ($dp_path_type) {
+switch ($app_path_type) {
   case 'post':
-    if (empty($dp_path_name)) {
+    if (empty($app_path_name)) {
       app_404();
     }
     require 'data/posts/index/publish.php';
 
-    if (array_key_exists($dp_path_name, $mc_posts)) {
-      $mc_post_id = $dp_path_name;
-      $mc_post = $mc_posts[$mc_post_id];
+    if (array_key_exists($app_path_name, $app_posts)) {
+      $app_post_id = $app_path_name;
+      $app_post = $app_posts[$app_post_id];
 
-      $mc_data = unserialize(file_get_contents('data/posts/data/' . $mc_post_id . '.dat'));
+      $app_data = unserialize(file_get_contents('data/posts/data/' . $app_post_id . '.dat'));
     } else {
       app_404();
     }
     break;
   case 'tag':
-    if (empty($dp_path_name)) {
+    if (empty($app_path_name)) {
       app_404();
     }
     require 'data/posts/index/publish.php';
 
-    $mc_post_ids = array_keys($mc_posts);
-    $mc_post_count = count($mc_post_ids);
+    $app_post_ids = array_keys($app_posts);
+    $app_post_count = count($app_post_ids);
 
-    $mc_tag_posts = array();
+    $app_tag_posts = array();
 
-    for ($i = 0; $i < $mc_post_count; $i++) {
-      $id = $mc_post_ids[$i];
-      $post = $mc_posts[$id];
-      if (in_array($dp_path_name, $post['tags'])) {
-        $mc_tag_posts[$id] = $post;
+    for ($i = 0; $i < $app_post_count; $i++) {
+      $id = $app_post_ids[$i];
+      $post = $app_posts[$id];
+      if (in_array($app_path_name, $post['tags'])) {
+        $app_tag_posts[$id] = $post;
       }
     }
 
-    $mc_posts = $mc_tag_posts;
+    $app_posts = $app_tag_posts;
 
-    $mc_post_ids = array_keys($mc_posts);
-    $mc_post_count = count($mc_post_ids);
+    $app_post_ids = array_keys($app_posts);
+    $app_post_count = count($app_post_ids);
     break;
   case 'date':
     require 'data/posts/index/publish.php';
 
-    $mc_post_ids = array_keys($mc_posts);
-    $mc_post_count = count($mc_post_ids);
+    $app_post_ids = array_keys($app_posts);
+    $app_post_count = count($app_post_ids);
 
-    $mc_date_posts = array();
+    $app_date_posts = array();
 
-    for ($i = 0; $i < $mc_post_count; $i++) {
-      $id = $mc_post_ids[$i];
-      $post = $mc_posts[$id];
-      if (strpos($post['date'], $dp_path_name) === 0) {
-        $mc_date_posts[$id] = $post;
+    for ($i = 0; $i < $app_post_count; $i++) {
+      $id = $app_post_ids[$i];
+      $post = $app_posts[$id];
+      if (strpos($post['date'], $app_path_name) === 0) {
+        $app_date_posts[$id] = $post;
       }
     }
 
-    $mc_posts = $mc_date_posts;
+    $app_posts = $app_date_posts;
 
-    $mc_post_ids = array_keys($mc_posts);
-    $mc_post_count = count($mc_post_ids);
+    $app_post_ids = array_keys($app_posts);
+    $app_post_count = count($app_post_ids);
     break;
   case 'archive':
     require 'data/posts/index/publish.php';
     $tags_array = [];
     $date_array = [];
-    foreach ($mc_posts as $post) {
+    foreach ($app_posts as $post) {
       $date_array[] = substr($post['date'], 0, 7);
       $tags_array = array_merge($tags_array, $post['tags']);
     }
 
-    $mc_tags = array_values(array_unique($tags_array));
-    $mc_dates = array_values(array_unique($date_array));
+    $app_tags = array_values(array_unique($tags_array));
+    $app_dates = array_values(array_unique($date_array));
     break;
   case 'page':
     require 'data/pages/index/publish.php';
-    if (array_key_exists($dp_path_name, $mc_pages)) {
-      $mc_post_id = $dp_path_name;
-      $mc_post = $mc_pages[$mc_post_id];
-      $mc_data = unserialize(file_get_contents('data/pages/data/' . $mc_post['file'] . '.dat'));
+    if (array_key_exists($app_path_name, $app_pages)) {
+      $app_post_id = $app_path_name;
+      $app_post = $app_pages[$app_post_id];
+      $app_data = unserialize(file_get_contents('data/pages/data/' . $app_post['file'] . '.dat'));
     } else {
       app_404();
     }
@@ -153,21 +153,21 @@ switch ($dp_path_type) {
   case 'xml':
   case 'rss':
     require 'data/posts/index/publish.php';
-    $mc_post_ids = array_keys($mc_posts);
-    $mc_post_count = count($mc_post_ids);
+    $app_post_ids = array_keys($app_posts);
+    $app_post_count = count($app_post_ids);
     break;
   default:
     app_404();
 }
 
 // 加载视图
-if (isset($dp_config['site_status']) && $dp_config['site_status'] == 'closed') {
+if (isset($app_config['site_status']) && $app_config['site_status'] == 'closed') {
   require PATH_ROOT . '/core/closed.php';
-} else if (in_array($dp_path_type, ['index', 'post', 'tag', 'date', 'archive', 'page'])) {
-  require PATH_ROOT . '/theme/' . $dp_config['site_theme'] . '/index.php';
-} elseif ($dp_path_type == 'xml') {
+} else if (in_array($app_path_type, ['index', 'post', 'tag', 'date', 'archive', 'page'])) {
+  require PATH_ROOT . '/theme/' . $app_config['site_theme'] . '/index.php';
+} elseif ($app_path_type == 'xml') {
   require PATH_ROOT . '/core/xml.php';
-} elseif ($dp_path_type == 'rss') {
+} elseif ($app_path_type == 'rss') {
   require PATH_ROOT . '/core/rss.php';
 } else {
   app_404();

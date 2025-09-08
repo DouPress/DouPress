@@ -22,8 +22,8 @@ $files = '';
 build($dirs, $files);
 
 $template = file_get_contents("core/installer.php");
-$template = str_replace('/*DOUPRESS_VERSION*/', $version, $template);
-$template = str_replace('/*DOUPRESS_FILES*/', $files, $template);
+$template = str_replace('/*APP_VERSION*/', $version, $template);
+$template = str_replace('/*INSTALL_FILES*/', $files, $template);
 
 file_put_contents("install.php", $template);
 echo "安装文件已保存到 install.php \n";

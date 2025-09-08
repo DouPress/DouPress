@@ -1,7 +1,7 @@
 <?php
 require_once 'common.php';
 
-dp_check_login();
+app_check_login();
 
 $display_info = false;
 
@@ -15,48 +15,48 @@ foreach ($theme_files as $file) {
 }
 
 if (isset($_POST['save'])) {
-  $user_name_changed = $_POST['user_name'] != $dp_config['user_name'];
+  $user_name_changed = $_POST['user_name'] != $app_config['user_name'];
 
-  $dp_config['site_name']     = $_POST['site_name'];
-  $dp_config['site_desc']     = $_POST['site_desc'];
-  $dp_config['site_keywords'] = $_POST['site_keywords'];
-  $dp_config['site_link']     = $_POST['site_link'];
-  $dp_config['site_theme']    = $_POST['site_theme'];
-  $dp_config['site_route']    = $_POST['site_route'];
-  $dp_config['site_icpno']    = $_POST['site_icpno'];
-  $dp_config['site_status']   = $_POST['site_status'];
-  $dp_config['nick_name']     = $_POST['nick_name'];
-  $dp_config['user_name']     = $_POST['user_name'];
-  $dp_config['comment_code']  = trim($_POST['comment_code']);
-  $dp_config['footer_code']   = trim($_POST['footer_code']);
+  $app_config['site_name']     = $_POST['site_name'];
+  $app_config['site_desc']     = $_POST['site_desc'];
+  $app_config['site_keywords'] = $_POST['site_keywords'];
+  $app_config['site_link']     = $_POST['site_link'];
+  $app_config['site_theme']    = $_POST['site_theme'];
+  $app_config['site_route']    = $_POST['site_route'];
+  $app_config['site_icpno']    = $_POST['site_icpno'];
+  $app_config['site_status']   = $_POST['site_status'];
+  $app_config['nick_name']     = $_POST['nick_name'];
+  $app_config['user_name']     = $_POST['user_name'];
+  $app_config['comment_code']  = trim($_POST['comment_code']);
+  $app_config['footer_code']   = trim($_POST['footer_code']);
 
   if ($_POST['user_pass'] != '') {
-    $dp_config['user_pass'] = $_POST['user_pass'];
+    $app_config['user_pass'] = $_POST['user_pass'];
   }
 
-  $code = "<?php\n\$dp_config = " . var_export($dp_config, true) . "\n?>";
+  $code = "<?php\n\$app_config = " . var_export($app_config, true) . "\n?>";
 
   file_put_contents(PATH_ROOT . '/data/config.php', $code);
 
   if ($_POST['user_pass'] != '' || $user_name_changed) {
-    setcookie('dp_token', md5($dp_config['user_name'] . '_' . $dp_config['user_pass']));
+    setcookie('token', md5($app_config['user_name'] . '_' . $app_config['user_pass']));
   }
 
   $display_info = true;
 }
 
-$site_name     = $dp_config['site_name'];
-$site_desc     = $dp_config['site_desc'];
-$site_keywords = $dp_config['site_keywords'];
-$site_link     = $dp_config['site_link'];
-$site_theme    = $dp_config['site_theme'];
-$site_route    = $dp_config['site_route'];
-$site_status   = $dp_config['site_status'];
-$site_icpno    = $dp_config['site_icpno'];
-$nick_name     = $dp_config['nick_name'];
-$user_name     = $dp_config['user_name'];
-$comment_code  = isset($dp_config['comment_code']) ? $dp_config['comment_code'] : '';
-$footer_code   = isset($dp_config['footer_code']) ? $dp_config['footer_code'] : '';
+$site_name     = $app_config['site_name'];
+$site_desc     = $app_config['site_desc'];
+$site_keywords = $app_config['site_keywords'];
+$site_link     = $app_config['site_link'];
+$site_theme    = $app_config['site_theme'];
+$site_route    = $app_config['site_route'];
+$site_status   = $app_config['site_status'];
+$site_icpno    = $app_config['site_icpno'];
+$nick_name     = $app_config['nick_name'];
+$user_name     = $app_config['user_name'];
+$comment_code  = isset($app_config['comment_code']) ? $app_config['comment_code'] : '';
+$footer_code   = isset($app_config['footer_code']) ? $app_config['footer_code'] : '';
 
 ?>
 <?php require 'head.php'; ?>
@@ -108,8 +108,8 @@ $footer_code   = isset($dp_config['footer_code']) ? $dp_config['footer_code'] : 
     <div class="field">
       <div class="label">链接形式</div>
       <select name="site_route" class="textbox">
-        <option value="default" <?php if (empty($site_route) || $site_route == 'default') echo 'selected="selected"'; ?>>默认形式 domain.com/?post/pathname</option>
-        <option value="path" <?php if ($site_route == 'path') echo 'selected="selected"'; ?>>路径模式 domain.com/post/pathname</option>
+        <option value="default" <?php if (empty($site_route) || $site_route == 'default') echo 'selected="selected"'; ?>>默认形式 example.com/?post/pathname</option>
+        <option value="path" <?php if ($site_route == 'path') echo 'selected="selected"'; ?>>路径模式 example.com/post/pathname</option>
       </select>
       <div class="info">注意：路径模式需要服务端支持</div>
     </div>

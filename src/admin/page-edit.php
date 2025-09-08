@@ -2,7 +2,7 @@
 // define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
 require_once 'common.php';
 
-dp_check_login();
+app_check_login();
 
 $page_file        = '';
 $page_path        = '';
@@ -92,11 +92,11 @@ if (isset($_POST['_IS_POST_BACK_'])) {
 
         require $index_file;
 
-        unset($mc_pages[$page_old_path]);
+        unset($app_pages[$page_old_path]);
 
         file_put_contents(
           $index_file,
-          "<?php\n\$mc_pages=" . var_export($mc_pages, true) . "\n?>"
+          "<?php\n\$app_pages=" . var_export($app_pages, true) . "\n?>"
         );
       }
     }
@@ -115,13 +115,13 @@ if (isset($_POST['_IS_POST_BACK_'])) {
 
     require $index_file;
 
-    $mc_pages[$page_path] = $data;
+    $app_pages[$page_path] = $data;
 
-    ksort($mc_pages);
+    ksort($app_pages);
 
     file_put_contents(
       $index_file,
-      "<?php\n\$mc_pages=" . var_export($mc_pages, true) . "\n?>"
+      "<?php\n\$app_pages=" . var_export($app_pages, true) . "\n?>"
     );
 
     $data['content'] = $page_content;
@@ -168,7 +168,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   <input type="hidden" name="_IS_POST_BACK_" value="" />
   <?php if ($succeed) { ?>
     <?php if ($page_state == 'publish') { ?>
-      <div class="updated">页面已发布。 <a href="<?php echo dp_get_url('', $page_path); ?>" class="link" target="_blank">查看页面</a></div>
+      <div class="updated">页面已发布。 <a href="<?php echo app_get_url('', $page_path); ?>" class="link" target="_blank">查看页面</a></div>
     <?php } else { ?>
       <div class="updated">页面已保存到“草稿箱”。 <a href="page.php?state=draft">打开草稿箱</a></div>
     <?php } ?>

@@ -2,18 +2,18 @@
 // 后台登录页
 require_once dirname(dirname(__FILE__)).'/data/config.php';
 
-if (isset($_COOKIE['dp_token'])) {
-  $token = $_COOKIE['dp_token'];
+if (isset($_COOKIE['token'])) {
+  $token = $_COOKIE['token'];
 
-  if ($token == md5($dp_config['user_name'].'_'.$dp_config['user_pass'])) {
+  if ($token == md5($app_config['user_name'].'_'.$app_config['user_pass'])) {
     Header("Location: index.php");
   }
 }
 
 if (isset($_POST['login'])) {
-  if ($_POST['user'] == $dp_config['user_name'] 
-  && $_POST['pass'] == $dp_config['user_pass']) {
-    setcookie('dp_token', md5($dp_config['user_name'].'_'.$dp_config['user_pass']));
+  if ($_POST['user'] == $app_config['user_name'] 
+  && $_POST['pass'] == $app_config['user_pass']) {
+    setcookie('token', md5($app_config['user_name'].'_'.$app_config['user_pass']));
     Header("Location: index.php");
   } else {
     $display_message = '账号或密码错误';
@@ -24,7 +24,7 @@ if (isset($_POST['login'])) {
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title><?php echo htmlspecialchars($dp_config['site_name']); ?> - Powered by DouPress</title>
+  <title><?php echo htmlspecialchars($app_config['site_name']); ?> - Powered by DouPress</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="generator" content="DouPress" />
@@ -51,7 +51,7 @@ if (isset($_POST['login'])) {
 </head>
 <body>
   <div class="login-form">
-    <div id="login_title"><?php echo htmlspecialchars($dp_config['site_name']); ?></div>
+    <div id="login_title"><?php echo htmlspecialchars($app_config['site_name']); ?></div>
     <?php if (isset($display_message)) { ?>
       <div class="display-message"><?php echo $display_message; ?></div>
     <?php } ?>

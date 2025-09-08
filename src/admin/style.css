@@ -25,8 +25,8 @@ select { border:solid 1px #e0e0e0; padding:2px; border-radius:3px 3px 3px 3px; b
 #content_box { padding:20px; }
 
 #footer { max-width:1000px; margin:0 auto 10px; }
-#footer span { float:right; }
 #footer .footer_box { color:#888; font-size:12px; }
+#footer .version { float:right; }
 
 .link { text-decoration:none; color:#0000ff; }
 .link:hover { background:#bc0000; color:#fff; }

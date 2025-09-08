@@ -1,14 +1,14 @@
 <?php
 // 后台首页
 require_once 'common.php';
-dp_check_login();
+app_check_login();
 
 if (isset($_POST['login'])) {
   if (
-    $_POST['user'] == $dp_config['user_name']
-    && $_POST['pass'] == $dp_config['user_pass']
+    $_POST['user'] == $app_config['user_name']
+    && $_POST['pass'] == $app_config['user_pass']
   ) {
-    setcookie('dp_token', md5($dp_config['user_name'] . '_' . $dp_config['user_pass']));
+    setcookie('token', md5($app_config['user_name'] . '_' . $app_config['user_pass']));
     // Header("Location: post.php");
   }
 }
@@ -34,10 +34,10 @@ if (isset($_POST['login'])) {
   </div>
   <div class="admin_page_name">
     <span>前台:</span>
-    <a href="<?php dp_site_link(); ?>" class="link" target="_blank">首页</a>
-    <a href="<?php dp_get_url('archive'); ?>" class="link" target="_blank">存档</a>
-    <a href="<?php dp_get_url('rss'); ?>" class="link" target="_blank">订阅</a>
-    <a href="<?php dp_get_url('xml'); ?>" class="link" target="_blank">地图</a>
+    <a href="<?php app_site_link(); ?>" class="link" target="_blank">首页</a>
+    <a href="<?php app_get_url('archive'); ?>" class="link" target="_blank">存档</a>
+    <a href="<?php app_get_url('rss'); ?>" class="link" target="_blank">订阅</a>
+    <a href="<?php app_get_url('xml'); ?>" class="link" target="_blank">地图</a>
   </div>
   <div class="admin_page_name">
     <span>系统:</span>

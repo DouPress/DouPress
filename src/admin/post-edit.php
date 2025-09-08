@@ -1,7 +1,7 @@
 <?php
 require_once 'common.php';
 
-dp_check_login();
+app_check_login();
 
 $post_id          = '';
 $post_state       = '';
@@ -13,7 +13,7 @@ $post_time        = '';
 $post_can_comment = '';
 $error_msg        = '';
 $succeed          = false;
-  
+
 if (isset($_POST['_IS_POST_BACK_'])) {
   $post_id          = $_POST['id'];
   $post_state       = $_POST['state'];
@@ -48,8 +48,8 @@ if (isset($_POST['_IS_POST_BACK_'])) {
     $post_time = substr_replace($post_time, $_POST['second'], 6, 2);
 
   $post_tags_count = count($post_tags);
-  
-  for ($i = 0; $i < $post_tags_count; $i ++) {
+
+  for ($i = 0; $i < $post_tags_count; $i++) {
     $trim = trim($post_tags[$i]);
     if ($trim == '') {
       unset($post_tags[$i]);
@@ -57,45 +57,44 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       $post_tags[$i] = $trim;
     }
   }
-  
+
   reset($post_tags);
-  
+
   if ($post_title == '') {
     $error_msg = '文章标题不能为空';
-  }
-  else {
+  } else {
     if ($post_id == '') {
       $file_names = shorturl($post_title);
-      
+
       foreach ($file_names as $file_name) {
-        $file_path = PATH_ROOT . '/data/posts/data/'.$file_name.'.dat';
-        
+        $file_path = PATH_ROOT . '/data/posts/data/' . $file_name . '.dat';
+
         if (!is_file($file_path)) {
           $post_id = $file_name;
           break;
         }
       }
-    }
-    else {
-      $file_path = PATH_ROOT . '/data/posts/data/'.$post_id.'.dat';
-  
+    } else {
+      $file_path = PATH_ROOT . '/data/posts/data/' . $post_id . '.dat';
+
       $data = unserialize(file_get_contents($file_path));
-      
+
       $post_old_state = $data['state'];
-      
+
       if ($post_old_state != $post_state) {
-        $index_file = PATH_ROOT . '/data/posts/index/'.$post_old_state.'.php';
-        
+        $index_file = PATH_ROOT . '/data/posts/index/' . $post_old_state . '.php';
+
         require $index_file;
-        
-        unset($mc_posts[$post_id]);
-        
-        file_put_contents($index_file,
-          "<?php\n\$mc_posts=".var_export($mc_posts, true)."\n?>"
+
+        unset($app_posts[$post_id]);
+
+        file_put_contents(
+          $index_file,
+          "<?php\n\$app_posts=" . var_export($app_posts, true) . "\n?>"
         );
       }
     }
-    
+
     $data = array(
       'id'          => $post_id,
       'state'       => $post_state,
@@ -105,30 +104,31 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       'time'        => $post_time,
       'can_comment'  => $post_can_comment,
     );
-    
-    $index_file = PATH_ROOT . '/data/posts/index/'.$post_state.'.php';
-    
-    require $index_file;
-    
-    $mc_posts[$post_id] = $data;
 
-    uasort($mc_posts, "post_sort");   
- 
-    file_put_contents($index_file,
-      "<?php\n\$mc_posts=".var_export($mc_posts, true)."\n?>"
+    $index_file = PATH_ROOT . '/data/posts/index/' . $post_state . '.php';
+
+    require $index_file;
+
+    $app_posts[$post_id] = $data;
+
+    uasort($app_posts, "post_sort");
+
+    file_put_contents(
+      $index_file,
+      "<?php\n\$app_posts=" . var_export($app_posts, true) . "\n?>"
     );
-    
+
     $data['content'] = $post_content;
-    
+
     file_put_contents($file_path, serialize($data));
-    
+
     $succeed = true;
   }
 } else if (isset($_GET['id'])) {
-  $file_path = PATH_ROOT . '/data/posts/data/'.$_GET['id'].'.dat';
-  
+  $file_path = PATH_ROOT . '/data/posts/data/' . $_GET['id'] . '.dat';
+
   $data = unserialize(file_get_contents($file_path));
-  
+
   $post_id      = $data['id'];
   $post_state   = $data['state'];
   $post_title   = $data['title'];
@@ -141,83 +141,95 @@ if (isset($_POST['_IS_POST_BACK_'])) {
 ?>
 <?php require 'head.php'; ?>
 <script type="text/javascript">
-  function empty_textbox_focus(target){
+  function empty_textbox_focus(target) {
     if (target.temp_value != undefined && target.value != target.temp_value)
       return;
-    
+
     target.temp_value = target.value;
-    target.value='';
-    target.style.color='#000';
+    target.value = '';
+    target.style.color = '#000';
   }
 
   function empty_textbox_blur(target) {
     if (target.value == '') {
-      target.style.color='#888';
+      target.style.color = '#888';
       target.value = target.temp_value;
     }
   }
 </script>
 <form action="<?php echo htmlentities($_SERVER['REQUEST_URI']); ?>" method="post">
-  <input type="hidden" name="_IS_POST_BACK_" value=""/>
+  <input type="hidden" name="_IS_POST_BACK_" value="" />
   <?php if ($succeed) { ?>
-  <?php if ($post_state == 'publish') { ?>
-  <div class="updated">文章已发布。 <a href="<?php echo dp_get_url('post', $post_id); ?>" class="link" target="_blank">查看文章</a></div>
-  <?php } else { ?>
-  <div class="updated">文章已保存到“草稿箱”。 <a href="post.php?state=draft">打开草稿箱</a></div>
-  <?php } ?>
+    <?php if ($post_state == 'publish') { ?>
+      <div class="updated">文章已发布。 <a href="<?php echo app_get_url('post', $post_id); ?>" class="link" target="_blank">查看文章</a></div>
+    <?php } else { ?>
+      <div class="updated">文章已保存到“草稿箱”。 <a href="post.php?state=draft">打开草稿箱</a></div>
+    <?php } ?>
   <?php } ?>
   <div class="admin_page_name">
-    <?php if ($post_id == '') echo "撰写文章"; else echo "编辑文章"; ?><a class="link_button" href="post.php">所有文章</a>
+    <?php if ($post_id == '') echo "撰写文章";
+    else echo "编辑文章"; ?><a class="link_button" href="post.php">所有文章</a>
   </div>
   <div style="margin-bottom:20px;">
-    <input name="title" type="text" class="edit_textbox" placeholder="在此输入标题" value="<?php echo htmlspecialchars($post_title); ?>"/>
+    <input name="title" type="text" class="edit_textbox" placeholder="在此输入标题" value="<?php echo htmlspecialchars($post_title); ?>" />
   </div>
   <div style="margin-bottom:20px;">
     <?php require 'editor.php'; ?>
     <?php editor(htmlspecialchars_decode($post_content)); ?>
   </div>
   <div style="margin-bottom:20px;">
-    <input name="tags" type="text" class="edit_textbox" placeholder="在此输入标签，多个标签之间用逗号分隔" value="<?php echo htmlspecialchars(implode(',', $post_tags)); ?>"/>
+    <input name="tags" type="text" class="edit_textbox" placeholder="在此输入标签，多个标签之间用逗号分隔" value="<?php echo htmlspecialchars(implode(',', $post_tags)); ?>" />
   </div>
   <div style="margin-bottom:20px;text-align:right">
     <div style="float:left">
-    时间：
-    <select name="year">
-      <option value="">&nbsp;&nbsp;年</option>
-<?php $year = substr($post_date, 0, 4); for ($i = 1990; $i <= 2030; $i ++) { ?>
-      <option value="<?php echo $i; ?>" <?php if ($year == $i) echo 'selected="selected";' ?>><?php echo $i; ?></option>
-<?php } ?>
-    </select> -
-    <select name="month">
-      <option value="">月</option>
-<?php $month = substr($post_date, 5, 2); for ($i = 1; $i <= 12; $i ++) { $m = sprintf("%02d", $i); ?>
-      <option value="<?php echo $m; ?>" <?php if ($month == $m) echo 'selected="selected";' ?>><?php echo $m; ?></option>
-<?php } ?>
-    </select> -
-    <select name="day">
-      <option value="">日</option>
-<?php $day = substr($post_date, 8, 2); for ($i = 1; $i <= 31; $i ++) { $m = sprintf("%02d", $i); ?>
-      <option value="<?php echo $m; ?>" <?php if ($day == $m) echo 'selected="selected";' ?>><?php echo $m; ?></option>
-<?php } ?>
-    </select>&nbsp;
-    <select name="hourse">
-      <option value="">时</option>
-<?php $hourse = substr($post_time, 0, 2); for ($i = 0; $i <= 23; $i ++) { $m = sprintf("%02d", $i); ?>
-      <option value="<?php echo $m; ?>" <?php if ($hourse == $m) echo 'selected="selected";' ?>><?php echo $m; ?></option>
-<?php } ?>
-    </select> :
-    <select name="minute">
-      <option value="">分</option>
-<?php $minute = substr($post_time, 3, 2); for ($i = 0; $i <= 59; $i ++) { $m = sprintf("%02d", $i); ?>
-      <option value="<?php echo $m; ?>" <?php if ($minute == $m) echo 'selected="selected";' ?>><?php echo $m; ?></option>
-<?php } ?>
-    </select> :
-    <select name="second">
-      <option value="">秒</option>
-<?php $second = substr($post_time, 6, 2); for ($i = 0; $i <= 59; $i ++) { $m = sprintf("%02d", $i); ?>
-      <option value="<?php echo $m; ?>" <?php if ($second == $m) echo 'selected="selected";' ?>><?php echo $m; ?></option>
-<?php } ?>
-    </select>
+      时间：
+      <select name="year">
+        <option value="">&nbsp;&nbsp;年</option>
+        <?php $year = substr($post_date, 0, 4);
+        for ($i = 1990; $i <= 2030; $i++) { ?>
+          <option value="<?php echo $i; ?>" <?php if ($year == $i) echo 'selected="selected";' ?>><?php echo $i; ?></option>
+        <?php } ?>
+      </select> -
+      <select name="month">
+        <option value="">月</option>
+        <?php $month = substr($post_date, 5, 2);
+        for ($i = 1; $i <= 12; $i++) {
+          $m = sprintf("%02d", $i); ?>
+          <option value="<?php echo $m; ?>" <?php if ($month == $m) echo 'selected="selected";' ?>><?php echo $m; ?></option>
+        <?php } ?>
+      </select> -
+      <select name="day">
+        <option value="">日</option>
+        <?php $day = substr($post_date, 8, 2);
+        for ($i = 1; $i <= 31; $i++) {
+          $m = sprintf("%02d", $i); ?>
+          <option value="<?php echo $m; ?>" <?php if ($day == $m) echo 'selected="selected";' ?>><?php echo $m; ?></option>
+        <?php } ?>
+      </select>&nbsp;
+      <select name="hourse">
+        <option value="">时</option>
+        <?php $hourse = substr($post_time, 0, 2);
+        for ($i = 0; $i <= 23; $i++) {
+          $m = sprintf("%02d", $i); ?>
+          <option value="<?php echo $m; ?>" <?php if ($hourse == $m) echo 'selected="selected";' ?>><?php echo $m; ?></option>
+        <?php } ?>
+      </select> :
+      <select name="minute">
+        <option value="">分</option>
+        <?php $minute = substr($post_time, 3, 2);
+        for ($i = 0; $i <= 59; $i++) {
+          $m = sprintf("%02d", $i); ?>
+          <option value="<?php echo $m; ?>" <?php if ($minute == $m) echo 'selected="selected";' ?>><?php echo $m; ?></option>
+        <?php } ?>
+      </select> :
+      <select name="second">
+        <option value="">秒</option>
+        <?php $second = substr($post_time, 6, 2);
+        for ($i = 0; $i <= 59; $i++) {
+          $m = sprintf("%02d", $i); ?>
+          <option value="<?php echo $m; ?>" <?php if ($second == $m) echo 'selected="selected";' ?>><?php echo $m; ?></option>
+        <?php } ?>
+      </select>
     </div>
     评论：
     <select name="can_comment" style="margin-right:16px;">
@@ -232,8 +244,8 @@ if (isset($_POST['_IS_POST_BACK_'])) {
     <div style="clear:both;"></div>
   </div>
   <div style="text-align:right">
-    <input type="hidden" name="id" value="<?php echo $post_id; ?>"/>
-    <input type="submit" name="save" value="保存" style="padding:6px 20px;"/>
+    <input type="hidden" name="id" value="<?php echo $post_id; ?>" />
+    <input type="submit" name="save" value="保存" style="padding:6px 20px;" />
   </div>
 </form>
 <?php require 'foot.php' ?>
