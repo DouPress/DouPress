@@ -1,5 +1,5 @@
 <?php
-if (!isset($dp_config)) exit;
+if (!isset($app_config)) exit;
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -11,82 +11,81 @@ if (!isset($dp_config)) exit;
   <meta content="telephone=no,email=no" name="format-detection" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="description" content="<?php echo $dp_config['site_desc'];?> - DouPress" />
+  <meta name="description" content="<?php echo $app_config['site_desc'];?> - DouPress" />
   <meta name="keywords" content="DouPress" />
   <meta name="generator" content="DouPress"/>
-  <meta name="author" content="上海程江科技中心" />
-  <meta name="copyright" content="程江® 程江科技 CROGRAM" />
-  <link rel="icon" href="<?php dp_site_link(); ?>/favicon.ico" />
-  <title><?php if (dp_is_post() || dp_is_page()) { dp_post_title(); ?> | <?php dp_site_name();} else { dp_site_name(); ?> | <?php dp_site_desc(); } ?></title>
-  <link href="<?php dp_theme_url('style.css'); ?>" type="text/css" rel="stylesheet" />
+  <meta name="author" content="Jackson" />
+  <link rel="icon" href="<?php app_site_link(); ?>/favicon.ico" />
+  <title><?php if (app_is_post() || app_is_page()) { app_post_title(); ?> | <?php app_site_name();} else { app_site_name(); ?> | <?php app_site_desc(); } ?></title>
+  <link href="<?php app_theme_url('style.css'); ?>" type="text/css" rel="stylesheet" />
 </head>
 
 <body>
   <div id="main">
     <div id="header">
       <div id="sitename">
-        <a href="<?php dp_site_link(); ?>" class="link"><?php dp_site_name(); ?></a>
+        <a href="<?php app_site_link(); ?>" class="link"><?php app_site_name(); ?></a>
       </div>
     </div>
     <div id="sidebar">
       <div id="navbar">
         <ul>
-          <li><a href="<?php dp_site_link(); ?>" class="link">首页</a></li>
-          <li><a href="<?php dp_get_url('archive'); ?>" class="link">存档</a></li>
-          <li><a href="<?php dp_get_url('rss'); ?>" class="link">订阅</a></li>
+          <li><a href="<?php app_site_link(); ?>" class="link">首页</a></li>
+          <li><a href="<?php app_get_url('archive'); ?>" class="link">存档</a></li>
+          <li><a href="<?php app_get_url('rss'); ?>" class="link">订阅</a></li>
         </ul>
       </div>
     </div>
     <div id="content">
       <div id="content_box">
-        <?php if (dp_is_post()) { ?>
+        <?php if (app_is_post()) { ?>
           <div class="post">
-            <h1 class="title"><?php dp_post_link(); ?></h1>
-            <div class="tags"><?php dp_post_tags('', '', ''); ?> by <?php dp_nick_name(); ?> at <?php dp_post_date(); ?></div>
-            <div class="content"><?php dp_post_content(); ?></div>
+            <h1 class="title"><?php app_post_link(); ?></h1>
+            <div class="tags"><?php app_post_tags('', '', ''); ?> by <?php app_nick_name(); ?> at <?php app_post_date(); ?></div>
+            <div class="content"><?php app_post_content(); ?></div>
           </div>
-          <?php if (dp_can_comment()) {
-            dp_comment_code();
+          <?php if (app_can_comment()) {
+            app_comment_code();
           } ?>
-        <?php } else if (dp_is_page()) { ?>
+        <?php } else if (app_is_page()) { ?>
           <div class="post">
-            <?php /*<h1 class="title"><?php dp_post_link(); ?></h1>
-            <div class="tags">by <?php dp_nick_name(); ?> at <?php dp_post_date(); ?></div> */ ?>
-            <div class="content"><?php dp_post_content(); ?></div>
+            <?php /*<h1 class="title"><?php app_post_link(); ?></h1>
+            <div class="tags">by <?php app_nick_name(); ?> at <?php app_post_date(); ?></div> */ ?>
+            <div class="content"><?php app_post_content(); ?></div>
           </div>
-          <?php if (dp_can_comment()) { ?>
-            <?php dp_comment_code(); ?>
+          <?php if (app_can_comment()) { ?>
+            <?php app_comment_code(); ?>
           <?php } ?>
-        <?php } else if (dp_is_archive()) { ?>
+        <?php } else if (app_is_archive()) { ?>
           <div class="date_list">
             <h1>月份</h1>
-            <ul><?php dp_date_list(); ?></ul>
+            <ul><?php app_date_list(); ?></ul>
           </div>
           <div class="tag_list">
             <h1>标签</h1>
-            <ul><?php dp_tag_list(); ?></ul>
+            <ul><?php app_tag_list(); ?></ul>
           </div>
           <div class="clearer"></div>
         <?php } else { ?>
-          <?php if (dp_is_tag()) { ?>
-            <div id="page_info">标签：<span><?php dp_tag_name(); ?></span></div>
-          <?php } else if (dp_is_date()) { ?>
-            <div id="page_info">月份：<span><?php dp_date_name(); ?></span></div>
+          <?php if (app_is_tag()) { ?>
+            <div id="page_info">标签：<span><?php app_tag_name(); ?></span></div>
+          <?php } else if (app_is_date()) { ?>
+            <div id="page_info">月份：<span><?php app_date_name(); ?></span></div>
           <?php } ?>
           <div class="post_list">
-            <?php while (dp_next_post()) { ?>
+            <?php while (app_next_post()) { ?>
               <div class="post">
-                <h1 class="title"><?php dp_post_link(); ?></h1>
-                <div class="tags"><?php dp_post_tags('', '', ''); ?> by <?php dp_nick_name(); ?> at <?php dp_post_date(); ?></div>
+                <h1 class="title"><?php app_post_link(); ?></h1>
+                <div class="tags"><?php app_post_tags('', '', ''); ?> by <?php app_nick_name(); ?> at <?php app_post_date(); ?></div>
                 <div class="clearer"></div>
               </div>
-            <?php   } ?>
+            <?php } ?>
             <div id="page_bar">
-              <?php if (dp_has_new()) { ?>
-                <span class="prev link" style="float:left;"><?php dp_goto_new('&larr; 较新文章'); ?></span>
+              <?php if (app_has_new()) { ?>
+                <span class="prev link" style="float:left;"><?php app_goto_new('&larr; 较新文章'); ?></span>
               <?php } ?>
-              <?php if (dp_has_old()) { ?>
-                <span class="next link" style="float:right;"><?php dp_goto_old('早期文章 &rarr;'); ?></span>
+              <?php if (app_has_old()) { ?>
+                <span class="next link" style="float:right;"><?php app_goto_old('早期文章 &rarr;'); ?></span>
               <?php   } ?>
               <div class="clearer"></div>
             </div>
@@ -98,8 +97,8 @@ if (!isset($dp_config)) exit;
     <div class="clearer"></div>
     <div id="footer">
       <div>Powered by <a href="http://doupress.org" class="link" target="_blank">DouPress</a></div>
-      <?php if (!empty($dp_config['site_icpno'])) { ?><p><a href="https://beian.miit.gov.cn/#/Integrated/index" class="link" target="_blank"><?php echo $dp_config['site_icpno'];?></a></p><?php } ?>
-      <?php dp_footer_code(); ?>
+      <?php if (!empty($app_config['site_icpno'])) { ?><p><a href="https://beian.miit.gov.cn/#/Integrated/index" class="link" target="_blank"><?php echo $app_config['site_icpno'];?></a></p><?php } ?>
+      <?php app_footer_code(); ?>
     </div>
   </div>
 </body>
