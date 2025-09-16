@@ -56,7 +56,7 @@ if (preg_match('|^/post/([a-z0-5]{6})$|', rtrim($route, '/'), $matches)) {
   $app_path_type = 'xml';
   $app_path_name = '';
   $app_page_no = isset($_GET['page']) ? $_GET['page'] : 1;
-} elseif (preg_match('|^/(([-a-zA-Z0-9/])+)$|', $route, $matches)) {
+} elseif (preg_match('|^/(([-_.a-zA-Z0-9/])+)$|', $route, $matches)) {
   $app_path_type = 'page';
   $app_path_name = rtrim($matches[1], '/');
 } elseif (empty($route) || $route == '/' || preg_match('|^/page=([0-9]+)$|', $route, $matches)) {

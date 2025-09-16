@@ -52,7 +52,7 @@ DouPress 不需要数据库的支持，采用的是文本数据库的存储形�
 
 日期: `http://example.com/?date/([0-9]{4}-[0-9]{2}`
 
-页面: `http://example.com/?([-a-zA-Z0-9]+)+`
+页面: `http://example.com/?([-_.a-zA-Z0-9]+)+`
 
 ### 可选 history 模式，需要服务器支持开启路径重写
 
@@ -62,7 +62,7 @@ DouPress 不需要数据库的支持，采用的是文本数据库的存储形�
 
 日期: `http://example.com/date/([0-9]{4}-[0-9]{2}`
 
-页面: `http://example.com/([-a-zA-Z0-9]+)+`
+页面: `http://example.com/([-_.a-zA-Z0-9]+)+`
 
 ## 模板标签
 
