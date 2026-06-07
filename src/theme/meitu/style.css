@@ -32,14 +32,14 @@ h1,h2,h3,h4,h5,h6,b,strong { color:#3f3f3f; }
 /* #content .post_list .post + .post { padding-top: 20px; } */
 #content .post_list .tags { padding-bottom:0; }
 
-#content .tag_list ul,
-#content .tag_list li,
-#content .date_list ul,
-#content .date_list li { list-style:none; margin:0; padding:0; }
+#content .tag_list,
+#content .date_list { float:left; width: 50%; }
 
-#content .tag_list, #content .date_list { float:left; width: 50%; }
+#content .tag_list ul,
+#content .date_list ul { list-style:none; margin:0; padding:0; }
+
 #content .tag_list li,
-#content .date_list li { margin-bottom:8px;}
+#content .date_list li { display: inline-block; list-style:none; padding:0; margin: 0 8px 6px 0;}
 
 #page_bar { margin-top:20px; }
 
@@ -67,5 +67,5 @@ pre * { font-family: monospace; }
     #navbar a { padding: 5px 10px; }
     #content { width: 100%; float:none; margin-left:auto; }
     #content_box { margin: 10px auto; border:solid 1px #ccc; padding: 10px; }
-    #content .tag_list, #content .date_list { text-align: center; }
+    #content .tag_list, #content .date_list { width: unset;float: unset;text-align: center; }
 }

@@ -11,9 +11,9 @@ if (!isset($app_config)) exit;
   <meta content="telephone=no,email=no" name="format-detection" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="description" content="<?php echo $app_config['site_desc'];?> - DouPress" />
-  <meta name="keywords" content="DouPress" />
-  <meta name="author" content="Jackson" />
+  <meta name="description" content="<?php echo $app_config['site_desc'];?>" />
+  <meta name="keywords" content="<?php echo $app_config['site_keywords'];?>" />
+  <meta name="generator" content="DouPress"/>
   <link rel="icon" href="<?php app_site_link(); ?>/favicon.ico" />
   <title><?php if (app_is_post() || app_is_page()) { app_post_title(); ?> | <?php app_site_name();} else { app_site_name(); ?> | <?php app_site_desc(); } ?></title>
   <link href="<?php app_theme_url('style.css'); ?>" type="text/css" rel="stylesheet" />
@@ -40,16 +40,16 @@ if (!isset($app_config)) exit;
         <?php if (app_is_post()) { ?>
           <div class="post">
             <h1 class="title"><?php app_post_link(); ?></h1>
-            <div class="tags"><?php app_nick_name(); ?> <?php app_post_date(); ?> <?php app_post_time(); ?> <?php app_post_tags('', '', ''); ?></div>
+            <div class="tags"><?php app_post_tags('', '', ''); ?> by <?php app_nick_name(); ?> at <?php app_post_date(); ?> | 浏览量：<?php app_post_hits(); ?></div>
             <div class="content"><?php app_post_content(); ?></div>
           </div>
-          <?php if (app_can_comment()) { ?>
-            <?php app_comment_code(); ?>
-          <?php } ?>
+          <?php if (app_can_comment()) {
+            app_comment_code();
+          } ?>
         <?php } else if (app_is_page()) { ?>
           <div class="post">
-            <?php /*<h1 class="title"><?php app_post_link(); ?></h1>
-            <div class="tags">by <?php app_nick_name(); ?> at <?php app_post_date(); ?></div> */ ?>
+            <h1 class="title"><?php app_post_link(); ?></h1>
+            <div class="tags">浏览量：<?php app_post_hits(); ?></div>
             <div class="content"><?php app_post_content(); ?></div>
           </div>
           <?php if (app_can_comment()) { ?>
@@ -75,14 +75,14 @@ if (!isset($app_config)) exit;
             <?php while (app_next_post()) { ?>
               <div class="post">
                 <h1 class="title"><?php app_post_link(); ?></h1>
-                <div class="tags"><?php app_nick_name(); ?> <?php app_post_date(); ?> <?php app_post_tags('', '', ''); ?></div>
+                <div class="tags"><?php app_post_tags('', '', ''); ?> by <?php app_nick_name(); ?> at <?php app_post_date(); ?></div>
                 <div class="clearer"></div>
               </div>
             <?php } ?>
             <div id="page_bar">
               <?php if (app_has_new()) { ?>
                 <span class="prev link" style="float:left;"><?php app_goto_new('&larr; 较新文章'); ?></span>
-              <?php   } ?>
+              <?php } ?>
               <?php if (app_has_old()) { ?>
                 <span class="next link" style="float:right;"><?php app_goto_old('早期文章 &rarr;'); ?></span>
               <?php   } ?>
@@ -96,6 +96,8 @@ if (!isset($app_config)) exit;
     <div class="clearer"></div>
     <div id="footer">
       <div>图片素材采集自网络，如有侵权请联系删除。</div>
+      <div>网站浏览量：<?php app_site_hits(); ?></div>
+      <?php app_footer_code(); ?>
     </div>
   </div>
 </body>

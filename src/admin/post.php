@@ -41,7 +41,7 @@ function delete_post($id)
 
   unset($app_posts[$id]);
 
-  file_put_contents($index_file, "<?php\n\$app_posts=" . var_export($app_posts, true) . "\n?>");
+  file_put_contents($index_file, "<?php\n\$app_posts = " . var_export($app_posts, true) . ";\n?>");
 
   if ($state != 'delete') {
     $index_file2 = PATH_ROOT . '/data/posts/index/delete.php';
@@ -50,7 +50,7 @@ function delete_post($id)
 
     $app_posts[$id] = $post;
 
-    file_put_contents($index_file2, "<?php\n\$app_posts=" . var_export($app_posts, true) . "\n?>");
+    file_put_contents($index_file2, "<?php\n\$app_posts = " . var_export($app_posts, true) . ";\n?>");
   } else {
     unlink(PATH_ROOT . '/data/posts/data/' . $id . '.dat');
   }
@@ -68,7 +68,7 @@ function revert_post($id)
 
   unset($app_posts[$id]);
 
-  file_put_contents($index_file, "<?php\n\$app_posts=" . var_export($app_posts, true) . "\n?>");
+  file_put_contents($index_file, "<?php\n\$app_posts = " . var_export($app_posts, true) . ";\n?>");
 
   $index_file2 = PATH_ROOT . '/data/posts/index/' . $prev_state . '.php';
 
@@ -78,7 +78,7 @@ function revert_post($id)
 
   uasort($app_posts, "post_sort");
 
-  file_put_contents($index_file2, "<?php\n\$app_posts=" . var_export($app_posts, true) . "\n?>");
+  file_put_contents($index_file2, "<?php\n\$app_posts = " . var_export($app_posts, true) . ";\n?>");
 }
 
 load_posts();

@@ -41,7 +41,7 @@ if (!isset($app_config)) exit;
         <a href="<?php app_get_url('rss'); ?>" class="rss" title="RSS订阅" target="_blank">RSS订阅</a>
       </div>
       <div class="clear"></div>
-      <div id="footer">Powered by <a href="http://doupress.org" target="_blank">DouPress</a></div>
+      <div id="footer">Powered by <a href="http://doupress.org" target="_blank">DouPress</a><br/>网站浏览量：<?php app_site_hits(); ?></div>
     </div>
     <div id="content">
       <div id="content_box">
@@ -54,6 +54,7 @@ if (!isset($app_config)) exit;
             <div class="post_meta">
               <div class="post_date"><?php app_post_date(); ?></div>
               <div class="post_tag"><?php app_post_tags('', '', ''); ?></div>
+              <div class="post_views">浏览量：<?php app_post_hits(); ?></div>
               <div class="post_comm"><a href="<?php
               //app_post_link(); 
               ?>#comm">评论</a></div>
@@ -68,6 +69,7 @@ if (!isset($app_config)) exit;
             <h1 class="title"><?php
              app_post_title();
             ?></h1>
+            <div class="post_meta">浏览量：<?php app_post_hits(); ?></div>
             <div class="content">
               <?php app_post_content(); ?>
             </div>

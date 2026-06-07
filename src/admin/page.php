@@ -41,7 +41,7 @@ function delete_page($id)
 
   unset($app_pages[$id]);
 
-  file_put_contents($index_file, "<?php\n\$app_pages=" . var_export($app_pages, true) . "\n?>");
+  file_put_contents($index_file, "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>");
 
   if ($state != 'delete') {
     $index_file2 = PATH_ROOT . '/data/pages/index/delete.php';
@@ -50,7 +50,7 @@ function delete_page($id)
 
     $app_pages[$id] = $page;
 
-    file_put_contents($index_file2, "<?php\n\$app_pages=" . var_export($app_pages, true) . "\n?>");
+    file_put_contents($index_file2, "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>");
   } else {
     unlink(PATH_ROOT . '/data/pages/data/' . $page['file'] . '.dat');
   }
@@ -68,7 +68,7 @@ function revert_page($id)
 
   unset($app_pages[$id]);
 
-  file_put_contents($index_file, "<?php\n\$app_pages=" . var_export($app_pages, true) . "\n?>");
+  file_put_contents($index_file, "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>");
 
   $index_file2 = PATH_ROOT . '/data/pages/index/' . $prev_state . '.php';
 
@@ -78,7 +78,7 @@ function revert_page($id)
 
   ksort($app_pages);
 
-  file_put_contents($index_file2, "<?php\n\$app_pages=" . var_export($app_pages, true) . "\n?>");
+  file_put_contents($index_file2, "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>");
 }
 
 load_pages();

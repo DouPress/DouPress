@@ -90,7 +90,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
 
         file_put_contents(
           $index_file,
-          "<?php\n\$app_posts=" . var_export($app_posts, true) . "\n?>"
+          "<?php\n\$app_posts = " . var_export($app_posts, true) . ";\n?>"
         );
       }
     }
@@ -115,7 +115,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
 
     file_put_contents(
       $index_file,
-      "<?php\n\$app_posts=" . var_export($app_posts, true) . "\n?>"
+      "<?php\n\$app_posts = " . var_export($app_posts, true) . ";\n?>"
     );
 
     $data['content'] = $post_content;

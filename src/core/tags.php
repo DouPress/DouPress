@@ -48,6 +48,9 @@ function app_site_link($print = true)
   return $site_link;
 }
 
+/**
+ * 站长称呼
+ */
 function app_nick_name($print = true)
 {
   global $app_config;
@@ -107,6 +110,9 @@ function app_is_archive()
   return $app_path_type == 'archive';
 }
 
+/**
+ * 标签列表
+ */
 function app_tag_name($print = true)
 {
   global $app_path_name;
@@ -119,6 +125,9 @@ function app_tag_name($print = true)
   return $app_path_name;
 }
 
+/**
+ * 年月列表
+ */
 function app_date_name($print = true)
 {
   global $app_path_name;
@@ -379,8 +388,8 @@ function app_post_link()
  */
 function app_post_url($print = true)
 {
-  global $app_post_id, $app_post, $app_config;
-  $url = app_get_url('post', $app_post_id);
+  global $app_post_id, $app_path_type;
+  $url = app_get_url($app_path_type == 'page' ? '' : 'post', $app_post_id);
 
   if ($print) {
     echo $url;
@@ -395,7 +404,7 @@ function app_post_url($print = true)
  */
 function app_can_comment()
 {
-  global $app_post_id, $app_post;
+  global $app_post;
 
   return isset($app_post['can_comment']) ? $app_post['can_comment'] == '1' : true;
 }
@@ -418,4 +427,75 @@ function app_footer_code()
   global $app_config;
 
   echo isset($app_config['footer_code']) ? $app_config['footer_code'] : '';
+}
+
+function app_hits_inc($path_id, $type = 'post')
+{
+  $type_dir = $type == 'page' ? 'pages' : 'posts';
+  $hits_file = PATH_ROOT . '/data/hits/' . $type_dir . '/' . $path_id . '.dat';
+
+  $hits = 0;
+  if (file_exists($hits_file)) {
+    $hits = intval(file_get_contents($hits_file));
+  }
+  $hits++;
+  file_put_contents($hits_file, $hits);
+
+  return $hits;
+}
+
+function app_hits_get($path_id, $type = 'post')
+{
+  $type_dir = $type == 'page' ? 'pages' : 'posts';
+  $hits_file = PATH_ROOT . '/data/hits/' . $type_dir . '/' . $path_id . '.dat';
+
+  if (!file_exists($hits_file)) {
+    return 0;
+  }
+
+  return intval(file_get_contents($hits_file));
+}
+
+function app_site_hits($print = true)
+{
+  $hits_dir = PATH_ROOT . '/data/hits';
+  $total = 0;
+
+  if (!is_dir($hits_dir)) {
+    if ($print) {
+      echo 0;
+    }
+    return 0;
+  }
+
+  $types = ['posts', 'pages'];
+  foreach ($types as $type) {
+    $type_dir = $hits_dir . '/' . $type;
+    if (!is_dir($type_dir)) {
+      continue;
+    }
+    $files = glob($type_dir . '/*.dat');
+    foreach ($files as $file) {
+      $total += intval(file_get_contents($file));
+    }
+  }
+
+  if ($print) {
+    echo $total;
+  }
+  return $total;
+}
+
+function app_post_hits($print = true)
+{
+  global $app_post_id, $app_path_type, $app_post;
+
+  $type = $app_path_type == 'page' ? 'page' : 'post';
+  $id = $app_path_type == 'page' ? $app_post['file'] : $app_post_id;
+  $hits = app_hits_get($id, $type);
+
+  if ($print) {
+    echo $hits;
+  }
+  return $hits;
 }

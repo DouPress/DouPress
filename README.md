@@ -35,6 +35,9 @@ DouPress 不需要数据库的支持，采用的是文本数据库的存储形�
 │   └── pages/       # 页面
 │       ├── data/    # 数据
 │       └── index/   # 索引
+│   └── hits/        # 浏览量数据
+│       ├── posts/   # 文章浏览量
+│       └── pages/   # 页面浏览量
 ├── .htaccess        # Apache rewrite 配置文件
 ├── nginx.conf       # Nginx rewrite 配置
 ├── build.php        # 打包发布安装脚本 install.php
@@ -84,6 +87,9 @@ app_post_tags()    // 文章标签
 
 app_comment_code() // 文章评论代码
 app_footer_code()  // 网页底部代码
+
+app_post_hits()    // 文章/页面浏览量
+app_site_hits()    // 网站总浏览量
 ```
 
 ## 📦 打包发布

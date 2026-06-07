@@ -34,7 +34,7 @@ if (isset($_POST['save'])) {
     $app_config['user_pass'] = $_POST['user_pass'];
   }
 
-  $code = "<?php\n\$app_config = " . var_export($app_config, true) . "\n?>";
+  $code = "<?php\n\$app_config = " . var_export($app_config, true) . ";\n?>";
 
   file_put_contents(PATH_ROOT . '/data/config.php', $code);
 

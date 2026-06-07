@@ -78,6 +78,7 @@ switch ($app_path_type) {
       $app_post = $app_posts[$app_post_id];
 
       $app_data = unserialize(file_get_contents('data/posts/data/' . $app_post_id . '.dat'));
+      app_hits_inc($app_post_id, 'post');
     } else {
       app_404();
     }
@@ -145,6 +146,7 @@ switch ($app_path_type) {
       $app_post_id = $app_path_name;
       $app_post = $app_pages[$app_post_id];
       $app_data = unserialize(file_get_contents('data/pages/data/' . $app_post['file'] . '.dat'));
+      app_hits_inc($app_post['file'], 'page');
     } else {
       app_404();
     }

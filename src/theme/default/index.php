@@ -11,10 +11,9 @@ if (!isset($app_config)) exit;
   <meta content="telephone=no,email=no" name="format-detection" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="description" content="<?php echo $app_config['site_desc'];?> - DouPress" />
-  <meta name="keywords" content="DouPress" />
+  <meta name="description" content="<?php echo $app_config['site_desc'];?>" />
+  <meta name="keywords" content="<?php echo $app_config['site_keywords'];?>" />
   <meta name="generator" content="DouPress"/>
-  <meta name="author" content="Jackson" />
   <link rel="icon" href="<?php app_site_link(); ?>/favicon.ico" />
   <title><?php if (app_is_post() || app_is_page()) { app_post_title(); ?> | <?php app_site_name();} else { app_site_name(); ?> | <?php app_site_desc(); } ?></title>
   <link href="<?php app_theme_url('style.css'); ?>" type="text/css" rel="stylesheet" />
@@ -41,7 +40,7 @@ if (!isset($app_config)) exit;
         <?php if (app_is_post()) { ?>
           <div class="post">
             <h1 class="title"><?php app_post_link(); ?></h1>
-            <div class="tags"><?php app_post_tags('', '', ''); ?> by <?php app_nick_name(); ?> at <?php app_post_date(); ?></div>
+            <div class="tags"><?php app_post_tags('', '', ''); ?> by <?php app_nick_name(); ?> at <?php app_post_date(); ?> | 浏览量：<?php app_post_hits(); ?></div>
             <div class="content"><?php app_post_content(); ?></div>
           </div>
           <?php if (app_can_comment()) {
@@ -49,8 +48,8 @@ if (!isset($app_config)) exit;
           } ?>
         <?php } else if (app_is_page()) { ?>
           <div class="post">
-            <?php /*<h1 class="title"><?php app_post_link(); ?></h1>
-            <div class="tags">by <?php app_nick_name(); ?> at <?php app_post_date(); ?></div> */ ?>
+            <h1 class="title"><?php app_post_link(); ?></h1>
+            <div class="tags">浏览量：<?php app_post_hits(); ?></div>
             <div class="content"><?php app_post_content(); ?></div>
           </div>
           <?php if (app_can_comment()) { ?>
@@ -97,6 +96,7 @@ if (!isset($app_config)) exit;
     <div class="clearer"></div>
     <div id="footer">
       <div>Powered by <a href="http://doupress.org" class="link" target="_blank">DouPress</a></div>
+      <div>网站浏览量：<?php app_site_hits(); ?></div>
       <?php if (!empty($app_config['site_icpno'])) { ?><p><a href="https://beian.miit.gov.cn/#/Integrated/index" class="link" target="_blank"><?php echo $app_config['site_icpno'];?></a></p><?php } ?>
       <?php app_footer_code(); ?>
     </div>
