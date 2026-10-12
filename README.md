@@ -110,7 +110,7 @@ app_icp_no()       // ICP备案号链接（未配置时输出空）
 # 使用 php 命令执行
 php build.php [指定版本号]
 # 示例
-php build.php 1.2.5
+php build.php 1.11.3
 ```
 
 ## 🤝 贡献及反馈
