@@ -6,6 +6,7 @@ app_check_login();
 $post_id          = '';
 $post_state       = '';
 $post_title       = '';
+$post_desc        = '';
 $post_content     = '';
 $post_tags        = array();
 $post_date        = '';
@@ -18,6 +19,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   $post_id          = $_POST['id'];
   $post_state       = $_POST['state'];
   $post_title       = trim($_POST['title']);
+  $post_desc        = trim($_POST['desc']);
   $post_content     = htmlspecialchars(trim($_POST['content']));
   $post_tags        = explode(',', trim($_POST['tags']));
   $post_date        = date("Y-m-d");
@@ -103,7 +105,13 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       'date'        => $post_date,
       'time'        => $post_time,
       'can_comment'  => $post_can_comment,
+      'desc'        => $post_desc,
     );
+
+    // 编辑文章时更新最后修改时间；新建时发布时间即当前时间，不写 mod_time
+    if (date("Y-m-d H:i:s") != $post_date . ' ' . $post_time) {
+      $data['mod_time'] = date("Y-m-d H:i:s");
+    }
 
     $index_file = PATH_ROOT . '/data/posts/index/' . $post_state . '.php';
 
@@ -132,6 +140,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   $post_id      = $data['id'];
   $post_state   = $data['state'];
   $post_title   = $data['title'];
+  $post_desc    = isset($data['desc']) ? $data['desc'] : '';
   $post_content = $data['content'];
   $post_tags    = $data['tags'];
   $post_date    = $data['date'];
@@ -176,6 +185,9 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   <div style="margin-bottom:20px;">
     <?php require 'editor.php'; ?>
     <?php editor(htmlspecialchars_decode($post_content)); ?>
+  </div>
+  <div style="margin-bottom:20px;">
+    <input name="desc" type="text" class="edit_textbox" placeholder="在此输入描述，将显示在网页SEO的description中" value="<?php echo htmlspecialchars($post_desc); ?>" />
   </div>
   <div style="margin-bottom:20px;">
     <input name="tags" type="text" class="edit_textbox" placeholder="在此输入标签，多个标签之间用逗号分隔" value="<?php echo htmlspecialchars(implode(',', $post_tags)); ?>" />

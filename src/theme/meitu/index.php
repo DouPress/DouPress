@@ -11,12 +11,14 @@ if (!isset($app_config)) exit;
   <meta content="telephone=no,email=no" name="format-detection" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="description" content="<?php echo $app_config['site_desc'];?>" />
-  <meta name="keywords" content="<?php echo $app_config['site_keywords'];?>" />
+  <meta name="description" content="<?php app_seo_description();?>" />
+  <meta name="keywords" content="<?php app_seo_keywords();?>" />
   <meta name="generator" content="DouPress"/>
   <link rel="icon" href="<?php app_site_link(); ?>/favicon.ico" />
-  <title><?php if (app_is_post() || app_is_page()) { app_post_title(); ?> | <?php app_site_name();} else { app_site_name(); ?> | <?php app_site_desc(); } ?></title>
+  <title><?php app_seo_title(); ?></title>
   <link href="<?php app_theme_url('style.css'); ?>" type="text/css" rel="stylesheet" />
+  <?php app_header_code(); ?>
+
 </head>
 
 <body>
@@ -40,7 +42,7 @@ if (!isset($app_config)) exit;
         <?php if (app_is_post()) { ?>
           <div class="post">
             <h1 class="title"><?php app_post_link(); ?></h1>
-            <div class="tags"><?php app_post_tags('', '', ''); ?> by <?php app_nick_name(); ?> at <?php app_post_date(); ?> | 浏览量：<?php app_post_hits(); ?></div>
+            <div class="tags"><?php app_post_tags('', '', ''); ?> by <?php app_nick_name(); ?> at <?php app_post_date(); ?> | 浏览量：<?php app_post_hits(); ?><?php if (app_mod_time_has()) { ?> | 最后修改：<?php app_mod_time(); ?><?php } ?></div>
             <div class="content"><?php app_post_content(); ?></div>
           </div>
           <?php if (app_can_comment()) {
@@ -49,7 +51,7 @@ if (!isset($app_config)) exit;
         <?php } else if (app_is_page()) { ?>
           <div class="post">
             <h1 class="title"><?php app_post_link(); ?></h1>
-            <div class="tags">浏览量：<?php app_post_hits(); ?></div>
+            <div class="tags">浏览量：<?php app_post_hits(); ?><?php if (app_mod_time_has()) { ?> | 最后修改：<?php app_mod_time(); ?><?php } ?></div>
             <div class="content"><?php app_post_content(); ?></div>
           </div>
           <?php if (app_can_comment()) { ?>

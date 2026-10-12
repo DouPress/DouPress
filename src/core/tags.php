@@ -32,6 +32,27 @@ function app_site_desc($print = true)
 }
 
 /**
+ * 网站副标题（未配置时用网站描述）
+ */
+function app_site_subname($print = true)
+{
+  global $app_config;
+
+  $subname = (isset($app_config['site_subname']) && $app_config['site_subname'] != '')
+    ? $app_config['site_subname']
+    : $app_config['site_desc'];
+
+  $subname = htmlspecialchars($subname);
+
+  if ($print) {
+    echo $subname;
+    return;
+  }
+
+  return $subname;
+}
+
+/**
  * 网站主域名链接
  */
 function app_site_link($print = true)
@@ -63,6 +84,68 @@ function app_nick_name($print = true)
   }
 
   return $nick_name;
+}
+
+/**
+ * 网页标题（文章/页面用标题，其他用网站名称）
+ */
+function app_seo_title($print = true)
+{
+  if (app_is_post() || app_is_page()) {
+    $title = app_post_title(false) . ' | ' . app_site_name(false);
+  } else {
+    $title = app_site_name(false) . ' | ' . app_site_subname(false);
+  }
+
+  if ($print) {
+    echo $title;
+    return;
+  }
+
+  return $title;
+}
+
+/**
+ * 网页SEO描述（文章/页面用desc，其他用网站描述）
+ */
+function app_seo_description($print = true)
+{
+  global $app_seo_description, $app_config;
+
+  $desc = !empty($app_seo_description) ? $app_seo_description : $app_config['site_desc'];
+  $desc = htmlspecialchars($desc);
+
+  if ($print) {
+    echo $desc;
+    return;
+  }
+
+  return $desc;
+}
+
+/**
+ * 网页SEO关键词（文章/页面用tags，其他用网站关键词；$fallback为无数据时的回退值）
+ */
+function app_seo_keywords($fallback = '', $print = true)
+{
+  global $app_seo_keywords, $app_config;
+
+  if (!empty($app_seo_keywords)) {
+    $keywords = $app_seo_keywords;
+  } else if ($fallback != '') {
+    $keywords = $fallback;
+  } else {
+    $keywords = isset($app_config['site_keywords']) ? $app_config['site_keywords'] : '';
+  }
+
+  $keywords = htmlspecialchars($keywords);
+
+  if ($print) {
+    echo $keywords;
+    return;
+  }
+
+  return $keywords;
 }
 
 function app_theme_url($path, $print = true)
@@ -151,12 +234,12 @@ function app_has_old()
 {
   global $app_page_no, $app_post_count, $app_post_per_page;
 
-  return $app_page_no < ($app_post_count / $app_post_per_page);
+  return $app_page_no < ceil($app_post_count / $app_post_per_page);
 }
 
 function app_goto_old($text)
 {
-  global $app_path_type, $app_path_name, $app_page_no, $app_config;
+  global $app_path_type, $app_path_name, $app_page_no;
   echo '<a href="';
   if ($app_path_type == 'tag') {
     app_get_url('tag', htmlspecialchars($app_path_name));
@@ -172,7 +255,7 @@ function app_goto_old($text)
 
 function app_goto_new($text)
 {
-  global $app_path_type, $app_path_name, $app_page_no, $app_config;
+  global $app_path_type, $app_path_name, $app_page_no;
   echo '<a href="';
   if ($app_path_type == 'tag') {
     app_get_url('tag', htmlspecialchars($app_path_name));
@@ -188,7 +271,7 @@ function app_goto_new($text)
 
 function app_date_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
 {
-  global $app_dates, $app_config;
+  global $app_dates;
 
   if (isset($app_dates)) {
     $date_count = count($app_dates);
@@ -212,7 +295,7 @@ function app_date_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>'
 
 function app_tag_list($item_begin = '<li>', $item_gap = '', $item_end = '</li>')
 {
-  global $app_tags, $app_config;
+  global $app_tags;
 
   if (isset($app_tags)) {
     $tag_count = count($app_tags);
@@ -309,13 +392,40 @@ function app_post_time($print = true)
 }
 
 /**
+ * 是否有最后修改时间（无修改或与发布时间一致时不显示）
+ */
+function app_mod_time_has()
+{
+  global $app_data;
+
+  return isset($app_data['mod_time']) && $app_data['mod_time'] != '';
+}
+
+/**
+ * 最后修改时间
+ */
+function app_mod_time($print = true)
+{
+  global $app_data;
+
+  $mod = isset($app_data['mod_time']) ? $app_data['mod_time'] : '';
+
+  if ($print) {
+    echo $mod;
+    return;
+  }
+
+  return $mod;
+}
+
+/**
  * 文章标签链接
  */
 function app_post_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_link = true)
 {
-  global $app_post, $app_config;
+  global $app_post;
 
-  $tags = $app_post['tags'];
+  $tags = isset($app_post['tags']) ? $app_post['tags'] : array();
 
   $count = count($tags);
 
@@ -429,6 +539,36 @@ function app_footer_code()
   echo isset($app_config['footer_code']) ? $app_config['footer_code'] : '';
 }
 
+/**
+ * 网页头部代码（</head>前）
+ */
+function app_header_code()
+{
+  global $app_config;
+
+  echo isset($app_config['header_code']) ? $app_config['header_code'] : '';
+}
+
+/**
+ * 备案号链接（未配置时输出空）
+ */
+function app_icp_no($print = true)
+{
+  global $app_config;
+
+  $icp = '';
+  if (!empty($app_config['site_icpno'])) {
+    $icp = '<a href="https://beian.miit.gov.cn/#/Integrated/index" class="link" target="_blank">' . htmlspecialchars($app_config['site_icpno']) . '</a>';
+  }
+
+  if ($print) {
+    echo $icp;
+    return;
+  }
+
+  return $icp;
+}
+
 function app_hits_inc($path_id, $type = 'post')
 {
   $type_dir = $type == 'page' ? 'pages' : 'posts';
@@ -440,6 +580,15 @@ function app_hits_inc($path_id, $type = 'post')
   }
   $hits++;
   file_put_contents($hits_file, $hits);
+
+  // 站点总浏览量同步 +1（汇总文件不存在时先聚合初始化，此时已包含本次更新）
+  $site_file = app_site_hits_file();
+  if (!file_exists($site_file)) {
+    app_site_hits_rebuild();
+  } else {
+    $site_hits = intval(file_get_contents($site_file));
+    file_put_contents($site_file, $site_hits + 1);
+  }
 
   return $hits;
 }
@@ -456,21 +605,23 @@ function app_hits_get($path_id, $type = 'post')
   return intval(file_get_contents($hits_file));
 }
 
-function app_site_hits($print = true)
+/**
+ * 站点总浏览量文件
+ */
+function app_site_hits_file()
 {
-  $hits_dir = PATH_ROOT . '/data/hits';
+  return PATH_ROOT . '/data/hits/site.dat';
+}
+
+/**
+ * 聚合所有单篇浏览量，生成站点总浏览量文件
+ */
+function app_site_hits_rebuild()
+{
   $total = 0;
-
-  if (!is_dir($hits_dir)) {
-    if ($print) {
-      echo 0;
-    }
-    return 0;
-  }
-
-  $types = ['posts', 'pages'];
+  $types = array('posts', 'pages');
   foreach ($types as $type) {
-    $type_dir = $hits_dir . '/' . $type;
+    $type_dir = PATH_ROOT . '/data/hits/' . $type;
     if (!is_dir($type_dir)) {
       continue;
     }
@@ -478,6 +629,21 @@ function app_site_hits($print = true)
     foreach ($files as $file) {
       $total += intval(file_get_contents($file));
     }
+  }
+
+  file_put_contents(app_site_hits_file(), $total);
+
+  return $total;
+}
+
+function app_site_hits($print = true)
+{
+  $site_file = app_site_hits_file();
+
+  if (!file_exists($site_file)) {
+    $total = app_site_hits_rebuild();
+  } else {
+    $total = intval(file_get_contents($site_file));
   }
 
   if ($print) {

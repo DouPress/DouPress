@@ -18,6 +18,7 @@ if (isset($_POST['save'])) {
   $user_name_changed = $_POST['user_name'] != $app_config['user_name'];
 
   $app_config['site_name']     = $_POST['site_name'];
+  $app_config['site_subname']  = $_POST['site_subname'];
   $app_config['site_desc']     = $_POST['site_desc'];
   $app_config['site_keywords'] = $_POST['site_keywords'];
   $app_config['site_link']     = $_POST['site_link'];
@@ -29,6 +30,7 @@ if (isset($_POST['save'])) {
   $app_config['user_name']     = $_POST['user_name'];
   $app_config['comment_code']  = trim($_POST['comment_code']);
   $app_config['footer_code']   = trim($_POST['footer_code']);
+  $app_config['header_code']   = trim($_POST['header_code']);
 
   if ($_POST['user_pass'] != '') {
     $app_config['user_pass'] = $_POST['user_pass'];
@@ -46,6 +48,7 @@ if (isset($_POST['save'])) {
 }
 
 $site_name     = $app_config['site_name'];
+$site_subname  = isset($app_config['site_subname']) ? $app_config['site_subname'] : '';
 $site_desc     = $app_config['site_desc'];
 $site_keywords = $app_config['site_keywords'];
 $site_link     = $app_config['site_link'];
@@ -57,6 +60,7 @@ $nick_name     = $app_config['nick_name'];
 $user_name     = $app_config['user_name'];
 $comment_code  = isset($app_config['comment_code']) ? $app_config['comment_code'] : '';
 $footer_code   = isset($app_config['footer_code']) ? $app_config['footer_code'] : '';
+$header_code   = isset($app_config['header_code']) ? $app_config['header_code'] : '';
 
 ?>
 <?php require 'head.php'; ?>
@@ -70,6 +74,12 @@ $footer_code   = isset($app_config['footer_code']) ? $app_config['footer_code'] 
       <div class="label">网站标题</div>
       <input class="textbox" type="text" name="site_name" value="<?php echo htmlspecialchars($site_name); ?>" />
       <div class="info">起个好听的名字。</div>
+    </div>
+    <div class="clear"></div>
+    <div class="field">
+      <div class="label">网站副标题</div>
+      <input class="textbox" type="text" name="site_subname" value="<?php echo htmlspecialchars($site_subname); ?>" />
+      <div class="info">用于网页标题等简单介绍处，如：网站标题 | 副标题。留空时使用网站描述。</div>
     </div>
     <div class="clear"></div>
     <div class="field">
@@ -157,6 +167,12 @@ $footer_code   = isset($app_config['footer_code']) ? $app_config['footer_code'] 
       <div class="label">评论代码</div>
       <textarea rows="5" class="textbox" name="comment_code"><?php echo htmlspecialchars($comment_code); ?></textarea>
       <div class="info">第三方评论服务所提供的评论代码，例如：<a href="http://disqus.com/" target="_blank">Disqus</a>、<a href="http://open.weibo.com/widget/comments.php" target="_blank">新浪微博评论箱</a> 等。设置此选项后，DouPress 就拥有了评论功能。</div>
+    </div>
+    <div class="clear"></div>
+    <div class="field">
+      <div class="label">头部代码</div>
+      <textarea rows="5" class="textbox" name="header_code"><?php echo htmlspecialchars($header_code); ?></textarea>
+      <div class="info">网页头部代码：如统计代码、验证代码等，将添加到 &lt;/head&gt; 前。</div>
     </div>
     <div class="clear"></div>
     <div class="field">

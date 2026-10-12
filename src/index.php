@@ -35,7 +35,7 @@ $route = parseRoute($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'], @$app_conf
 // print_r($route);exit;
 // 分配路由
 $app_path_type = '';
-if (preg_match('|^/post/([a-z0-5]{6})$|', rtrim($route, '/'), $matches)) {
+if (preg_match('|^/post/([a-z0-9]{1,8})$|', rtrim($route, '/'), $matches)) {
   $app_path_type = 'post';
   $app_path_name = $matches[1];
 } elseif (preg_match('|^/tag/([^/]+)(/\?page=([0-9]+)){0,1}$|', rtrim($route, '/'), $matches)) {
@@ -160,6 +160,19 @@ switch ($app_path_type) {
     break;
   default:
     app_404();
+}
+
+// SEO 信息：文章页 keywords 用文章 tags，单页面 keywords 用页面标题，
+// 文章与单页面的 description 用数据里的 desc 字段
+$app_seo_description = '';
+$app_seo_keywords = '';
+if (($app_path_type == 'post' || $app_path_type == 'page') && isset($app_data['desc'])) {
+  $app_seo_description = $app_data['desc'];
+}
+if ($app_path_type == 'post' && !empty($app_post['tags'])) {
+  $app_seo_keywords = implode(',', $app_post['tags']);
+} elseif ($app_path_type == 'page' && !empty($app_post['title'])) {
+  $app_seo_keywords = $app_post['title'];
 }
 
 // 加载视图

@@ -8,6 +8,7 @@ $page_file        = '';
 $page_path        = '';
 $page_state       = '';
 $page_title       = '';
+$page_desc        = '';
 $page_content     = '';
 $page_date        = '';
 $page_time        = '';
@@ -20,6 +21,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   $page_path        = $_POST['path'];
   $page_state       = $_POST['state'];
   $page_title       = trim($_POST['title']);
+  $page_desc        = trim($_POST['desc']);
   $page_content     = htmlspecialchars(trim($_POST['content']));
   $page_date        = date("Y-m-d");
   $page_time        = date("H:i:s");
@@ -109,7 +111,13 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       'date'        => $page_date,
       'time'        => $page_time,
       'can_comment' => $page_can_comment,
+      'desc'        => $page_desc,
     );
+
+    // 编辑页面时更新最后修改时间；新建时发布时间即当前时间，不写 mod_time
+    if (date("Y-m-d H:i:s") != $page_date . ' ' . $page_time) {
+      $data['mod_time'] = date("Y-m-d H:i:s");
+    }
 
     $index_file = PATH_ROOT . '/data/pages/index/' . $page_state . '.php';
 
@@ -139,6 +147,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   $page_path        = $data['path'];
   $page_state       = $data['state'];
   $page_title       = $data['title'];
+  $page_desc        = isset($data['desc']) ? $data['desc'] : '';
   $page_content     = $data['content'];
   $page_date        = $data['date'];
   $page_time        = $data['time'];
@@ -182,6 +191,9 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   <div style="margin-bottom:20px;">
     <?php require 'editor.php'; ?>
     <?php editor(htmlspecialchars_decode($page_content)); ?>
+  </div>
+  <div style="margin-bottom:20px;">
+    <input name="desc" type="text" class="edit_textbox" placeholder="在此输入描述，将显示在网页SEO的description中" value="<?php echo htmlspecialchars($page_desc); ?>" />
   </div>
   <div style="margin-bottom:20px;">
     <input name="path" type="text" class="edit_textbox" placeholder="在此输入页面路径，多级路径用半角斜杠(/)分割" value="<?php echo htmlspecialchars($page_path); ?>" />

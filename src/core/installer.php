@@ -130,6 +130,7 @@ if (!$install_failed) {
       "'version'       => '/*APP_VERSION*/',".
       "'site_link'     => '{$_POST['sitelink']}',".
       "'site_name'     => '{$_POST['sitename']}',".
+      "'site_subname'  => '',".
       "'site_desc'     => '又一个 DouPress 网站',".
       "'site_keywords' => 'DouPress',".
       "'site_theme'    => 'default',".
@@ -140,6 +141,7 @@ if (!$install_failed) {
       "'user_pass'     => '{$_POST['password']}',".
       "'nick_name'     => '{$_POST['nickname']}',".
       "'comment_code'  => '',".
+      "'header_code'   => '',".
       "'footer_code'   => '');?>"
     )) {
       $install_failed = true;

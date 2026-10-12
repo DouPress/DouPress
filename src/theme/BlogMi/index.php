@@ -12,17 +12,15 @@ if (!isset($app_config)) exit;
   <meta content="telephone=no,email=no" name="format-detection" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="description" content="<?php echo $app_config['site_desc'];?> - DouPress" />
-  <meta name="keywords" content="DouPress" />
+  <meta name="description" content="<?php app_seo_description(); ?> - DouPress"/>
+  <meta name="keywords" content="<?php app_seo_keywords('DouPress');?>" />
   <meta name="generator" content="DouPress"/>
   <meta name="author" content="BlogMi" />
   <link rel="icon" href="<?php app_site_link(); ?>/favicon.ico" />
-  <title><?php if (app_is_post() || app_is_page()) {
-    app_post_title(); ?> | <?php app_site_name();
-  } else {
-    app_site_name(); ?> | <?php app_site_desc();
-  } ?></title>
+  <title><?php app_seo_title(); ?></title>
   <link href="<?php app_theme_url('style.css'); ?>" type="text/css" rel="stylesheet" />
+  <?php app_header_code(); ?>
+
 </head>
 
 <body>
@@ -55,6 +53,7 @@ if (!isset($app_config)) exit;
               <div class="post_date"><?php app_post_date(); ?></div>
               <div class="post_tag"><?php app_post_tags('', '', ''); ?></div>
               <div class="post_views">浏览量：<?php app_post_hits(); ?></div>
+              <?php if (app_mod_time_has()) { ?><div class="post_mod">最后修改：<?php app_mod_time(); ?></div><?php } ?>
               <div class="post_comm"><a href="<?php
               //app_post_link(); 
               ?>#comm">评论</a></div>
@@ -69,7 +68,7 @@ if (!isset($app_config)) exit;
             <h1 class="title"><?php
              app_post_title();
             ?></h1>
-            <div class="post_meta">浏览量：<?php app_post_hits(); ?></div>
+            <div class="post_meta">浏览量：<?php app_post_hits(); ?><?php if (app_mod_time_has()) { ?> | 最后修改：<?php app_mod_time(); ?><?php } ?></div>
             <div class="content">
               <?php app_post_content(); ?>
             </div>
