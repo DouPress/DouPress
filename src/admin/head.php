@@ -1,7 +1,6 @@
 <?php
-ini_set("display_errors", "On");
-error_reporting(E_ALL);
-require_once '../data/config.php';
+// 错误回显由 core/common.php 按配置的 debug 开关统一控制
+require_once PATH_ROOT . '/data/config.php';
 
 $pagefile = basename($_SERVER['PHP_SELF']);
 ?>

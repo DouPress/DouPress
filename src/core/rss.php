@@ -23,7 +23,7 @@
       <link><?php app_post_url(); ?></link>
       <guid><?php app_post_url(); ?></guid>
       <dc:creator><?php app_nick_name(); ?></dc:creator>
-      <pubDate><?php app_post_date(); ?> <?php app_post_time(); ?></pubDate>
+      <pubDate><?php app_post_pubdate(); ?></pubDate>
 <?php app_post_tags("      <category><![CDATA[", "\n", "]]></category>"); echo "\n"; ?>
       <content:encoded><![CDATA[<?php app_post_content();?>]]></content:encoded>
     </item>

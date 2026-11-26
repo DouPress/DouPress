@@ -9,17 +9,24 @@ global $app_config;
 // 处理 URL
 function parseRoute($requestUri, $scriptName, $siteRoute)
 {
-  // print_r(var_export($_SERVER, true));
-  // exit;
   // 移除文件名
   $subpath = str_replace('/' . basename(__FILE__), '', $scriptName);
-  // 完整的访问路径
-  $fullpath = str_replace('/' . basename(__FILE__), '', $requestUri);
 
   if ($siteRoute == 'path') {
-    // 移除参数
-    $fullpath = str_replace($_SERVER['QUERY_STRING'], '', $fullpath);
+    // 路径模式：只取路径部分。不能用 str_replace 移除查询串（查询串内容出现在
+    // 路径中时会误删），也不可丢弃 ?page=N 导致 tag/日期分页失效；
+    // nginx 等以 s= 参数转发原始路径时优先使用该参数（s= 可能带多余的前导斜杠，归一化）
+    if (isset($_GET['s'])) {
+      $fullpath = '/' . ltrim($_GET['s'], '/');
+    } else {
+      $query_pos = strpos($requestUri, '?');
+      $fullpath = ($query_pos === false) ? $requestUri : substr($requestUri, 0, $query_pos);
+    }
+  } else {
+    // 完整的访问路径
+    $fullpath = str_replace('/' . basename(__FILE__), '', $requestUri);
   }
+
   // 移除子路径
   $route = preg_replace('/^' . preg_quote($subpath, '/') . '/', '', $fullpath, 1);
   // 参数模式移除?
@@ -41,28 +48,31 @@ if (preg_match('|^/post/([a-z0-9]{1,8})$|', rtrim($route, '/'), $matches)) {
 } elseif (preg_match('|^/tag/([^/]+)(/\?page=([0-9]+)){0,1}$|', rtrim($route, '/'), $matches)) {
   $app_path_type = 'tag';
   $app_path_name = isset($matches[1]) ? urldecode($matches[1]) : '';
-  $app_page_no = isset($matches[3]) ? $matches[3] : 1;
+  // 路径模式(?page=被解析为查询串)时回退读取 $_GET['page']
+  $app_page_no = isset($matches[3]) ? intval($matches[3]) : (isset($_GET['page']) ? intval($_GET['page']) : 1);
+  if ($app_page_no < 1) $app_page_no = 1;
 } elseif (preg_match('|^/date/([0-9]{4}-[0-9]{2})(/\?page=([0-9]+)){0,1}$|', rtrim($route, '/'), $matches)) {
   $app_path_type = 'date';
   $app_path_name = urldecode($matches[1]);
-  $app_page_no = isset($matches[3]) ? $matches[3] : 1;
+  $app_page_no = isset($matches[3]) ? intval($matches[3]) : (isset($_GET['page']) ? intval($_GET['page']) : 1);
+  if ($app_page_no < 1) $app_page_no = 1;
 } elseif (preg_match('|^/archive$|', rtrim($route, '/'), $matches)) {
   $app_path_type = 'archive';
 } elseif (rtrim($route, '/') == '/rss') {
   $app_path_type = 'rss';
   $app_path_name = '';
-  $app_page_no = isset($_GET['page']) ? $_GET['page'] : 1;
+  $app_page_no = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 } elseif (rtrim($route, '/') == '/xml') {
   $app_path_type = 'xml';
   $app_path_name = '';
-  $app_page_no = isset($_GET['page']) ? $_GET['page'] : 1;
+  $app_page_no = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 } elseif (preg_match('|^/(([-_.a-zA-Z0-9/])+)$|', $route, $matches)) {
   $app_path_type = 'page';
   $app_path_name = rtrim($matches[1], '/');
 } elseif (empty($route) || $route == '/' || preg_match('|^/page=([0-9]+)$|', $route, $matches)) {
   $app_path_type = 'index';
   $app_path_name = '';
-  $app_page_no = isset($_GET['page']) ? $_GET['page'] : 1;
+  $app_page_no = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 }
 
 // 加载数据
@@ -71,13 +81,14 @@ switch ($app_path_type) {
     if (empty($app_path_name)) {
       app_404();
     }
-    require 'data/posts/index/publish.php';
+    require PATH_ROOT . '/data/posts/index/publish.php';
 
     if (array_key_exists($app_path_name, $app_posts)) {
       $app_post_id = $app_path_name;
       $app_post = $app_posts[$app_post_id];
 
-      $app_data = unserialize(file_get_contents('data/posts/data/' . $app_post_id . '.dat'));
+      $data_file = PATH_ROOT . '/data/posts/data/' . $app_post_id . '.dat';
+      $app_data = is_file($data_file) ? unserialize(file_get_contents($data_file)) : array();
       app_hits_inc($app_post_id, 'post');
     } else {
       app_404();
@@ -87,7 +98,7 @@ switch ($app_path_type) {
     if (empty($app_path_name)) {
       app_404();
     }
-    require 'data/posts/index/publish.php';
+    require PATH_ROOT . '/data/posts/index/publish.php';
 
     $app_post_ids = array_keys($app_posts);
     $app_post_count = count($app_post_ids);
@@ -108,7 +119,7 @@ switch ($app_path_type) {
     $app_post_count = count($app_post_ids);
     break;
   case 'date':
-    require 'data/posts/index/publish.php';
+    require PATH_ROOT . '/data/posts/index/publish.php';
 
     $app_post_ids = array_keys($app_posts);
     $app_post_count = count($app_post_ids);
@@ -129,7 +140,7 @@ switch ($app_path_type) {
     $app_post_count = count($app_post_ids);
     break;
   case 'archive':
-    require 'data/posts/index/publish.php';
+    require PATH_ROOT . '/data/posts/index/publish.php';
     $tags_array = [];
     $date_array = [];
     foreach ($app_posts as $post) {
@@ -141,11 +152,12 @@ switch ($app_path_type) {
     $app_dates = array_values(array_unique($date_array));
     break;
   case 'page':
-    require 'data/pages/index/publish.php';
+    require PATH_ROOT . '/data/pages/index/publish.php';
     if (array_key_exists($app_path_name, $app_pages)) {
       $app_post_id = $app_path_name;
       $app_post = $app_pages[$app_post_id];
-      $app_data = unserialize(file_get_contents('data/pages/data/' . $app_post['file'] . '.dat'));
+      $data_file = PATH_ROOT . '/data/pages/data/' . $app_post['file'] . '.dat';
+      $app_data = is_file($data_file) ? unserialize(file_get_contents($data_file)) : array();
       app_hits_inc($app_post['file'], 'page');
     } else {
       app_404();
@@ -154,7 +166,7 @@ switch ($app_path_type) {
   case 'index':
   case 'xml':
   case 'rss':
-    require 'data/posts/index/publish.php';
+    require PATH_ROOT . '/data/posts/index/publish.php';
     $app_post_ids = array_keys($app_posts);
     $app_post_count = count($app_post_ids);
     break;

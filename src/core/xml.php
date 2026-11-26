@@ -4,14 +4,19 @@
   <url>
     <loc><?php app_site_link(); ?></loc>
     <priority>1.00</priority>
-    <lastmod><?php echo date("Y-m-d H:i:s"); ?></lastmod>
+    <lastmod><?php echo date('Y-m-d\TH:i:sP'); ?></lastmod>
     <changefreq>always</changefreq>
   </url>
   <?php while (app_next_post()) { ?>
     <url>
       <loc><?php app_post_url(); ?></loc>
       <priority>0.8</priority>
-      <lastmod><?php echo !empty($app_post['mod_time']) ? $app_post['mod_time'] : app_post_date(false) . ' ' . app_post_time(false); ?></lastmod>
+      <lastmod><?php
+        $post_lastmod = !empty($app_post['mod_time'])
+          ? $app_post['mod_time']
+          : app_post_date(false) . ' ' . app_post_time(false);
+        app_w3c_datetime($post_lastmod);
+      ?></lastmod>
       <changefreq>daily</changefreq>
     </url>
   <?php } ?>
@@ -25,7 +30,7 @@
     <url>
       <loc><?php app_get_url('', $app_page['path']); ?></loc>
       <priority>0.6</priority>
-      <lastmod><?php echo $page_lastmod; ?></lastmod>
+      <lastmod><?php app_w3c_datetime($page_lastmod); ?></lastmod>
       <changefreq>weekly</changefreq>
     </url>
   <?php } ?>

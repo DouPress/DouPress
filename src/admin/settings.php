@@ -3,45 +3,71 @@ require_once 'common.php';
 
 app_check_login();
 
+// 生成 CSRF 令牌（必须在输出前调用，写入 dp_csrf cookie）
+app_csrf_token();
+
 $display_info = false;
 
 $theme_files = scandir(PATH_ROOT . '/theme');
 $theme_list = array();
 $filter = array('.', '..', '.cvs', '.svn', '.git', '.DS_Store', '._.DS_Store');
 foreach ($theme_files as $file) {
-    if (!is_dir($file) && !in_array($file, $filter)) {
-      $theme_list[] = $file;
+    // 必须用全路径判断，否则相对路径恒为目录名导致扫描结果异常
+    $theme_dir = PATH_ROOT . '/theme/' . $file;
+    if (is_dir($theme_dir) && !in_array($file, $filter)) {
+      // 仅收录包含 index.php 的有效主题目录
+      if (is_file($theme_dir . '/index.php')) {
+        $theme_list[] = $file;
+      }
     }
 }
 
 if (isset($_POST['save'])) {
+  // 写操作：先校验 CSRF 令牌
+  app_verify_csrf();
+
   $user_name_changed = $_POST['user_name'] != $app_config['user_name'];
 
-  $app_config['site_name']     = $_POST['site_name'];
-  $app_config['site_subname']  = $_POST['site_subname'];
-  $app_config['site_desc']     = $_POST['site_desc'];
-  $app_config['site_keywords'] = $_POST['site_keywords'];
-  $app_config['site_link']     = $_POST['site_link'];
-  $app_config['site_theme']    = $_POST['site_theme'];
+  $app_config['site_name']     = trim($_POST['site_name']);
+  $app_config['site_subname']  = trim($_POST['site_subname']);
+  $app_config['site_desc']     = trim($_POST['site_desc']);
+  $app_config['site_keywords'] = trim($_POST['site_keywords']);
+  // 网站地址去掉末尾斜杠，避免拼接出 //xxx
+  $app_config['site_link']     = rtrim(trim($_POST['site_link']), '/');
   $app_config['site_route']    = $_POST['site_route'];
-  $app_config['site_icpno']    = $_POST['site_icpno'];
+  $app_config['site_icpno']    = trim($_POST['site_icpno']);
   $app_config['site_status']   = $_POST['site_status'];
-  $app_config['nick_name']     = $_POST['nick_name'];
-  $app_config['user_name']     = $_POST['user_name'];
+  $app_config['nick_name']     = trim($_POST['nick_name']);
+  $app_config['user_name']     = trim($_POST['user_name']);
   $app_config['comment_code']  = trim($_POST['comment_code']);
   $app_config['footer_code']   = trim($_POST['footer_code']);
   $app_config['header_code']   = trim($_POST['header_code']);
 
-  if ($_POST['user_pass'] != '') {
-    $app_config['user_pass'] = $_POST['user_pass'];
+  // 主题合法性校验：必须是已收录的有效主题，避免误存导致前台 Fatal
+  if (in_array($_POST['site_theme'], $theme_list)) {
+    $app_config['site_theme'] = $_POST['site_theme'];
   }
 
-  $code = "<?php\n\$app_config = " . var_export($app_config, true) . ";\n?>";
+  // 链接形式只允许 default / path
+  if ($_POST['site_route'] != 'default' && $_POST['site_route'] != 'path') {
+    $app_config['site_route'] = 'default';
+  }
 
-  file_put_contents(PATH_ROOT . '/data/config.php', $code);
+  // 网站状态只允许 open / closed
+  if ($_POST['site_status'] != 'open' && $_POST['site_status'] != 'closed') {
+    $app_config['site_status'] = 'open';
+  }
+
+  if ($_POST['user_pass'] != '') {
+    // 密码改为哈希存储（token 基于配置值计算，保持兼容）
+    $app_config['user_pass'] = app_hash_password($_POST['user_pass']);
+  }
+
+  app_save_config();
 
   if ($_POST['user_pass'] != '' || $user_name_changed) {
-    setcookie('token', md5($app_config['user_name'] . '_' . $app_config['user_pass']));
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    setcookie('token', md5($app_config['user_name'] . '_' . $app_config['user_pass']), 0, '/', '', $secure, true);
   }
 
   $display_info = true;
@@ -65,6 +91,7 @@ $header_code   = isset($app_config['header_code']) ? $app_config['header_code'] 
 ?>
 <?php require 'head.php'; ?>
 <form action="<?php echo htmlentities($_SERVER['REQUEST_URI']); ?>" method="post">
+  <?php app_csrf_field(); ?>
   <?php if ($display_info) { ?>
     <div class="updated">设置保存成功！</div>
   <?php } ?>
@@ -135,7 +162,7 @@ $header_code   = isset($app_config['header_code']) ? $app_config['header_code'] 
     <div class="clear"></div>
     <div class="field">
       <div class="label">ICP备案号</div>
-      <input class="textbox" type="text" name="site_icpno" value="<?php echo $site_icpno; ?>" placeholder="工信部ICP备案号" />
+      <input class="textbox" type="text" name="site_icpno" value="<?php echo htmlspecialchars($site_icpno); ?>" placeholder="工信部ICP备案号" />
       <div class="info"></div>
     </div>
     <div class="clear"></div>

@@ -4,6 +4,9 @@ require_once 'common.php';
 
 app_check_login();
 
+// 生成 CSRF 令牌（必须在输出前调用，写入 dp_csrf cookie）
+app_csrf_token();
+
 if (!is_dir(PATH_ROOT . '/data/pages/data/')) {
   mkdir(PATH_ROOT . '/data/pages/data/');
 }
@@ -41,7 +44,7 @@ function delete_page($id)
 
   unset($app_pages[$id]);
 
-  file_put_contents($index_file, "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>");
+  file_put_contents($index_file, "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>", LOCK_EX);
 
   if ($state != 'delete') {
     $index_file2 = PATH_ROOT . '/data/pages/index/delete.php';
@@ -50,9 +53,16 @@ function delete_page($id)
 
     $app_pages[$id] = $page;
 
-    file_put_contents($index_file2, "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>");
+    file_put_contents($index_file2, "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>", LOCK_EX);
   } else {
     unlink(PATH_ROOT . '/data/pages/data/' . $page['file'] . '.dat');
+
+    // 彻底删除时清理浏览量文件并同步站点总浏览量
+    $hits_file = PATH_ROOT . '/data/hits/pages/' . $page['file'] . '.dat';
+    if (is_file($hits_file)) {
+      unlink($hits_file);
+      app_site_hits_rebuild();
+    }
   }
 }
 
@@ -68,7 +78,7 @@ function revert_page($id)
 
   unset($app_pages[$id]);
 
-  file_put_contents($index_file, "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>");
+  file_put_contents($index_file, "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>", LOCK_EX);
 
   $index_file2 = PATH_ROOT . '/data/pages/index/' . $prev_state . '.php';
 
@@ -78,22 +88,27 @@ function revert_page($id)
 
   ksort($app_pages);
 
-  file_put_contents($index_file2, "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>");
+  file_put_contents($index_file2, "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>", LOCK_EX);
 }
 
 load_pages();
 
 if (isset($_GET['delete']) || (isset($_GET['apply']) && $_GET['apply'] == 'delete')) {
+  // 写操作：先校验 CSRF 令牌
+  app_verify_csrf();
   if (isset($_GET['apply']) && $_GET['apply'] == 'delete') {
     $ids = explode(',', $_GET['ids']);
     foreach ($ids as $id) {
-      if (trim($id) == '')
+      $id = trim($id);
+      if ($id == '' || !app_valid_page_id($id) || !isset($app_pages[$id]))
         continue;
       delete_page($id);
       load_pages();
     }
   } else {
-    delete_page($_GET['delete']);
+    if (app_valid_page_id($_GET['delete']) && isset($app_pages[$_GET['delete']])) {
+      delete_page($_GET['delete']);
+    }
   }
   //load_posts();
   Header('Location:page.php?done=true&state=' . $state);
@@ -101,16 +116,21 @@ if (isset($_GET['delete']) || (isset($_GET['apply']) && $_GET['apply'] == 'delet
 }
 
 if (isset($_GET['revert']) || (isset($_GET['apply']) && $_GET['apply'] == 'revert')) {
+  // 写操作：先校验 CSRF 令牌
+  app_verify_csrf();
   if (isset($_GET['apply']) && $_GET['apply'] == 'revert') {
     $ids = explode(',', $_GET['ids']);
     foreach ($ids as $id) {
-      if (trim($id) == '')
+      $id = trim($id);
+      if ($id == '' || !app_valid_page_id($id) || !isset($app_pages[$id]))
         continue;
       revert_page($id);
       load_pages();
     }
   } else {
-    revert_page($_GET['revert']);
+    if (app_valid_page_id($_GET['revert']) && isset($app_pages[$_GET['revert']])) {
+      revert_page($_GET['revert']);
+    }
   }
   //load_posts();
   Header('Location:page.php?done=true&state=' . $state);
@@ -160,7 +180,7 @@ $page_count = count($page_ids);
 $last_page = ceil($page_count / 10);
 
 if (isset($_GET['page'])) {
-  $page_num = $_GET['page'];
+  $page_num = intval($_GET['page']);
 } else {
   $page_num = 1;
 }
@@ -180,7 +200,7 @@ if ($page_num < $last_page) {
 } else {
   $next_page = $last_page;
 }
-if ($page_num < 0) {
+if ($page_num < 1) {
   $page_num = 1;
 } else if ($page_num > $last_page) {
   $page_num = $last_page;
@@ -227,7 +247,7 @@ if ($page_num < 0) {
     var op = document.getElementById(opid);
 
     if (ids != '')
-      location.href = '?state=<?php echo $state; ?>&apply=' + op.value + '&ids=' + ids;
+      location.href = '?state=<?php echo $state; ?>&apply=' + op.value + '&ids=' + ids + '&_dp_token=<?php echo app_csrf_token(); ?>';
   }
 
   function do_filter() {
@@ -240,7 +260,7 @@ if ($page_num < 0) {
     var eventSrc = evt.target || evt.srcElement;
 
     if ((e.keyCode || e.which) == 13) {
-      location.href = '?state=<?php echo $state; ?>&date=<?php echo $filter_date; ?>&page=' + eventSrc.value;
+      location.href = '?state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&page=' + eventSrc.value;
     }
   }
 </script>
@@ -282,7 +302,7 @@ if ($page_num < 0) {
     共 <?php echo $page_count; ?> 项&nbsp;&nbsp;
     <a class="link_button" href="?state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>">&laquo;</a>
     <a class="link_button" href="?state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&page=<?php echo $prev_page; ?>">&lsaquo;</a>
-    第 <input type="text" value="<?php echo urlencode($page_num); ?>" id="page_input_1" /> 页,共 <?php echo $last_page; ?> 页
+    第 <input type="text" value="<?php echo $page_num; ?>" id="page_input_1" /> 页,共 <?php echo $last_page; ?> 页
     <a class="link_button" href="?state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&page=<?php echo $next_page; ?>">&rsaquo;</a>
     <a class="link_button" href="?state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&page=<?php echo $last_page; ?>">&raquo;</a>
   </span>
@@ -312,15 +332,15 @@ if ($page_num < 0) {
             <div class="row_tool">
               <a class="link_button" href="page-edit.php?file=<?php echo $page['file']; ?>">编辑</a>
               <?php if ($state == 'delete') { ?>
-                <a class="link_button" href="?revert=<?php echo urlencode($page_id); ?>&state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>">还原</a>
-                <a class="link_button" href="?delete=<?php echo urlencode($page_id); ?>&state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>">删除</a>
+                <a class="link_button" href="?revert=<?php echo urlencode($page_id); ?>&state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&_dp_token=<?php echo app_csrf_token(); ?>">还原</a>
+                <a class="link_button" href="?delete=<?php echo urlencode($page_id); ?>&state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&_dp_token=<?php echo app_csrf_token(); ?>">删除</a>
               <?php } else { ?>
-                <a class="link_button" href="?delete=<?php echo urlencode($page_id); ?>&state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>">回收</a>
+                <a class="link_button" href="?delete=<?php echo urlencode($page_id); ?>&state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&_dp_token=<?php echo app_csrf_token(); ?>">回收</a>
               <?php } ?>
               <a class="link_button" href="<?php echo app_get_url('', $page_id);?>" target="_blank">查看</a>
             </div>
           </td>
-          <td>/<?php echo $page_id; ?></td>
+          <td>/<?php echo htmlspecialchars($page_id); ?></td>
           <td><?php echo htmlspecialchars($page['date']); ?></td>
           </tr>
         <?php } ?>
@@ -338,8 +358,13 @@ if ($page_num < 0) {
 <div class="table_list_tool">
   <span>
     <select id="op2">
-      <option>批量操作</option>
-      <option value="delete">回收</option>
+      <option value="">批量操作</option>
+      <?php if ($state == 'delete') { ?>
+        <option value="revert">还原</option>
+        <option value="delete">删除</option>
+      <?php } else { ?>
+        <option value="delete">回收</option>
+      <?php } ?>
     </select>
     <input type="button" name="apply" value="应用" onclick="apply_all('op2','ids');" />
   </span>
@@ -347,7 +372,7 @@ if ($page_num < 0) {
     共 <?php echo $page_count; ?> 项&nbsp;&nbsp;
     <a class="link_button" href="?state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>">&laquo;</a>
     <a class="link_button" href="?state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&page=<?php echo $prev_page; ?>">&lsaquo;</a>
-    第 <input type="text" value="<?php echo urlencode($page_num); ?>" id="page_input_2" /> 页,共 <?php echo $last_page; ?> 页
+    第 <input type="text" value="<?php echo $page_num; ?>" id="page_input_2" /> 页,共 <?php echo $last_page; ?> 页
     <a class="link_button" href="?state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&page=<?php echo $next_page; ?>">&rsaquo;</a>
     <a class="link_button" href="?state=<?php echo $state; ?>&date=<?php echo urlencode($filter_date); ?>&page=<?php echo $last_page; ?>">&raquo;</a>
   </span>

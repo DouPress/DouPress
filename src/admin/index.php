@@ -2,16 +2,6 @@
 // 后台首页
 require_once 'common.php';
 app_check_login();
-
-if (isset($_POST['login'])) {
-  if (
-    $_POST['user'] == $app_config['user_name']
-    && $_POST['pass'] == $app_config['user_pass']
-  ) {
-    setcookie('token', md5($app_config['user_name'] . '_' . $app_config['user_pass']));
-    // Header("Location: post.php");
-  }
-}
 ?>
 <?php require 'head.php' ?>
 <div>

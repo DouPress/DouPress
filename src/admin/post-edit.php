@@ -3,7 +3,11 @@ require_once 'common.php';
 
 app_check_login();
 
+// 生成 CSRF 令牌（必须在输出前调用，写入 dp_csrf cookie）
+app_csrf_token();
+
 $post_id          = '';
+$post_is_new      = false;
 $post_state       = '';
 $post_title       = '';
 $post_desc        = '';
@@ -16,6 +20,9 @@ $error_msg        = '';
 $succeed          = false;
 
 if (isset($_POST['_IS_POST_BACK_'])) {
+  // 写操作：先校验 CSRF 令牌
+  app_verify_csrf();
+
   $post_id          = $_POST['id'];
   $post_state       = $_POST['state'];
   $post_title       = trim($_POST['title']);
@@ -24,30 +31,34 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   $post_tags        = explode(',', trim($_POST['tags']));
   $post_date        = date("Y-m-d");
   $post_time        = date("H:i:s");
-  $post_can_comment  = $_POST['can_comment'];
+  $post_can_comment = ($_POST['can_comment'] == '0') ? '0' : '1';
+
+  // 文章 ID 白名单校验，防止路径穿越
+  if ($post_id != '' && !app_valid_post_id($post_id)) {
+    Header("Location:post.php");
+    exit;
+  }
 
   if ($post_state != "delete" && $post_state != "draft" && $post_state != "publish") {
     Header("Location:index.php");
     exit;
   }
 
-  if ($_POST['year'] != '')
-    $post_date = substr_replace($post_date, $_POST['year'], 0, 4);
+  // 发布时间合法性校验（checkdate），非法时间不落库
+  $y  = ($_POST['year'] != '') ? intval($_POST['year']) : intval(date('Y'));
+  $mo = ($_POST['month'] != '') ? intval($_POST['month']) : intval(date('n'));
+  $d  = ($_POST['day'] != '') ? intval($_POST['day']) : intval(date('j'));
+  $h  = ($_POST['hourse'] != '') ? intval($_POST['hourse']) : intval(date('G'));
+  $mi = ($_POST['minute'] != '') ? intval($_POST['minute']) : intval(date('i'));
+  $s  = ($_POST['second'] != '') ? intval($_POST['second']) : intval(date('s'));
 
-  if ($_POST['month'] != '')
-    $post_date = substr_replace($post_date, $_POST['month'], 5, 2);
+  $date_valid = checkdate($mo, $d, $y) && $y >= 1990 && $y <= 2100
+    && $h >= 0 && $h <= 23 && $mi >= 0 && $mi <= 59 && $s >= 0 && $s <= 59;
 
-  if ($_POST['day'] != '')
-    $post_date = substr_replace($post_date, $_POST['day'], 8, 2);
-
-  if ($_POST['hourse'] != '')
-    $post_time = substr_replace($post_time, $_POST['hourse'], 0, 2);
-
-  if ($_POST['minute'] != '')
-    $post_time = substr_replace($post_time, $_POST['minute'], 3, 2);
-
-  if ($_POST['second'] != '')
-    $post_time = substr_replace($post_time, $_POST['second'], 6, 2);
+  if ($date_valid) {
+    $post_date = sprintf('%04d-%02d-%02d', $y, $mo, $d);
+    $post_time = sprintf('%02d:%02d:%02d', $h, $mi, $s);
+  }
 
   $post_tags_count = count($post_tags);
 
@@ -64,24 +75,27 @@ if (isset($_POST['_IS_POST_BACK_'])) {
 
   if ($post_title == '') {
     $error_msg = '文章标题不能为空';
+  } else if (!$date_valid) {
+    $error_msg = '发布时间不合法';
   } else {
+    // 文章 ID：新建时页面渲染阶段已预生成（hidden 字段带回），此处为无 ID 时的兜底
     if ($post_id == '') {
-      $file_names = shorturl($post_title);
+      $post_id = app_random_id(PATH_ROOT . '/data/posts/data', $post_title);
+    }
 
-      foreach ($file_names as $file_name) {
-        $file_path = PATH_ROOT . '/data/posts/data/' . $file_name . '.dat';
+    $file_path = PATH_ROOT . '/data/posts/data/' . $post_id . '.dat';
+    $data_old  = false;
 
-        if (!is_file($file_path)) {
-          $post_id = $file_name;
-          break;
-        }
+    if (is_file($file_path)) {
+      // 已有数据文件：编辑已有文章
+      $data_old = unserialize(file_get_contents($file_path));
+
+      if (!is_array($data_old)) {
+        Header("Location:post.php");
+        exit;
       }
-    } else {
-      $file_path = PATH_ROOT . '/data/posts/data/' . $post_id . '.dat';
 
-      $data = unserialize(file_get_contents($file_path));
-
-      $post_old_state = $data['state'];
+      $post_old_state = $data_old['state'];
 
       if ($post_old_state != $post_state) {
         $index_file = PATH_ROOT . '/data/posts/index/' . $post_old_state . '.php';
@@ -92,7 +106,8 @@ if (isset($_POST['_IS_POST_BACK_'])) {
 
         file_put_contents(
           $index_file,
-          "<?php\n\$app_posts = " . var_export($app_posts, true) . ";\n?>"
+          "<?php\n\$app_posts = " . var_export($app_posts, true) . ";\n?>",
+          LOCK_EX
         );
       }
     }
@@ -123,19 +138,36 @@ if (isset($_POST['_IS_POST_BACK_'])) {
 
     file_put_contents(
       $index_file,
-      "<?php\n\$app_posts = " . var_export($app_posts, true) . ";\n?>"
+      "<?php\n\$app_posts = " . var_export($app_posts, true) . ";\n?>",
+      LOCK_EX
     );
 
     $data['content'] = $post_content;
 
-    file_put_contents($file_path, serialize($data));
+    file_put_contents($file_path, serialize($data), LOCK_EX);
 
     $succeed = true;
   }
 } else if (isset($_GET['id'])) {
+  // 编辑入口：ID 白名单 + 数据文件存在性校验，防止路径穿越
+  if (!app_valid_post_id($_GET['id'])) {
+    Header("Location:post.php");
+    exit;
+  }
+
   $file_path = PATH_ROOT . '/data/posts/data/' . $_GET['id'] . '.dat';
 
+  if (!is_file($file_path)) {
+    Header("Location:post.php");
+    exit;
+  }
+
   $data = unserialize(file_get_contents($file_path));
+
+  if (!is_array($data)) {
+    Header("Location:post.php");
+    exit;
+  }
 
   $post_id      = $data['id'];
   $post_state   = $data['state'];
@@ -146,6 +178,10 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   $post_date    = $data['date'];
   $post_time    = $data['time'];
   $post_can_comment = isset($data['can_comment']) ? $data['can_comment'] : '1';
+} else {
+  // 新建文章：先确定文章 ID（编辑器上传图片目录与 ID 保持一致），随表单 hidden 字段带回
+  $post_is_new = true;
+  $post_id = app_random_id(PATH_ROOT . '/data/posts/data');
 }
 ?>
 <?php require 'head.php'; ?>
@@ -168,15 +204,18 @@ if (isset($_POST['_IS_POST_BACK_'])) {
 </script>
 <form action="<?php echo htmlentities($_SERVER['REQUEST_URI']); ?>" method="post">
   <input type="hidden" name="_IS_POST_BACK_" value="" />
+  <?php app_csrf_field(); ?>
   <?php if ($succeed) { ?>
     <?php if ($post_state == 'publish') { ?>
       <div class="updated">文章已发布。 <a href="<?php echo app_get_url('post', $post_id); ?>" class="link" target="_blank">查看文章</a></div>
     <?php } else { ?>
       <div class="updated">文章已保存到“草稿箱”。 <a href="post.php?state=draft">打开草稿箱</a></div>
     <?php } ?>
+  <?php } else if ($error_msg != '') { ?>
+    <div class="updated" style="background:#ffebe8;border:1px solid #c00;color:#c00;">保存失败：<?php echo $error_msg; ?></div>
   <?php } ?>
   <div class="admin_page_name">
-    <?php if ($post_id == '') echo "撰写文章";
+    <?php if ($post_is_new) echo "撰写文章";
     else echo "编辑文章"; ?><a class="link_button" href="post.php">所有文章</a>
   </div>
   <div style="margin-bottom:20px;">
@@ -184,7 +223,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   </div>
   <div style="margin-bottom:20px;">
     <?php require 'editor.php'; ?>
-    <?php editor(htmlspecialchars_decode($post_content)); ?>
+    <?php editor(htmlspecialchars_decode($post_content), 'posts/' . $post_id); ?>
   </div>
   <div style="margin-bottom:20px;">
     <input name="desc" type="text" class="edit_textbox" placeholder="在此输入描述，将显示在网页SEO的description中" value="<?php echo htmlspecialchars($post_desc); ?>" />
@@ -198,7 +237,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       <select name="year">
         <option value="">&nbsp;&nbsp;年</option>
         <?php $year = substr($post_date, 0, 4);
-        for ($i = 1990; $i <= 2030; $i++) { ?>
+        for ($i = 1990; $i <= intval(date('Y')) + 10; $i++) { ?>
           <option value="<?php echo $i; ?>" <?php if ($year == $i) echo 'selected="selected";' ?>><?php echo $i; ?></option>
         <?php } ?>
       </select> -

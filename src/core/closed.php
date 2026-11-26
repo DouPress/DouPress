@@ -42,7 +42,7 @@
         <div class="footer-wrapper">
             <div class="copyright">&copy; <?php echo date('Y'); ?> <?php app_site_name(); ?> All Rights Reserved.</div>
 <?php if (!empty($app_config['site_icpno'])) { ?>
-            <div class="policy-info"><a href="https://beian.miit.gov.cn/#/Integrated/index" class="link" target="_blank"><?php echo $app_config['site_icpno'];?></a></div>
+            <div class="policy-info"><a href="https://beian.miit.gov.cn/#/Integrated/index" class="link" target="_blank"><?php echo htmlspecialchars($app_config['site_icpno']);?></a></div>
 <?php } ?>
             <i class="policy-info">Powered by <a href="http://doupress.org" class="link" target="_blank">DouPress</a></i>
         </div>

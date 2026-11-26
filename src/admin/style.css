@@ -31,7 +31,7 @@ select { border:solid 1px #e0e0e0; padding:2px; border-radius:3px 3px 3px 3px; b
 .link { text-decoration:none; color:#0000ff; }
 .link:hover { background:#bc0000; color:#fff; }
 
-.link_button { background:#efefef; padding:2px 4px; font-size:12px; margin-right:4px; border-radius:3px 3px 3px 3px; }
+.link_button { cursor: pointer; background:#efefef; padding:2px 4px; color:#0000ff; font-size:12px; margin-right:4px; border-radius:3px 3px 3px 3px; }
 .link_button:hover,
 .link_button.current { background:#bc0000; color:#fff; }
 

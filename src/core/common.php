@@ -1,9 +1,20 @@
 <?php
-ini_set("display_errors", "On");
-error_reporting(E_ALL);
 
-require_once 'tags.php';
+require_once PATH_ROOT . '/core/compat.php';
+require_once PATH_ROOT . '/core/tags.php';
 require_once PATH_ROOT . '/data/config.php';
+
+// 调试模式：仅在配置中显式开启 debug 时回显错误，避免生产环境泄漏敏感信息
+if (isset($app_config['debug']) && $app_config['debug']) {
+  ini_set('display_errors', 'On');
+  error_reporting(E_ALL);
+} else {
+  ini_set('display_errors', 'Off');
+  error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+}
+
+// X-Powered-By 改为程序名，不暴露 PHP 版本号（覆盖 PHP 默认响应头）
+header('X-Powered-By: DouPress');
 
 function app_404()
 {
@@ -22,7 +33,7 @@ function app_get_url($app_path_type, $app_path_name = '', $path = '', $print = t
   $url = $r . $t . $n;
   $url = str_replace('//', '/', $url);
   $url = rtrim($url, '/');
-  $url = $app_config['site_link'] . $url;
+  $url = app_site_link(false) . $url;
 
   if ($print) {
     echo $url;

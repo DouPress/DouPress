@@ -1,21 +1,46 @@
 <?php
 // 后台登录页
-require_once dirname(dirname(__FILE__)).'/data/config.php';
+require_once __DIR__ . '/common.php';
 
-if (isset($_COOKIE['token'])) {
-  $token = $_COOKIE['token'];
+// 已登录则直接跳转
+if (isset($_COOKIE['token'])
+  && $_COOKIE['token'] == md5($app_config['user_name'] . '_' . $app_config['user_pass'])) {
+  Header("Location: index.php");
+  exit;
+}
 
-  if ($token == md5($app_config['user_name'].'_'.$app_config['user_pass'])) {
-    Header("Location: index.php");
+// 登录失败限流：10 分钟窗口内最多失败 10 次
+$fail_file = PATH_ROOT . '/data/.login-fail.dat';
+$fail_data = array('count' => 0, 'first' => 0);
+if (is_file($fail_file)) {
+  $fail_data = unserialize(file_get_contents($fail_file));
+  if (!is_array($fail_data) || !isset($fail_data['count'], $fail_data['first'])) {
+    $fail_data = array('count' => 0, 'first' => 0);
+  }
+  // 超过 10 分钟窗口自动重置
+  if (time() - $fail_data['first'] > 600) {
+    $fail_data = array('count' => 0, 'first' => time());
   }
 }
 
-if (isset($_POST['login'])) {
-  if ($_POST['user'] == $app_config['user_name'] 
-  && $_POST['pass'] == $app_config['user_pass']) {
-    setcookie('token', md5($app_config['user_name'].'_'.$app_config['user_pass']));
+if ($fail_data['count'] >= 10 && time() - $fail_data['first'] <= 600) {
+  $display_message = '登录失败次数过多，请 10 分钟后再试';
+} elseif (isset($_POST['login'])) {
+  if ($_POST['user'] == $app_config['user_name']
+    && app_verify_password($_POST['pass'], $app_config['user_pass'])) {
+    // 旧明文密码透明升级为哈希存储（token 仍基于配置值计算，保持兼容）
+    if (!app_password_is_hashed($app_config['user_pass'])) {
+      $app_config['user_pass'] = app_hash_password($app_config['user_pass']);
+      app_save_config();
+    }
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    setcookie('token', md5($app_config['user_name'] . '_' . $app_config['user_pass']), 0, '/', '', $secure, true);
+    @unlink($fail_file);
     Header("Location: index.php");
+    exit;
   } else {
+    $fail_data['count']++;
+    @file_put_contents($fail_file, serialize($fail_data), LOCK_EX);
     $display_message = '账号或密码错误';
   }
 }

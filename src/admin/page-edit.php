@@ -1,8 +1,10 @@
 <?php
-// define('PATH_ROOT', dirname(dirname(__FILE__))); // 定义根路径
 require_once 'common.php';
 
 app_check_login();
+
+// 生成 CSRF 令牌（必须在输出前调用，写入 dp_csrf cookie）
+app_csrf_token();
 
 $page_file        = '';
 $page_path        = '';
@@ -17,6 +19,9 @@ $error_msg        = '';
 $succeed          = false;
 
 if (isset($_POST['_IS_POST_BACK_'])) {
+  // 写操作：先校验 CSRF 令牌
+  app_verify_csrf();
+
   $page_file        = $_POST['file'];
   $page_path        = $_POST['path'];
   $page_state       = $_POST['state'];
@@ -25,30 +30,34 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   $page_content     = htmlspecialchars(trim($_POST['content']));
   $page_date        = date("Y-m-d");
   $page_time        = date("H:i:s");
-  $page_can_comment = $_POST['can_comment'];
+  $page_can_comment = ($_POST['can_comment'] == '0') ? '0' : '1';
+
+  // 页面文件 ID 白名单校验，防止路径穿越
+  if ($page_file != '' && !app_valid_post_id($page_file)) {
+    Header("Location:page.php");
+    exit;
+  }
 
   if ($page_state != "delete" && $page_state != "draft" && $page_state != "publish") {
     Header("Location:index.php");
     exit;
   }
 
-  if ($_POST['year'] != '')
-    $page_date = substr_replace($page_date, $_POST['year'], 0, 4);
+  // 发布时间合法性校验（checkdate），非法时间不落库
+  $y  = ($_POST['year'] != '') ? intval($_POST['year']) : intval(date('Y'));
+  $mo = ($_POST['month'] != '') ? intval($_POST['month']) : intval(date('n'));
+  $d  = ($_POST['day'] != '') ? intval($_POST['day']) : intval(date('j'));
+  $h  = ($_POST['hourse'] != '') ? intval($_POST['hourse']) : intval(date('G'));
+  $mi = ($_POST['minute'] != '') ? intval($_POST['minute']) : intval(date('i'));
+  $s  = ($_POST['second'] != '') ? intval($_POST['second']) : intval(date('s'));
 
-  if ($_POST['month'] != '')
-    $page_date = substr_replace($page_date, $_POST['month'], 5, 2);
+  $date_valid = checkdate($mo, $d, $y) && $y >= 1990 && $y <= 2100
+    && $h >= 0 && $h <= 23 && $mi >= 0 && $mi <= 59 && $s >= 0 && $s <= 59;
 
-  if ($_POST['day'] != '')
-    $page_date = substr_replace($page_date, $_POST['day'], 8, 2);
-
-  if ($_POST['hourse'] != '')
-    $page_time = substr_replace($page_time, $_POST['hourse'], 0, 2);
-
-  if ($_POST['minute'] != '')
-    $page_time = substr_replace($page_time, $_POST['minute'], 3, 2);
-
-  if ($_POST['second'] != '')
-    $page_time = substr_replace($page_time, $_POST['second'], 6, 2);
+  if ($date_valid) {
+    $page_date = sprintf('%04d-%02d-%02d', $y, $mo, $d);
+    $page_time = sprintf('%02d:%02d:%02d', $h, $mi, $s);
+  }
 
   $page_path_part  = explode('/', $page_path);
   $page_path_count = count($page_path_part);
@@ -70,26 +79,52 @@ if (isset($_POST['_IS_POST_BACK_'])) {
     $error_msg = '页面标题不能为空';
   } else if ($page_path == '') {
     $error_msg = '页面路径不能为空';
+  } else if (!app_valid_page_id($page_path)) {
+    $error_msg = '页面路径只能包含字母、数字、中划线、下划线、点和斜杠';
+  } else if (!$date_valid) {
+    $error_msg = '发布时间不合法';
   } else {
+    $page_old_path = '';
+
+    // 页面文件 ID：新建时页面渲染阶段已预生成（hidden 字段带回），此处为无 ID 时的兜底
     if ($page_file == '') {
-      $file_names = shorturl($page_title);
+      $page_file = app_random_id(PATH_ROOT . '/data/pages/data', $page_title);
+    }
 
-      foreach ($file_names as $file_name) {
-        $file_path = PATH_ROOT . '/data/pages/data/' . $file_name . '.dat';
+    $file_path = PATH_ROOT . '/data/pages/data/' . $page_file . '.dat';
+    $data_old  = false;
 
-        if (!is_file($file_path)) {
-          $page_file = $file_name;
-          break;
-        }
+    if (is_file($file_path)) {
+      // 已有数据文件：编辑已有页面
+      $data_old = unserialize(file_get_contents($file_path));
+
+      if (!is_array($data_old)) {
+        Header("Location:page.php");
+        exit;
       }
+
+      $page_old_path  = $data_old['path'];
+      $page_old_state = $data_old['state'];
+    }
+
+    // 路径唯一性校验（在改写任何索引之前，扫描全部状态索引），避免静默覆盖已有页面
+    $path_conflict = false;
+    foreach (array('publish', 'draft', 'delete') as $st) {
+      $st_index = PATH_ROOT . '/data/pages/index/' . $st . '.php';
+      if (!is_file($st_index)) {
+        continue;
+      }
+      require $st_index;
+      if (isset($app_pages[$page_path]) && $page_path != $page_old_path) {
+        $path_conflict = true;
+        break;
+      }
+    }
+
+    if ($path_conflict) {
+      $error_msg = '页面路径已存在：/' . htmlspecialchars($page_path);
     } else {
-      $file_path = PATH_ROOT . '/data/pages/data/' . $page_file . '.dat';
-      $data = unserialize(file_get_contents($file_path));
-
-      $page_old_path  = $data['path'];
-      $page_old_state = $data['state'];
-
-      if ($page_old_state != $page_state || $page_old_path != $page_path) {
+      if ($page_old_path != '' && ($page_old_state != $page_state || $page_old_path != $page_path)) {
         $index_file = PATH_ROOT . '/data/pages/index/' . $page_old_state . '.php';
 
         require $index_file;
@@ -98,50 +133,68 @@ if (isset($_POST['_IS_POST_BACK_'])) {
 
         file_put_contents(
           $index_file,
-          "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>"
+          "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>",
+          LOCK_EX
         );
       }
+
+      $data = array(
+        'file'        => $page_file,
+        'path'        => $page_path,
+        'state'       => $page_state,
+        'title'       => $page_title,
+        'date'        => $page_date,
+        'time'        => $page_time,
+        'can_comment' => $page_can_comment,
+        'desc'        => $page_desc,
+      );
+
+      // 编辑页面时更新最后修改时间；新建时发布时间即当前时间，不写 mod_time
+      if (date("Y-m-d H:i:s") != $page_date . ' ' . $page_time) {
+        $data['mod_time'] = date("Y-m-d H:i:s");
+      }
+
+      $index_file = PATH_ROOT . '/data/pages/index/' . $page_state . '.php';
+
+      require $index_file;
+
+      $app_pages[$page_path] = $data;
+
+      ksort($app_pages);
+
+      file_put_contents(
+        $index_file,
+        "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>",
+        LOCK_EX
+      );
+
+      $data['content'] = $page_content;
+
+      file_put_contents($file_path, serialize($data), LOCK_EX);
+
+      $succeed = true;
     }
-
-    $data = array(
-      'file'        => $page_file,
-      'path'        => $page_path,
-      'state'       => $page_state,
-      'title'       => $page_title,
-      'date'        => $page_date,
-      'time'        => $page_time,
-      'can_comment' => $page_can_comment,
-      'desc'        => $page_desc,
-    );
-
-    // 编辑页面时更新最后修改时间；新建时发布时间即当前时间，不写 mod_time
-    if (date("Y-m-d H:i:s") != $page_date . ' ' . $page_time) {
-      $data['mod_time'] = date("Y-m-d H:i:s");
-    }
-
-    $index_file = PATH_ROOT . '/data/pages/index/' . $page_state . '.php';
-
-    require $index_file;
-
-    $app_pages[$page_path] = $data;
-
-    ksort($app_pages);
-
-    file_put_contents(
-      $index_file,
-      "<?php\n\$app_pages = " . var_export($app_pages, true) . ";\n?>"
-    );
-
-    $data['content'] = $page_content;
-
-    file_put_contents($file_path, serialize($data));
-
-    $succeed = true;
   }
 } else if (isset($_GET['file'])) {
+  // 编辑入口：文件 ID 白名单 + 数据文件存在性校验，防止路径穿越
+  if (!app_valid_post_id($_GET['file'])) {
+    Header("Location:page.php");
+    exit;
+  }
+
   $file_path = PATH_ROOT . '/data/pages/data/' . $_GET['file'] . '.dat';
 
+  if (!is_file($file_path)) {
+    Header("Location:page.php");
+    exit;
+  }
+
   $data = unserialize(file_get_contents($file_path));
+
+  if (!is_array($data)) {
+    Header("Location:page.php");
+    exit;
+  }
 
   $page_file        = $data['file'];
   $page_path        = $data['path'];
@@ -152,6 +205,9 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   $page_date        = $data['date'];
   $page_time        = $data['time'];
   $page_can_comment = isset($data['can_comment']) ? $data['can_comment'] : '1';
+} else {
+  // 新建页面：先确定文件 ID（编辑器上传图片目录与 ID 保持一致），随表单 hidden 字段带回
+  $page_file = app_random_id(PATH_ROOT . '/data/pages/data');
 }
 ?>
 <?php require 'head.php'; ?>
@@ -175,12 +231,15 @@ if (isset($_POST['_IS_POST_BACK_'])) {
 </script>
 <form action="<?php echo htmlentities($_SERVER['REQUEST_URI']); ?>" method="post">
   <input type="hidden" name="_IS_POST_BACK_" value="" />
+  <?php app_csrf_field(); ?>
   <?php if ($succeed) { ?>
     <?php if ($page_state == 'publish') { ?>
       <div class="updated">页面已发布。 <a href="<?php echo app_get_url('', $page_path); ?>" class="link" target="_blank">查看页面</a></div>
     <?php } else { ?>
       <div class="updated">页面已保存到“草稿箱”。 <a href="page.php?state=draft">打开草稿箱</a></div>
     <?php } ?>
+  <?php } else if ($error_msg != '') { ?>
+    <div class="updated" style="background:#ffebe8;border:1px solid #c00;color:#c00;">保存失败：<?php echo $error_msg; ?></div>
   <?php } ?>
   <div class="admin_page_name">
     <?php if ($page_path == '') {echo "创建页面";} else {echo "编辑页面";} ?><a class="link_button" href="page.php">所有页面</a>
@@ -190,7 +249,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
   </div>
   <div style="margin-bottom:20px;">
     <?php require 'editor.php'; ?>
-    <?php editor(htmlspecialchars_decode($page_content)); ?>
+    <?php editor(htmlspecialchars_decode($page_content), 'pages/' . $page_file); ?>
   </div>
   <div style="margin-bottom:20px;">
     <input name="desc" type="text" class="edit_textbox" placeholder="在此输入描述，将显示在网页SEO的description中" value="<?php echo htmlspecialchars($page_desc); ?>" />
@@ -204,7 +263,7 @@ if (isset($_POST['_IS_POST_BACK_'])) {
       <select name="year">
         <option value="">&nbsp;&nbsp;年</option>
         <?php $year = substr($page_date, 0, 4);
-        for ($i = 1990; $i <= 2030; $i++) { ?>
+        for ($i = 1990; $i <= intval(date('Y')) + 10; $i++) { ?>
           <option value="<?php echo $i; ?>" <?php if ($year == $i) echo 'selected="selected";' ?>><?php echo $i; ?></option>
         <?php } ?>
       </select> -

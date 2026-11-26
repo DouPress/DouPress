@@ -1,8 +1,8 @@
+# URL 重写：所有不存在的文件/目录请求转交给 index.php（PATH_INFO 模式）
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ /index.php/$1 [L]
-
 </IfModule>

@@ -1,3 +1,7 @@
+<?php
+// X-Powered-By 改为程序名，不暴露 PHP 版本号（必须在任何输出之前）
+header('X-Powered-By: DouPress');
+?>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -54,7 +58,11 @@ label { font-weight:bold; color:#333; font-size:12px; }
     <div style="font-size:32px;font-weight:bold;text-align:center;padding-top:40px;">DouPress 安装程序</div>
     <div style="font-size:13px;color:#888;text-align:center;padding:10px 0 20px;">v/*APP_VERSION*/</div>
     <div id="mainbox">
-<?php if (!isset($_POST["start_install"])) { ?>
+<?php
+// PHP 5.x 兼容层（random_bytes / hash_equals / 密码哈希助手）
+require_once __DIR__ . '/compat.php';
+
+if (!isset($_POST["start_install"])) { ?>
     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 <?php if (!is_file('data/config.php')) { ?>
       <label>网站标题</label>
@@ -75,7 +83,7 @@ label { font-weight:bold; color:#333; font-size:12px; }
       <div style="text-align:center;padding-bottom:20px;">检测到 DouPress 配置文件，将使用升级模式安装。</div>
       <div style="text-align:center;"><input type="submit" name="start_install" value="开始升级" class="btn btn-primary"/></div>
 <?php } ?>
-    <form>
+    </form>
 <?php } ?>
 <?php
     $install_failed=false;
@@ -123,37 +131,48 @@ if (!$install_failed) {
   }
   if (!is_file('data/config.php')) {
     $is_upgrade = false;
+    if (trim($_POST['username']) == '' || trim($_POST['password']) == '') {
+      echo '<br/>';
+      echo '<span style="color:red;">后台账号或密码不能为空</span>';
+      echo '<br/>';
+      $install_failed = true;
+    } else {
     echo '<br/>';
     echo "创建配置文件";
+    // 用 var_export 生成配置，避免用户输入直接拼接进 PHP 文件造成任意代码执行
+    $app_config_new = array(
+      'version'       => '/*APP_VERSION*/',
+      'site_link'     => rtrim(trim($_POST['sitelink']), '/'),
+      'site_name'     => trim($_POST['sitename']),
+      'site_subname'  => '',
+      'site_desc'     => '又一个 DouPress 网站',
+      'site_keywords' => 'DouPress',
+      'site_theme'    => 'default',
+      'site_route'    => 'default',
+      'site_icpno'    => '',
+      'site_status'   => 'open',
+      'user_name'     => trim($_POST['username']),
+      'user_pass'     => app_hash_password(trim($_POST['password'])),
+      'nick_name'     => trim($_POST['nickname']),
+      'comment_code'  => '',
+      'header_code'   => '',
+      'footer_code'   => '',
+    );
+
     if (!@file_put_contents('data/config.php',
-      "<?php \$app_config = array(".
-      "'version'       => '/*APP_VERSION*/',".
-      "'site_link'     => '{$_POST['sitelink']}',".
-      "'site_name'     => '{$_POST['sitename']}',".
-      "'site_subname'  => '',".
-      "'site_desc'     => '又一个 DouPress 网站',".
-      "'site_keywords' => 'DouPress',".
-      "'site_theme'    => 'default',".
-      "'site_route'    => 'default',".
-      "'site_icpno'    => '',".
-      "'site_status'   => 'open',".
-      "'user_name'     => '{$_POST['username']}',".
-      "'user_pass'     => '{$_POST['password']}',".
-      "'nick_name'     => '{$_POST['nickname']}',".
-      "'comment_code'  => '',".
-      "'header_code'   => '',".
-      "'footer_code'   => '');?>"
+      "<?php\n\$app_config = " . var_export($app_config_new, true) . ";\n?>"
     )) {
       $install_failed = true;
       echo '[<span style="color:red;">失败</span>]';
     }
     echo '<br/>';
+    }
   } else {
     echo '<br/>';
     echo "升级配置文件";
     require 'data/config.php';
     $app_config['version'] = '/*APP_VERSION*/';
-    if (!@file_put_contents('data/config.php', "<?php \$app_config = ".var_export($app_config, true)."; ?>")) {
+    if (!@file_put_contents('data/config.php', "<?php \$app_config = ".var_export($app_config, true)."; ?>", LOCK_EX)) {
       $install_failed = true;
       echo '[<span style="color:red;">失败</span>]';
     }
@@ -213,7 +232,7 @@ if (!$install_failed) {
 <?php } else { ?>
     <div style="text-align:center;"><?php if ($is_upgrade) { ?>升级<?php } else { ?>安装<?php } ?>完毕</div>
 <?php if (!unlink(__FILE__)) { ?>
-     <div style=\"text-align:center;padding-top:20px;color:red;\">安装文件无法删除，请手工删除。</div>
+     <div style="text-align:center;padding-top:20px;color:red;">安装文件无法删除，请手工删除。</div>
 <?php } ?>
     <div style="text-align:center;padding:20px 0 0;">
     <form method="get" action="admin/">

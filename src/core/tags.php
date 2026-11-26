@@ -53,13 +53,45 @@ function app_site_subname($print = true)
 }
 
 /**
- * 网站主域名链接
+ * 网站主域名链接（未配置时自动根据当前请求的域名推断，并去掉末尾斜杠）
  */
 function app_site_link($print = true)
 {
   global $app_config;
 
-  $site_link = htmlentities($app_config['site_link']);
+  $site_link = isset($app_config['site_link']) ? trim($app_config['site_link']) : '';
+
+  if ($site_link == '') {
+    // 未配置网站地址：自动推断 协议://域名[/子目录]
+    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+      || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+    $scheme = !empty($_SERVER['REQUEST_SCHEME'])
+      ? $_SERVER['REQUEST_SCHEME']
+      : ($https ? 'https' : 'http');
+    $host = isset($_SERVER['HTTP_HOST'])
+      ? $_SERVER['HTTP_HOST']
+      : (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost');
+
+    // 程序部署在子目录时补上根路径（去掉脚本文件名与 admin 子目录）
+    $root = '';
+    if (isset($_SERVER['SCRIPT_NAME'])) {
+      $dir = dirname($_SERVER['SCRIPT_NAME']);
+      if (basename($dir) == 'admin') {
+        $dir = dirname($dir);
+      }
+      if ($dir != '/' && $dir != '\\' && $dir != '.') {
+        $root = rtrim($dir, '/');
+      }
+    }
+
+    $site_link = $scheme . '://' . $host . $root;
+  }
+
+  // 去掉末尾斜杠，避免拼接出 //xxx（纯协议头 http:// 不做处理）
+  if ($site_link != 'http://' && $site_link != 'https://') {
+    $site_link = rtrim($site_link, '/');
+  }
+  $site_link = htmlentities($site_link);
 
   if ($print) {
     echo $site_link;
@@ -151,7 +183,7 @@ function app_seo_keywords($fallback = '', $print = true)
 function app_theme_url($path, $print = true)
 {
   global $app_config;
-  $url = htmlentities($app_config['site_link']) . '/theme/' . $app_config['site_theme'] . '/' . $path;
+  $url = app_site_link(false) . '/theme/' . $app_config['site_theme'] . '/' . $path;
 
   if ($print) {
     echo $url;
@@ -242,9 +274,9 @@ function app_goto_old($text)
   global $app_path_type, $app_path_name, $app_page_no;
   echo '<a href="';
   if ($app_path_type == 'tag') {
-    app_get_url('tag', htmlspecialchars($app_path_name));
+    app_get_url('tag', urlencode($app_path_name));
   } else if ($app_path_type == 'date') {
-    app_get_url('date', htmlspecialchars($app_path_name));
+    app_get_url('date', urlencode($app_path_name));
   }
   echo '/?page=';
   echo ($app_page_no + 1);
@@ -258,9 +290,9 @@ function app_goto_new($text)
   global $app_path_type, $app_path_name, $app_page_no;
   echo '<a href="';
   if ($app_path_type == 'tag') {
-    app_get_url('tag', htmlspecialchars($app_path_name));
+    app_get_url('tag', urlencode($app_path_name));
   } else if ($app_path_type == 'date') {
-    app_get_url('date', htmlspecialchars($app_path_name));
+    app_get_url('date', urlencode($app_path_name));
   }
   echo '/?page=';
   echo ($app_page_no - 1);
@@ -392,6 +424,59 @@ function app_post_time($print = true)
 }
 
 /**
+ * RFC 822 发布日期（RSS pubDate 用）
+ */
+function app_post_pubdate($print = true)
+{
+  global $app_post;
+
+  $ts = strtotime($app_post['date'] . ' ' . $app_post['time']);
+  $pub = $ts ? date('r', $ts) : $app_post['date'] . ' ' . $app_post['time'];
+
+  if ($print) {
+    echo $pub;
+    return;
+  }
+
+  return $pub;
+}
+
+/**
+ * W3C 最后修改时间（sitemap lastmod 用，无修改时间时回退为发布时间）
+ */
+function app_post_lastmod($print = true)
+{
+  global $app_post;
+
+  $last = !empty($app_post['mod_time']) ? $app_post['mod_time'] : $app_post['date'] . ' ' . $app_post['time'];
+  $ts = strtotime($last);
+  $lastmod = $ts ? date('Y-m-d\TH:i:sP', $ts) : $last;
+
+  if ($print) {
+    echo $lastmod;
+    return;
+  }
+
+  return $lastmod;
+}
+
+/**
+ * 任意日期时间字符串转 W3C 格式（sitemap lastmod 用）
+ */
+function app_w3c_datetime($datetime, $print = true)
+{
+  $ts = strtotime($datetime);
+  $out = $ts ? date('Y-m-d\TH:i:sP', $ts) : $datetime;
+
+  if ($print) {
+    echo $out;
+    return;
+  }
+
+  return $out;
+}
+
+/**
  * 是否有最后修改时间（无修改或与发布时间一致时不显示）
  */
 function app_mod_time_has()
@@ -455,20 +540,51 @@ function app_post_tags($item_begin = '', $item_gap = ', ', $item_end = '', $as_l
 }
 
 /**
- * 文章内容
+ * 文章内容（带 Markdown 转换缓存：源文件修改时间早于缓存时直接复用缓存）
  */
 function app_post_content($print = true)
 {
-  global $app_data;
+  global $app_data, $app_post_id, $app_path_type, $app_post;
+
+  // 内容标识：页面用 file，文章用 id
+  if ($app_path_type == 'page' && isset($app_post['file'])) {
+    $content_id = $app_post['file'];
+    $type_dir = 'pages';
+  } else {
+    $content_id = $app_post_id;
+    $type_dir = 'posts';
+  }
+
+  $data_file = PATH_ROOT . '/data/' . $type_dir . '/data/' . $content_id . '.dat';
 
   if (!isset($app_data)) {
-    global $app_post_id;
-
-    $data = unserialize(file_get_contents('data/posts/data/' . $app_post_id . '.dat'));
-
-    $html = MarkdownExtra::defaultTransform($data['content']);
+    $source = '';
+    if (is_file($data_file)) {
+      $data = unserialize(file_get_contents($data_file));
+      $source = is_array($data) && isset($data['content']) ? $data['content'] : '';
+    }
   } else {
-    $html = MarkdownExtra::defaultTransform($app_data['content']);
+    $source = $app_data['content'];
+  }
+
+  $cache_dir = PATH_ROOT . '/data/cache/' . $type_dir;
+  $cache_file = $cache_dir . '/' . $content_id . '.html';
+
+  $html = false;
+  $source_mtime = @filemtime($data_file);
+  if ($source_mtime && is_file($cache_file)) {
+    $cache_mtime = @filemtime($cache_file);
+    if ($cache_mtime && $cache_mtime >= $source_mtime) {
+      $html = file_get_contents($cache_file);
+    }
+  }
+
+  if ($html === false) {
+    $html = MarkdownExtra::defaultTransform($source);
+    if (!is_dir($cache_dir)) {
+      @mkdir($cache_dir, 0755, true);
+    }
+    @file_put_contents($cache_file, $html, LOCK_EX);
   }
 
   if ($print) {
@@ -574,20 +690,49 @@ function app_hits_inc($path_id, $type = 'post')
   $type_dir = $type == 'page' ? 'pages' : 'posts';
   $hits_file = PATH_ROOT . '/data/hits/' . $type_dir . '/' . $path_id . '.dat';
 
-  $hits = 0;
-  if (file_exists($hits_file)) {
-    $hits = intval(file_get_contents($hits_file));
+  // 确保目录存在（首次访问或新文章时）
+  $hits_dir = dirname($hits_file);
+  if (!is_dir($hits_dir)) {
+    @mkdir($hits_dir, 0755, true);
   }
-  $hits++;
-  file_put_contents($hits_file, $hits);
+
+  // 加锁读取并累加，避免并发请求相互覆盖丢计数
+  $hits = 1;
+  $fp = @fopen($hits_file, 'c+');
+  if ($fp) {
+    if (flock($fp, LOCK_EX)) {
+      $hits = intval(stream_get_contents($fp)) + 1;
+      ftruncate($fp, 0);
+      rewind($fp);
+      fwrite($fp, $hits);
+      fflush($fp);
+      flock($fp, LOCK_UN);
+    }
+    fclose($fp);
+  }
 
   // 站点总浏览量同步 +1（汇总文件不存在时先聚合初始化，此时已包含本次更新）
   $site_file = app_site_hits_file();
+  $site_dir = dirname($site_file);
+  if (!is_dir($site_dir)) {
+    @mkdir($site_dir, 0755, true);
+  }
+
   if (!file_exists($site_file)) {
     app_site_hits_rebuild();
   } else {
-    $site_hits = intval(file_get_contents($site_file));
-    file_put_contents($site_file, $site_hits + 1);
+    $fp = @fopen($site_file, 'c+');
+    if ($fp) {
+      if (flock($fp, LOCK_EX)) {
+        $site_hits = intval(stream_get_contents($fp)) + 1;
+        ftruncate($fp, 0);
+        rewind($fp);
+        fwrite($fp, $site_hits);
+        fflush($fp);
+        flock($fp, LOCK_UN);
+      }
+      fclose($fp);
+    }
   }
 
   return $hits;
